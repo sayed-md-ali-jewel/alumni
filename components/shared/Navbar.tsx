@@ -363,9 +363,9 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Navigation Drawer */}
+      {/* Mobile Navigation Drawer (Absolute Overlay) */}
       {mobileMenuOpen && (
-        <div className="xl:hidden border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg px-4 py-5 space-y-3 animate-in fade-in">
+        <div className="xl:hidden absolute top-full left-0 right-0 w-full border-b border-slate-200/90 dark:border-slate-800/90 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg px-4 py-5 space-y-3 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 max-h-[calc(100vh-5rem)] overflow-y-auto">
           <nav className="flex flex-col space-y-1">
             {navItems.map((item) => {
               const active = isActive(item.href);
