@@ -180,3 +180,21 @@
     animation: none !important;
   }
 }
+
+/* PWA Safe Area insets for devices with notches & navigation bars */
+@supports (padding-top: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Standalone PWA app styling optimizations */
+@media all and (display-mode: standalone) {
+  body {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+

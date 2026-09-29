@@ -1,0 +1,92 @@
+{
+  "name": "Alumni Association Platform",
+  "short_name": "Alumni App",
+  "description": "Official Alumni Association Platform. Connecting alumni globally, organizing reunions, emergency blood network, and career development.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "categories": [
+    "education",
+    "social",
+    "community"
+  ],
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Alumni Directory",
+      "short_name": "Directory",
+      "description": "Search and connect with fellow alumni",
+      "url": "/directory",
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Blood Donors",
+      "short_name": "Blood Network",
+      "description": "Emergency blood donor network & requests",
+      "url": "/blood-donors",
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Events & Reunions",
+      "short_name": "Events",
+      "description": "Upcoming alumni events and meetups",
+      "url": "/events",
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Support & Donate",
+      "short_name": "Donate",
+      "description": "Contribute to alumni and scholarship funds",
+      "url": "/donate",
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
