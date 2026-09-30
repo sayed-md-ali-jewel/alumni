@@ -63,3 +63,8 @@ Thumbs.db
 .temp/
 .tmp/
 .cache/
+
+# User Uploads
+/public/uploads/*
+!/public/uploads/.gitkeep
+
