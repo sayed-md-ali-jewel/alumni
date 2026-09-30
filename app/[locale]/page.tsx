@@ -8,6 +8,8 @@ import { Event } from '@/models/Event';
 import { NewsPost } from '@/models/NewsPost';
 import { Donation } from '@/models/Donation';
 import { Campaign } from '@/models/Campaign';
+import { CommitteePost } from '@/models/CommitteePost';
+import { ensureDefaultCommitteePosts } from '@/lib/committee';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -30,6 +32,7 @@ import {
   ArrowRight,
   Sparkles,
   Award,
+  Crown,
   ChevronRight,
   MapPin,
   CheckCircle2,
@@ -128,6 +131,74 @@ async function getHomeData() {
       SiteSetting.findOne({ key: 'site_settings' }).lean(),
     ]);
 
+    // Ensure default committee posts exist
+    await ensureDefaultCommitteePosts();
+    if (!User) void User;
+    if (!CommitteePost) void CommitteePost;
+
+    // Fetch active executive committee posts in sortOrder (EXCLUDING default regular member posts)
+    const executivePosts = await CommitteePost.find({
+      isActive: true,
+      isDefault: { $ne: true },
+      name_en: { $nin: ['Member', 'General Member'] },
+      name_bn: { $nin: ['সদস্য', 'সাধারণ সদস্য'] },
+    })
+      .sort({ sortOrder: 1, createdAt: 1 })
+      .lean();
+
+    const executivePostIds = executivePosts.map((p) => p._id);
+
+    // Fetch alumni profiles assigned ONLY to active executive committee posts
+    let rawCommitteeProfiles = await AlumniProfile.find({
+      committeePost: { $in: executivePostIds },
+      visibility: 'public',
+    })
+      .populate({
+        path: 'userId',
+        select: 'name email image isVerified bloodGroup phone',
+        model: User,
+      })
+      .populate({
+        path: 'committeePost',
+        select: 'name_en name_bn sortOrder isActive isDefault',
+        model: CommitteePost,
+      })
+      .lean();
+
+    // Filter valid profiles with a valid user and non-default executive post
+    rawCommitteeProfiles = rawCommitteeProfiles.filter(
+      (p: any) =>
+        p.userId &&
+        (p.userId as any).name &&
+        p.committeePost &&
+        !p.committeePost.isDefault &&
+        p.committeePost.name_en !== 'Member' &&
+        p.committeePost.name_bn !== 'সদস্য'
+    );
+
+    // Strict deduplication by profile ID and user ID to ensure no duplicate cards
+    const seenProfileIds = new Set<string>();
+    const seenUserIds = new Set<string>();
+    const committeeProfiles: any[] = [];
+
+    for (const p of rawCommitteeProfiles) {
+      const pId = p._id.toString();
+      const uId = (p.userId as any)?._id?.toString() || (p.userId as any)?.toString();
+      if (!seenProfileIds.has(pId) && (!uId || !seenUserIds.has(uId))) {
+        seenProfileIds.add(pId);
+        if (uId) seenUserIds.add(uId);
+        committeeProfiles.push(p);
+      }
+    }
+
+    // Sort strictly by committeePost sortOrder (e.g., President = 1, VP = 2, Secretary = 3, etc.)
+    committeeProfiles.sort((a: any, b: any) => {
+      const orderA = a.committeePost?.sortOrder ?? 999;
+      const orderB = b.committeePost?.sortOrder ?? 999;
+      if (orderA !== orderB) return orderA - orderB;
+      return (a.batchYear || 0) - (b.batchYear || 0);
+    });
+
     const totalRaised = donationStats.reduce((acc, curr) => acc + curr.raised, 0);
 
     const donationCampaigns =
@@ -181,6 +252,7 @@ async function getHomeData() {
       isSliderEnabled: isSliderEnabled !== false,
       slides: JSON.parse(JSON.stringify(sliderItems || [])),
       spotlightProfiles: JSON.parse(JSON.stringify(spotlightProfiles || [])),
+      committeeProfiles: JSON.parse(JSON.stringify(committeeProfiles || [])),
       upcomingEvents,
       latestNews,
       activeBloodRequests,
@@ -201,6 +273,7 @@ async function getHomeData() {
       isSliderEnabled: false,
       slides: [],
       spotlightProfiles: [],
+      committeeProfiles: [],
       upcomingEvents: [],
       latestNews: [],
       activeBloodRequests: [],
@@ -359,107 +432,200 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* Emergency Blood Aid & Donor Network Section */}
-      <section className="container mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-gradient-to-r from-rose-950/90 via-slate-900 to-slate-900 border border-rose-900/40 p-4 xs:p-6 sm:p-10 shadow-2xl relative overflow-hidden">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 sm:gap-8 mb-8">
-            <div className="space-y-3 max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold uppercase tracking-wider">
-                <Droplet className="w-3.5 h-3.5 fill-current text-rose-500 animate-pulse" />
-                <span>{isBn ? 'লাইভ রক্তদান ও জরুরি সহায়তা' : 'School Blood Bank & Emergency Aid'}</span>
+      {/* Executive Committee Leadership Section */}
+      {data.committeeProfiles && data.committeeProfiles.length > 0 && (
+        <section className="container mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+            <div>
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-1.5">
+                <Crown className="w-4 h-4" />
+                <span>{isBn ? 'পরিচালনা পরিষদ' : 'Executive Leadership'}</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
-                {isBn ? 'জীবনের তরে সহমর্মিতা — প্রাক্তনদের রক্তদান নেটওয়ার্ক' : 'Saving Lives Together — Alumni Blood Donation Network'}
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
+                {isBn ? 'সম্মানিত কার্যনির্বাহী পরিষদ' : 'Executive Committee Leaders'}
               </h2>
-              <p className="text-sm text-slate-300 leading-relaxed">
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                 {isBn
-                  ? 'জরুরি প্রয়োজনে রক্তদাতা খুঁজুন অথবা রক্তের আবেদন পোস্ট করুন। আমাদের নিবন্ধিত প্রাক্তন রক্তদাতাদের সাথে তাত্ক্ষণিক যোগাযোগ করুন।'
-                  : 'Find verified volunteer blood donors among school alumni or post an emergency request for your loved ones.'}
+                  ? 'অ্যাসোসিয়েশনের সার্বিক নেতৃত্ব ও পরিচালনার দায়িত্বে নিয়োজিত সম্মানিত সদস্যবৃন্দ'
+                  : 'Dedicated alumni leaders steering the vision, fellowship, and institutional legacy.'}
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 shrink-0">
-              <Link href="/blood-requests/create" className="w-full sm:w-auto">
-                <Button size="default" className="w-full sm:w-auto bg-rose-600 hover:bg-rose-700 text-white font-bold gap-2 shadow-lg shadow-rose-600/30">
-                  <AlertTriangle className="w-4 h-4" />
-                  <span>{isBn ? 'জরুরি রক্তের আবেদন' : 'Post Blood Request'}</span>
-                </Button>
-              </Link>
-              <Link href="/blood-donors" className="w-full sm:w-auto">
-                <Button size="default" variant="outline" className="w-full sm:w-auto border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white hover:text-white gap-2 shadow-sm">
-                  <Droplet className="w-4 h-4 text-rose-400" />
-                  <span>{isBn ? 'রক্তদাতা খুঁজুন' : 'Find Blood Donors'}</span>
-                </Button>
-              </Link>
-            </div>
+            <Link href="/committee" className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:text-primary/80">
+              <span>{isBn ? 'সম্পূর্ণ কমিটি দেখুন' : 'View Full Committee'}</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
 
-          {/* Active Emergency Requests List */}
-          {data.activeBloodRequests && data.activeBloodRequests.length > 0 ? (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider">
-                <span>{isBn ? 'চলমান জরুরি রক্তের আবেদন' : 'Active Emergency Requests'}</span>
-                <Link href="/blood-requests" className="text-rose-400 hover:underline flex items-center gap-1">
-                  <span>{isBn ? 'সব দেখুন' : 'View All'}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {data.committeeProfiles.map((profile: any) => {
+              const user = profile.userId || {};
+              const blood = profile.bloodGroup || user?.bloodGroup;
+              const displayName = user?.name || 'Committee Leader';
+              const displayGroup = profile.group || profile.department;
+              const batchText = profile.batchYear
+                ? isBn
+                  ? `ব্যাচ '${toBengaliNumerals(String(profile.batchYear))}`
+                  : `Batch '${profile.batchYear}`
+                : null;
+              const locationText = profile.location || profile.donorLocation || 'Dhaka, Bangladesh';
+              const postName = profile.committeePost
+                ? isBn
+                  ? profile.committeePost.name_bn || profile.committeePost.name_en
+                  : profile.committeePost.name_en || profile.committeePost.name_bn
+                : isBn
+                ? 'কার্যনির্বাহী সদস্য'
+                : 'Executive Member';
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {data.activeBloodRequests.map((req: any) => (
-                  <div
-                    key={req._id.toString()}
-                    className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-rose-500/40 transition-colors space-y-3"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="w-11 h-11 rounded-xl bg-rose-600/20 text-rose-400 border border-rose-500/30 flex items-center justify-center font-black text-lg">
-                        {req.bloodGroup}
+              return (
+                <Card
+                  key={profile._id.toString()}
+                  className="group rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 flex flex-col justify-between overflow-hidden"
+                >
+                  <CardContent className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4">
+                    {/* Top: Avatar & Verified Info */}
+                    <div className="space-y-3.5">
+                      <div className="flex items-start gap-3.5">
+                        {/* Avatar */}
+                        <div className="relative shrink-0">
+                          <Avatar
+                            src={user?.image}
+                            name={displayName}
+                            fallback={displayName}
+                            size="lg"
+                            className="w-14 h-14 rounded-2xl ring-1 ring-slate-200 dark:ring-slate-700 shadow-xs object-cover bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 font-bold"
+                          />
+                          {user?.isVerified && (
+                            <div
+                              className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center ring-2 ring-white dark:ring-slate-900 shadow-xs"
+                              title={isBn ? 'যাচাইকৃত সদস্য' : 'Verified Member'}
+                            >
+                              <Check className="w-3 h-3 stroke-[3] text-white" />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Name & Designation */}
+                        <div className="min-w-0 flex-1 space-y-1">
+                          <Link
+                            href={`/directory/${profile._id}`}
+                            className="block font-bold text-base text-slate-900 dark:text-white hover:text-primary transition-colors truncate"
+                          >
+                            {displayName}
+                          </Link>
+
+                          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/70 dark:border-amber-900/40 text-xs font-bold truncate">
+                            <Crown className="w-3.5 h-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
+                            <span className="truncate">{postName}</span>
+                          </div>
+
+                          {profile.committeeRoleTitle && (
+                            <div className="text-xs text-slate-500 truncate font-medium">
+                              {profile.committeeRoleTitle}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <Badge
-                        variant={req.urgency === 'Emergency' ? 'destructive' : req.urgency === 'Urgent' ? 'warning' : 'default'}
-                        className="text-[10px] px-2 py-0.5"
-                      >
-                        {req.urgency}
-                      </Badge>
+
+                      {/* Batch, Academic Stream & Blood Group Badges */}
+                      <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                        {batchText && (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium">
+                            <GraduationCap className="w-3.5 h-3.5 text-slate-400" />
+                            <span>{batchText}</span>
+                          </span>
+                        )}
+
+                        {displayGroup && (
+                          <span
+                            className={`px-3 py-1 rounded-full border text-xs font-semibold ${
+                              groupColors[displayGroup] ||
+                              'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-900/40'
+                            }`}
+                          >
+                            {isBn ? groupLabelBn[displayGroup] || displayGroup : displayGroup}
+                          </span>
+                        )}
+
+                        {blood && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/40 text-xs font-bold">
+                            <Droplet className="w-3 h-3 fill-rose-500 text-rose-500" />
+                            <span>{blood}</span>
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Professional & Location Meta */}
+                      <div className="space-y-1.5 pt-1 text-xs text-slate-600 dark:text-slate-300">
+                        {(profile.jobTitle || profile.company) && (
+                          <div className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-300">
+                            <Briefcase className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
+                            <span className="line-clamp-2 leading-relaxed font-medium">
+                              {profile.jobTitle && profile.company
+                                ? `${profile.jobTitle} at ${profile.company}`
+                                : profile.jobTitle || profile.company}
+                            </span>
+                          </div>
+                        )}
+
+                        {locationText && (
+                          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                            <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                            <span className="truncate">{locationText}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
-                    <div>
-                      <h4 className="font-bold text-white text-sm line-clamp-1">
-                        {req.patientName} ({req.requiredUnits} {isBn ? 'ব্যাগ' : 'Units'})
-                      </h4>
-                      <p className="text-xs text-slate-400 flex items-center gap-1.5 mt-1">
-                        <Building2 className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                        <span className="truncate">{req.hospitalName}, {req.hospitalLocation}</span>
-                      </p>
-                      <p className="text-[11px] text-slate-400 flex items-center gap-1.5 mt-0.5">
-                        <Clock className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                        <span>{formatDate(req.requiredDate, locale)}</span>
-                      </p>
-                    </div>
+                    {/* Bottom Actions: Socials, Message & View Profile */}
+                    <div className="pt-3.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2 mt-auto">
+                      {/* Social / Email Icons */}
+                      <div className="flex items-center gap-1.5">
+                        {profile.linkedin && (
+                          <a
+                            href={profile.linkedin}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/50 flex items-center justify-center transition-colors border border-slate-200/60 dark:border-slate-700/60"
+                            title="LinkedIn"
+                          >
+                            <LinkedInIcon className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                        {(user?.email || profile.email) && (
+                          <a
+                            href={`mailto:${user?.email || profile.email}`}
+                            className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/50 flex items-center justify-center transition-colors border border-slate-200/60 dark:border-slate-700/60"
+                            title={user?.email || profile.email || 'Email'}
+                          >
+                            <Mail className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                      </div>
 
-                    <div className="pt-2 border-t border-slate-800/80 flex items-center gap-2">
-                      <Link href={`/blood-requests/${req._id}`} className="flex-1">
-                        <Button size="sm" variant="outline" className="w-full text-xs border-slate-700 bg-slate-800/80 text-white hover:bg-slate-700 hover:text-white">
-                          {isBn ? 'বিস্তারিত দেখুন' : 'Details'}
-                        </Button>
-                      </Link>
-                      <Link href={`/blood-requests/${req._id}?match=true`} className="flex-1">
-                        <Button size="sm" className="w-full text-xs bg-rose-600 hover:bg-rose-700 text-white">
-                          {isBn ? 'ম্যাচিং রক্তদাতা' : 'Find Donors'}
-                        </Button>
-                      </Link>
+                      {/* Actions: Message + Profile */}
+                      <div className="flex items-center gap-2 ml-auto">
+                        <DirectoryUserActions targetUser={profile} variant="card" showBlock={false} />
+
+                        <Link href={`/directory/${profile._id}`}>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 text-xs rounded-xl px-3 gap-1.5 font-semibold hover:bg-primary hover:text-white hover:border-primary border-slate-200 dark:border-slate-700 transition-colors shadow-none"
+                          >
+                            <span>{isBn ? 'প্রোফাইল' : 'Profile'}</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 text-center text-slate-400 text-xs">
-              <p>{isBn ? 'এই মুহূর্তে কোনো সক্রিয় রক্তের আবেদন নেই।' : 'No open blood requests at the moment.'}</p>
-            </div>
-          )}
-        </div>
-      </section>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* Featured Alumni Spotlight */}
       <section className="container mx-auto px-3 sm:px-6 lg:px-8">
@@ -644,6 +810,108 @@ export default async function HomePage({
               </Card>
             );
           })}
+        </div>
+      </section>
+
+      {/* Emergency Blood Aid & Donor Network Section */}
+      <section className="container mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="rounded-3xl bg-gradient-to-r from-rose-950/90 via-slate-900 to-slate-900 border border-rose-900/40 p-4 xs:p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 sm:gap-8 mb-8">
+            <div className="space-y-3 max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold uppercase tracking-wider">
+                <Droplet className="w-3.5 h-3.5 fill-current text-rose-500 animate-pulse" />
+                <span>{isBn ? 'লাইভ রক্তদান ও জরুরি সহায়তা' : 'School Blood Bank & Emergency Aid'}</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                {isBn ? 'জীবনের তরে সহমর্মিতা — প্রাক্তনদের রক্তদান নেটওয়ার্ক' : 'Saving Lives Together — Alumni Blood Donation Network'}
+              </h2>
+              <p className="text-sm text-slate-300 leading-relaxed">
+                {isBn
+                  ? 'জরুরি প্রয়োজনে রক্তদাতা খুঁজুন অথবা রক্তের আবেদন পোস্ট করুন। আমাদের নিবন্ধিত প্রাক্তন রক্তদাতাদের সাথে তাত্ক্ষণিক যোগাযোগ করুন।'
+                  : 'Find verified volunteer blood donors among school alumni or post an emergency request for your loved ones.'}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 shrink-0">
+              <Link href="/blood-requests/create" className="w-full sm:w-auto">
+                <Button size="default" className="w-full sm:w-auto bg-rose-600 hover:bg-rose-700 text-white font-bold gap-2 shadow-lg shadow-rose-600/30">
+                  <AlertTriangle className="w-4 h-4" />
+                  <span>{isBn ? 'জরুরি রক্তের আবেদন' : 'Post Blood Request'}</span>
+                </Button>
+              </Link>
+              <Link href="/blood-donors" className="w-full sm:w-auto">
+                <Button size="default" variant="outline" className="w-full sm:w-auto border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white hover:text-white gap-2 shadow-sm">
+                  <Droplet className="w-4 h-4 text-rose-400" />
+                  <span>{isBn ? 'রক্তদাতা খুঁজুন' : 'Find Blood Donors'}</span>
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Active Emergency Requests List */}
+          {data.activeBloodRequests && data.activeBloodRequests.length > 0 ? (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider">
+                <span>{isBn ? 'চলমান জরুরি রক্তের আবেদন' : 'Active Emergency Requests'}</span>
+                <Link href="/blood-requests" className="text-rose-400 hover:underline flex items-center gap-1">
+                  <span>{isBn ? 'সব দেখুন' : 'View All'}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {data.activeBloodRequests.map((req: any) => (
+                  <div
+                    key={req._id.toString()}
+                    className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-rose-500/40 transition-colors space-y-3"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="w-11 h-11 rounded-xl bg-rose-600/20 text-rose-400 border border-rose-500/30 flex items-center justify-center font-black text-lg">
+                        {req.bloodGroup}
+                      </div>
+                      <Badge
+                        variant={req.urgency === 'Emergency' ? 'destructive' : req.urgency === 'Urgent' ? 'warning' : 'default'}
+                        className="text-[10px] px-2 py-0.5"
+                      >
+                        {req.urgency}
+                      </Badge>
+                    </div>
+
+                    <div>
+                      <h4 className="font-bold text-white text-sm line-clamp-1">
+                        {req.patientName} ({req.requiredUnits} {isBn ? 'ব্যাগ' : 'Units'})
+                      </h4>
+                      <p className="text-xs text-slate-400 flex items-center gap-1.5 mt-1">
+                        <Building2 className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span className="truncate">{req.hospitalName}, {req.hospitalLocation}</span>
+                      </p>
+                      <p className="text-[11px] text-slate-400 flex items-center gap-1.5 mt-0.5">
+                        <Clock className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span>{formatDate(req.requiredDate, locale)}</span>
+                      </p>
+                    </div>
+
+                    <div className="pt-2 border-t border-slate-800/80 flex items-center gap-2">
+                      <Link href={`/blood-requests/${req._id}`} className="flex-1">
+                        <Button size="sm" variant="outline" className="w-full text-xs border-slate-700 bg-slate-800/80 text-white hover:bg-slate-700 hover:text-white">
+                          {isBn ? 'বিস্তারিত দেখুন' : 'Details'}
+                        </Button>
+                      </Link>
+                      <Link href={`/blood-requests/${req._id}?match=true`} className="flex-1">
+                        <Button size="sm" className="w-full text-xs bg-rose-600 hover:bg-rose-700 text-white">
+                          {isBn ? 'ম্যাচিং রক্তদাতা' : 'Find Donors'}
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 text-center text-slate-400 text-xs">
+              <p>{isBn ? 'এই মুহূর্তে কোনো সক্রিয় রক্তের আবেদন নেই।' : 'No open blood requests at the moment.'}</p>
+            </div>
+          )}
         </div>
       </section>
 

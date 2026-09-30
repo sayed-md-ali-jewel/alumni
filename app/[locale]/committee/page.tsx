@@ -14,6 +14,7 @@ import {
   Users,
   Search,
   CheckCircle2,
+  Check,
   Briefcase,
   MapPin,
   GraduationCap,
@@ -36,6 +37,7 @@ import {
   WhatsAppIcon,
   formatWhatsAppUrl,
 } from "@/components/shared/SocialIcons";
+import { DirectoryUserActions } from "@/components/requests/DirectoryUserActions";
 
 interface CommitteeSection {
   _id: string;
@@ -401,12 +403,11 @@ export default function CommitteePage() {
                       : null;
 
                     return (
-                      /* Flat Modern Member Card — Pure Flat Layout with NO top border stripe */
                       <Card
                         key={member._id}
-                        className="group rounded-2xl sm:rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 flex flex-col justify-between overflow-hidden"
+                        className="group rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 flex flex-col justify-between overflow-hidden"
                       >
-                        <CardContent className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <CardContent className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4">
                           {/* Member Head Info */}
                           <div className="space-y-3.5">
                             <div className="flex items-start gap-3.5">
@@ -417,18 +418,18 @@ export default function CommitteePage() {
                                   alt={displayName}
                                   fallback={displayName}
                                   size="lg"
-                                  className="w-14 h-14 rounded-2xl ring-1 ring-slate-200 dark:ring-slate-700 shadow-sm object-cover"
+                                  className="w-14 h-14 rounded-2xl ring-1 ring-slate-200 dark:ring-slate-700 shadow-xs object-cover bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 font-bold"
                                 />
                                 {u.isVerified && (
                                   <div
-                                    className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center ring-2 ring-white dark:ring-slate-900 shadow-sm"
+                                    className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center ring-2 ring-white dark:ring-slate-900 shadow-xs"
                                     title={
                                       isBn
-                                        ? "যাচাইকৃত প্রাক্তন"
-                                        : "Verified Alumni"
+                                        ? "যাচাইকৃত সদস্য"
+                                        : "Verified Member"
                                     }
                                   >
-                                    <CheckCircle2 className="w-3.5 h-3.5" />
+                                    <Check className="w-3 h-3 stroke-[3] text-white" />
                                   </div>
                                 )}
                               </div>
@@ -437,18 +438,18 @@ export default function CommitteePage() {
                               <div className="min-w-0 flex-1 space-y-1">
                                 <Link
                                   href={`/directory/${member._id || u._id}`}
-                                  className="block text-sm font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors truncate"
+                                  className="block font-bold text-base text-slate-900 dark:text-white hover:text-primary transition-colors truncate"
                                 >
                                   {displayName}
                                 </Link>
 
-                                <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/40 text-[10px] font-bold truncate">
-                                  <Award className="w-3 h-3 shrink-0" />
+                                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/70 dark:border-amber-900/40 text-xs font-bold truncate">
+                                  <Crown className="w-3.5 h-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
                                   <span className="truncate">{postName}</span>
                                 </div>
 
                                 {member.committeeRoleTitle && (
-                                  <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400 truncate">
+                                  <div className="text-xs text-slate-500 dark:text-slate-400 truncate font-medium">
                                     {member.committeeRoleTitle}
                                   </div>
                                 )}
@@ -456,13 +457,13 @@ export default function CommitteePage() {
                             </div>
 
                             {/* Batch, Academic Group & Blood Group Badges */}
-                            <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                            <div className="flex flex-wrap items-center gap-2 pt-0.5">
                               {member.batchYear && (
-                                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] font-semibold">
-                                  <GraduationCap className="w-3 h-3 text-slate-400" />
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium">
+                                  <GraduationCap className="w-3.5 h-3.5 text-slate-400" />
                                   <span>
                                     {isBn
-                                      ? `ব্যাচ ${toBengaliNumerals(member.batchYear)}`
+                                      ? `ব্যাচ '${toBengaliNumerals(String(member.batchYear))}`
                                       : `Batch '${member.batchYear}`}
                                   </span>
                                 </span>
@@ -470,9 +471,9 @@ export default function CommitteePage() {
 
                               {displayGroup && (
                                 <span
-                                  className={`px-2.5 py-1 rounded-lg border text-[10px] font-bold ${
+                                  className={`px-3 py-1 rounded-full border text-xs font-semibold ${
                                     groupColors[member.group] ||
-                                    "bg-slate-100 text-slate-700"
+                                    "bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-900/40"
                                   }`}
                                 >
                                   {displayGroup}
@@ -480,8 +481,8 @@ export default function CommitteePage() {
                               )}
 
                               {u.bloodGroup && (
-                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/40 text-[10px] font-extrabold">
-                                  <Droplet className="w-3 h-3" />
+                                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/40 text-xs font-bold">
+                                  <Droplet className="w-3 h-3 fill-rose-500 text-rose-500" />
                                   <span>{u.bloodGroup}</span>
                                 </span>
                               )}
@@ -489,13 +490,12 @@ export default function CommitteePage() {
 
                             {/* Professional Details */}
                             {(member.jobTitle || member.company) && (
-                              <div className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-300 pt-1">
+                              <div className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-300">
                                 <Briefcase className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
-                                <span className="line-clamp-2 leading-relaxed">
-                                  {member.jobTitle}
+                                <span className="line-clamp-2 leading-relaxed font-medium">
                                   {member.jobTitle && member.company
-                                    ? ` at ${member.company}`
-                                    : member.company}
+                                    ? `${member.jobTitle} at ${member.company}`
+                                    : member.jobTitle || member.company}
                                 </span>
                               </div>
                             )}
@@ -510,8 +510,8 @@ export default function CommitteePage() {
                             )}
                           </div>
 
-                          {/* Action Footer (Flat Socials + View Profile) */}
-                          <div className="pt-3.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+                          {/* Action Footer (Socials + Directory User Actions + Profile) */}
+                          <div className="pt-3.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2 mt-auto">
                             {/* Social Icons */}
                             <div className="flex items-center gap-1.5">
                               {member.linkedin && (
@@ -519,7 +519,7 @@ export default function CommitteePage() {
                                   href={member.linkedin}
                                   target="_blank"
                                   rel="noreferrer"
-                                  className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/50 flex items-center justify-center transition-colors"
+                                  className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/50 flex items-center justify-center transition-colors border border-slate-200/60 dark:border-slate-700/60"
                                   title="LinkedIn"
                                 >
                                   <LinkedInIcon className="w-3.5 h-3.5" />
@@ -530,7 +530,7 @@ export default function CommitteePage() {
                                   href={member.facebook}
                                   target="_blank"
                                   rel="noreferrer"
-                                  className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/50 flex items-center justify-center transition-colors"
+                                  className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/50 flex items-center justify-center transition-colors border border-slate-200/60 dark:border-slate-700/60"
                                   title="Facebook"
                                 >
                                   <FacebookIcon className="w-3.5 h-3.5" />
@@ -541,25 +541,38 @@ export default function CommitteePage() {
                                   href={formatWhatsAppUrl(member.whatsapp)}
                                   target="_blank"
                                   rel="noreferrer"
-                                  className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 flex items-center justify-center transition-colors"
+                                  className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 flex items-center justify-center transition-colors border border-slate-200/60 dark:border-slate-700/60"
                                   title="WhatsApp"
                                 >
                                   <WhatsAppIcon className="w-3.5 h-3.5" />
                                 </a>
                               )}
+                              {(u.email || (member as any).email) && (
+                                <a
+                                  href={`mailto:${u.email || (member as any).email}`}
+                                  className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/50 flex items-center justify-center transition-colors border border-slate-200/60 dark:border-slate-700/60"
+                                  title={u.email || (member as any).email || 'Email'}
+                                >
+                                  <Mail className="w-3.5 h-3.5" />
+                                </a>
+                              )}
                             </div>
 
-                            {/* View Profile Button */}
-                            <Link href={`/directory/${member._id || u._id}`}>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="h-8 text-xs rounded-xl px-3 gap-1.5 font-semibold hover:bg-primary hover:text-white hover:border-primary border-slate-200 dark:border-slate-700 transition-colors shadow-none"
-                              >
-                                <span>{isBn ? "প্রোফাইল" : "Profile"}</span>
-                                <ExternalLink className="w-3 h-3" />
-                              </Button>
-                            </Link>
+                            {/* Actions: Message + Profile */}
+                            <div className="flex items-center gap-2 ml-auto">
+                              <DirectoryUserActions targetUser={member} variant="card" showBlock={false} />
+
+                              <Link href={`/directory/${member._id || u._id}`}>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="h-8 text-xs rounded-xl px-3 gap-1.5 font-semibold hover:bg-primary hover:text-white hover:border-primary border-slate-200 dark:border-slate-700 transition-colors shadow-none"
+                                >
+                                  <span>{isBn ? "প্রোফাইল" : "Profile"}</span>
+                                  <ExternalLink className="w-3 h-3" />
+                                </Button>
+                              </Link>
+                            </div>
                           </div>
                         </CardContent>
                       </Card>
