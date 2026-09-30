@@ -13,9 +13,17 @@ const ALLOWED_MIME_TYPES = [
   'image/webp',
   'image/gif',
   'image/svg+xml',
+  'audio/webm',
+  'audio/mp4',
+  'audio/ogg',
+  'audio/wav',
+  'audio/mpeg',
+  'audio/mp3',
+  'audio/aac',
+  'audio/x-m4a',
 ];
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 const MIME_EXTENSION_MAP: Record<string, string> = {
   'image/jpeg': 'jpg',
@@ -23,6 +31,14 @@ const MIME_EXTENSION_MAP: Record<string, string> = {
   'image/webp': 'webp',
   'image/gif': 'gif',
   'image/svg+xml': 'svg',
+  'audio/webm': 'webm',
+  'audio/mp4': 'm4a',
+  'audio/ogg': 'ogg',
+  'audio/wav': 'wav',
+  'audio/mpeg': 'mp3',
+  'audio/mp3': 'mp3',
+  'audio/aac': 'aac',
+  'audio/x-m4a': 'm4a',
 };
 
 export async function POST(req: Request) {
@@ -43,14 +59,14 @@ export async function POST(req: Request) {
 
     if (!ALLOWED_MIME_TYPES.includes(file.type)) {
       return NextResponse.json(
-        { error: 'Invalid file type. Only JPEG, PNG, WEBP, and GIF are allowed.' },
+        { error: 'Invalid file type. Only image (JPEG, PNG, WEBP, GIF) and audio (WEBM, MP3, MP4, WAV) files are allowed.' },
         { status: 400 }
       );
     }
 
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { error: 'File size exceeds limit of 5MB.' },
+        { error: 'File size exceeds limit of 10MB.' },
         { status: 400 }
       );
     }

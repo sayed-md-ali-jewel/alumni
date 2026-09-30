@@ -11,6 +11,7 @@ import mongoose from 'mongoose';
 
 import { BloodRequest } from '@/models/BloodRequest';
 import { BloodRequestResponse } from '@/models/BloodRequestResponse';
+import { canUserInteract } from '@/lib/block-service';
 
 export async function POST(req: Request) {
   try {
@@ -51,6 +52,17 @@ export async function POST(req: Request) {
         { error: 'You cannot send a blood donation request to your own profile' },
         { status: 400 }
       );
+    }
+
+    // Check blocking restrictions
+    if (donorUserId) {
+      const interactionCheck = await canUserInteract(requesterId, donorUserId);
+      if (!interactionCheck.allowed) {
+        return NextResponse.json(
+          { error: interactionCheck.reason || 'Cannot contact this donor due to blocking restrictions' },
+          { status: 403 }
+        );
+      }
     }
 
     const donorUser = await User.findById(donorUserId);

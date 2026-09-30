@@ -6,10 +6,12 @@ import {
   CONTACT_PREFERENCES,
   BLOOD_REQUEST_URGENCIES,
   BLOOD_REQUEST_STATUSES,
+  USER_REQUEST_STATUSES,
   DonationStatus,
   ContactPreference,
   BloodRequestUrgency,
   BloodRequestStatus,
+  UserRequestStatus,
 } from '@/lib/types';
 
 export const LoginSchema = z.object({
@@ -270,3 +272,42 @@ export const CampaignSchema = z.object({
   status: z.enum(['active', 'completed', 'paused', 'draft']).default('active'),
   isFeatured: z.boolean().default(false),
 });
+
+export const UserRequestCreateSchema = z
+  .object({
+    recipientId: z.string().min(1, 'Recipient ID is required'),
+    message: z.string().max(3000, 'Message cannot exceed 3000 characters').optional().default(''),
+    imageUrl: z.string().optional(),
+    voiceUrl: z.string().optional(),
+    contentType: z.enum(['text', 'image', 'voice']).optional(),
+    type: z.string().optional(),
+    subject: z.string().max(200, 'Subject cannot exceed 200 characters').optional(),
+    date: z.string().optional(),
+    time: z.string().optional(),
+    metadata: z.record(z.any()).optional(),
+  })
+  .refine(
+    (data) => {
+      const hasText = !!(data.message && data.message.trim().length > 0);
+      const hasImage = !!(data.imageUrl && data.imageUrl.trim().length > 0);
+      const hasVoice = !!(data.voiceUrl && data.voiceUrl.trim().length > 0);
+      return hasText || hasImage || hasVoice;
+    },
+    {
+      message: 'Message must contain text, an image, or a voice message',
+      path: ['message'],
+    }
+  );
+
+export const UserRequestStatusUpdateSchema = z.object({
+  status: z.enum(USER_REQUEST_STATUSES, {
+    errorMap: () => ({ message: 'Please select a valid status' }),
+  }),
+  responseMessage: z.string().max(1000, 'Response cannot exceed 1000 characters').optional(),
+});
+
+export const UserBlockSchema = z.object({
+  targetUserId: z.string().min(1, 'Target user ID is required'),
+  reason: z.string().max(500, 'Reason cannot exceed 500 characters').optional(),
+});
+

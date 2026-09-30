@@ -87,3 +87,30 @@ export const BLOOD_REQUEST_STATUSES = [
   BloodRequestStatus.CANCELLED,
   BloodRequestStatus.EXPIRED,
 ] as const;
+
+export enum MessageContentType {
+  TEXT = 'text',
+  IMAGE = 'image',
+  VOICE = 'voice',
+}
+
+export const MESSAGE_CONTENT_TYPES = [
+  MessageContentType.TEXT,
+  MessageContentType.IMAGE,
+  MessageContentType.VOICE,
+] as const;
+
+export enum UserRequestStatus {
+  PENDING = 'Pending',
+  ACCEPTED = 'Accepted',
+  REJECTED = 'Rejected',
+  READ = 'Read',
+}
+
+export const USER_REQUEST_STATUSES = [
+  UserRequestStatus.PENDING,
+  UserRequestStatus.ACCEPTED,
+  UserRequestStatus.REJECTED,
+  UserRequestStatus.READ,
+] as const;
+

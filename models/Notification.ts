@@ -2,7 +2,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface INotification extends Document {
   userId: mongoose.Types.ObjectId;
-  type: 'blood_request' | 'blood_contact' | 'request_status' | 'blood_donation' | 'blood_eligibility' | 'general';
+  type: 'blood_request' | 'blood_contact' | 'request_status' | 'blood_donation' | 'blood_eligibility' | 'user_request' | 'general';
   title: string;
   message: string;
   link?: string;
@@ -21,7 +21,7 @@ const NotificationSchema = new Schema<INotification>(
     },
     type: {
       type: String,
-      enum: ['blood_request', 'blood_contact', 'request_status', 'blood_donation', 'blood_eligibility', 'general'],
+      enum: ['blood_request', 'blood_contact', 'request_status', 'blood_donation', 'blood_eligibility', 'user_request', 'general'],
       default: 'general',
     },
     title: { type: String, required: true },

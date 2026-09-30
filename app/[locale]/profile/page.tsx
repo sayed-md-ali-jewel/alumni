@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
@@ -59,6 +60,7 @@ export default function ProfilePage() {
   const t = useTranslations('profile');
   const common = useTranslations('common');
   const locale = useLocale();
+  const searchParams = useSearchParams();
   const { data: session, update } = useSession();
   const { showToast, showAlert, showErrorToast, showSuccessToast } = useSweetAlert();
 
@@ -66,6 +68,20 @@ export default function ProfilePage() {
 
   const [currentStep, setCurrentStep] = useState<number>(1);
   const totalSteps = 4;
+
+  // Listen to tab in query params (e.g. /profile?tab=blood or /profile?tab=social)
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'blood' || tab === 'donor') {
+      setCurrentStep(4);
+    } else if (tab === 'social' || tab === 'privacy') {
+      setCurrentStep(3);
+    } else if (tab === 'academic' || tab === 'career') {
+      setCurrentStep(2);
+    } else if (tab === 'personal') {
+      setCurrentStep(1);
+    }
+  }, [searchParams]);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -370,13 +386,13 @@ export default function ProfilePage() {
   const progressPercentage = Math.round((currentStep / totalSteps) * 100);
 
   return (
-    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-10 max-w-4xl space-y-6 sm:space-y-8">
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-10 max-w-5xl space-y-6 sm:space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary">
             <Sliders className="w-4 h-4" />
-            <span>{isBn ? 'প্রোফাইল উইজার্ড ও সেটিংস' : 'Profile Wizard & Settings'}</span>
+            <span>{isBn ? 'প্রোফাইল ও সংযোগ নিয়ন্ত্রণ কেন্দ্র' : 'Profile & Connections Hub'}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
             {t('editProfile')}
@@ -423,7 +439,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Step Navigation Tabs */}
-        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-2 xs:gap-2.5 pt-2">
+        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pt-2">
           {stepsConfig.map((step) => {
             const Icon = step.icon;
             const isActive = currentStep === step.id;
@@ -434,30 +450,36 @@ export default function ProfilePage() {
                 key={step.id}
                 type="button"
                 onClick={() => handleStepClick(step.id)}
-                className={`flex items-start gap-2.5 p-3 rounded-2xl text-left transition-all duration-200 border ${
+                className={`flex items-center gap-3 sm:gap-3.5 p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl text-left transition-all duration-200 border min-h-[76px] sm:min-h-[84px] ${
                   isActive
-                    ? 'bg-primary/10 dark:bg-primary/20 border-primary text-primary shadow-sm ring-2 ring-primary/20'
+                    ? 'bg-primary/10 dark:bg-primary/20 border-primary text-primary shadow-md ring-2 ring-primary/25 scale-[1.01]'
                     : isCompleted
-                    ? 'bg-emerald-50/60 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900/40 text-slate-700 dark:text-slate-300 hover:border-slate-300'
-                    : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-emerald-50/70 dark:bg-emerald-950/25 border-emerald-300 dark:border-emerald-800/60 text-slate-800 dark:text-slate-200 hover:border-emerald-400 dark:hover:border-emerald-700'
+                    : 'bg-white dark:bg-slate-850 border-slate-200/90 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-700 shadow-xs'
                 }`}
               >
                 <div
-                  className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 text-xs font-black transition-colors ${
+                  className={`w-9 h-9 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center shrink-0 text-xs sm:text-sm font-black transition-all ${
                     isActive
-                      ? 'bg-primary text-white shadow-md shadow-primary/30'
+                      ? 'bg-primary text-white shadow-md shadow-primary/30 scale-105'
                       : isCompleted
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                      ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/30'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700'
                   }`}
                 >
-                  {isCompleted ? <Check className="w-4 h-4 stroke-[3]" /> : step.id}
+                  {isCompleted ? <Check className="w-4 h-4 sm:w-5 sm:h-5 stroke-[3]" /> : step.id}
                 </div>
-                <div className="min-w-0 flex-1">
-                  <h4 className="text-xs font-bold truncate leading-snug">
+                <div className="min-w-0 flex-1 space-y-0.5">
+                  <h4 className={`text-xs sm:text-sm font-bold leading-tight ${
+                    isActive
+                      ? 'text-primary dark:text-primary-400'
+                      : isCompleted
+                      ? 'text-emerald-900 dark:text-emerald-200'
+                      : 'text-slate-800 dark:text-slate-100'
+                  }`}>
                     {step.title}
                   </h4>
-                  <p className="text-[10px] text-slate-400 truncate hidden sm:block">
+                  <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 leading-tight">
                     {step.subtitle}
                   </p>
                 </div>
@@ -1122,7 +1144,7 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {/* ================= STEP WIZARD NAVIGATION BUTTONS ================= */}
+            {/* Step Wizard Navigation Buttons for Steps 1-4 */}
             <div className="flex items-center justify-between gap-3 pt-6 border-t border-slate-100 dark:border-slate-800">
               <div>
                 {currentStep > 1 && (
@@ -1139,14 +1161,13 @@ export default function ProfilePage() {
               </div>
 
               <div className="flex items-center gap-2.5">
-                {/* Quick Save button accessible anytime */}
                 <Button
                   type="button"
-                  variant={currentStep === totalSteps ? 'default' : 'outline'}
+                  variant={currentStep === 4 ? 'default' : 'outline'}
                   onClick={() => handleSubmit()}
                   isLoading={isSaving}
                   className={`rounded-xl text-xs font-bold gap-1.5 ${
-                    currentStep === totalSteps
+                    currentStep === 4
                       ? 'bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 px-6'
                       : 'text-slate-700 dark:text-slate-200'
                   }`}

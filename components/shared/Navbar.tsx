@@ -28,6 +28,8 @@ import {
   Award,
   LogIn,
   UserPlus,
+  MessageSquare,
+  ShieldBan,
 } from 'lucide-react';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { useSiteSettings } from '@/components/providers/SiteSettingsProvider';
@@ -140,6 +142,16 @@ export function Navbar() {
           <User className="w-4 h-4 text-primary" />
           <span>{t('profile')}</span>
         </Link>
+
+        <Link
+          href="/messages"
+          onClick={closeMenu}
+          className="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+        >
+          <MessageSquare className="w-4 h-4 text-emerald-500" />
+          <span>{locale === 'bn' ? 'ব্যক্তিগত বার্তা ও চ্যাট' : 'Messages & Chat'}</span>
+        </Link>
+
 
         {user?.role === 'admin' && (
           <Link
@@ -430,6 +442,13 @@ export function Navbar() {
                   className="block px-3.5 py-2 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
                   {t('profile')}
+                </Link>
+                <Link
+                  href="/messages"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-3.5 py-2 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+                >
+                  {locale === 'bn' ? 'ব্যক্তিগত বার্তা ও চ্যাট' : 'Messages & Chat'}
                 </Link>
                 {user?.role === 'admin' && (
                   <Link

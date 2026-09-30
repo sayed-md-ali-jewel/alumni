@@ -35,6 +35,7 @@ import {
   WhatsAppIcon,
   formatWhatsAppUrl,
 } from '@/components/shared/SocialIcons';
+import { DirectoryUserActions } from '@/components/requests/DirectoryUserActions';
 
 async function getProfile(id: string) {
   try {
@@ -472,7 +473,9 @@ export default async function AlumniProfileDetailPage({
                   </div>
 
                   {/* Primary Action Buttons */}
-                  <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+                    <DirectoryUserActions targetUser={profile} />
+
                     {profile.whatsapp && (
                       <a
                         href={formatWhatsAppUrl(
@@ -499,8 +502,8 @@ export default async function AlumniProfileDetailPage({
                       <a href={`mailto:${user.email}`} className="block w-full">
                         <Button
                           size="sm"
-                          variant={profile.whatsapp ? 'outline' : 'default'}
-                          className="w-full gap-2 text-xs rounded-xl font-bold"
+                          variant="outline"
+                          className="w-full gap-2 text-xs rounded-xl font-bold text-slate-700 dark:text-slate-200"
                         >
                           <Mail className="w-3.5 h-3.5" />
                           <span>{isBn ? 'ইমেইল বার্তা পাঠান' : 'Send Message'}</span>

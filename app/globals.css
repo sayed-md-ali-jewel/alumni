@@ -233,3 +233,19 @@
   }
 }
 
+/* WhatsApp-inspired chat ambient background pattern */
+.chat-pattern-bg {
+  background-color: #efeae2;
+  background-image: radial-gradient(#d1d7db 0.85px, transparent 0.85px), radial-gradient(#d1d7db 0.85px, #efeae2 0.85px);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+}
+
+.dark .chat-pattern-bg {
+  background-color: #0b141a;
+  background-image: radial-gradient(#202d33 0.85px, transparent 0.85px), radial-gradient(#202d33 0.85px, #0b141a 0.85px);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+}
+
+

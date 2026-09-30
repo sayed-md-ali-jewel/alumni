@@ -42,6 +42,7 @@ import {
   formatWhatsAppUrl,
 } from "@/components/shared/SocialIcons";
 import { ALUMNI_GROUPS, BLOOD_GROUPS } from "@/lib/types";
+import { DirectoryUserActions } from "@/components/requests/DirectoryUserActions";
 
 export default function DirectoryPage() {
   const t = useTranslations("directory");
@@ -705,17 +706,22 @@ export default function DirectoryPage() {
                               )}
                             </div>
 
-                            {/* View Profile Button */}
-                            <Link href={`/directory/${profile._id}`}>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="h-8 text-xs rounded-xl px-3 gap-1.5 font-semibold hover:bg-primary hover:text-white hover:border-primary border-slate-200 dark:border-slate-700 transition-colors shadow-none"
-                              >
-                                <span>{isBn ? "প্রোফাইল" : "Profile"}</span>
-                                <ExternalLink className="w-3 h-3" />
-                              </Button>
-                            </Link>
+                            {/* Actions (Socials + Direct Request / Block + Profile) */}
+                            <div className="flex items-center gap-2">
+                              <DirectoryUserActions targetUser={profile} variant="card" />
+
+                              {/* View Profile Button */}
+                              <Link href={`/directory/${profile._id}`}>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="h-8 text-xs rounded-xl px-3 gap-1.5 font-semibold hover:bg-primary hover:text-white hover:border-primary border-slate-200 dark:border-slate-700 transition-colors shadow-none"
+                                >
+                                  <span>{isBn ? "প্রোফাইল" : "Profile"}</span>
+                                  <ExternalLink className="w-3 h-3" />
+                                </Button>
+                              </Link>
+                            </div>
                           </div>
                         </CardContent>
                       </Card>

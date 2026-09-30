@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { Link } from '@/i18n/navigation';
-import { Bell, Droplet, HeartHandshake, CheckCheck, X } from 'lucide-react';
+import { Bell, Droplet, HeartHandshake, CheckCheck, X, MessageSquare } from 'lucide-react';
 import { useLocale } from 'next-intl';
 
 export function NotificationBell() {
@@ -120,11 +120,15 @@ export function NotificationBell() {
                       className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${
                         n.type === 'blood_request' || n.type === 'blood_donation' || n.type === 'blood_eligibility'
                           ? 'bg-rose-100 text-rose-600 dark:bg-rose-950 dark:text-rose-400'
+                          : n.type === 'user_request'
+                          ? 'bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400'
                           : 'bg-primary/10 text-primary'
                       }`}
                     >
                       {n.type === 'blood_request' || n.type === 'blood_donation' ? (
                         <Droplet className="w-3.5 h-3.5 fill-current" />
+                      ) : n.type === 'user_request' ? (
+                        <MessageSquare className="w-3.5 h-3.5" />
                       ) : (
                         <HeartHandshake className="w-3.5 h-3.5" />
                       )}

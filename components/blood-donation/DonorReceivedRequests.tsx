@@ -234,6 +234,7 @@ export function DonorReceivedRequests() {
           </div>
 
           <Button
+            type="button"
             variant="ghost"
             size="sm"
             onClick={handleRefresh}
@@ -534,7 +535,7 @@ export function DonorReceivedRequests() {
                       <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
                         {isFulfilled ? (
                           <Link href={`/blood-requests/${req._id}`} className="block">
-                            <Button variant="outline" size="sm" className="w-full text-xs rounded-xl flex items-center justify-center gap-1">
+                            <Button type="button" variant="outline" size="sm" className="w-full text-xs rounded-xl flex items-center justify-center gap-1">
                               <span>{isBn ? 'সম্পন্ন আবেদন দেখুন' : 'View Fulfilled Request'}</span>
                               <ExternalLink className="w-3 h-3" />
                             </Button>
@@ -542,7 +543,7 @@ export function DonorReceivedRequests() {
                         ) : isAccepted ? (
                           <div className="flex items-center gap-2">
                             <Link href={`/blood-requests/${req._id}`} className="flex-1">
-                              <Button variant="outline" size="sm" className="w-full text-xs rounded-xl flex items-center justify-center gap-1">
+                              <Button type="button" variant="outline" size="sm" className="w-full text-xs rounded-xl flex items-center justify-center gap-1">
                                 <span>{isBn ? 'বিবরণ দেখুন' : 'View Details'}</span>
                                 <ExternalLink className="w-3 h-3" />
                               </Button>
@@ -550,6 +551,7 @@ export function DonorReceivedRequests() {
 
                             {isCreator && (
                               <Button
+                                type="button"
                                 size="sm"
                                 onClick={() => setCompleteModalRequest(req)}
                                 className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shrink-0"
@@ -561,6 +563,7 @@ export function DonorReceivedRequests() {
 
                             {isAcceptedByMe && (
                               <Button
+                                type="button"
                                 size="sm"
                                 variant="outline"
                                 disabled={actionLoadingId === req._id}
@@ -575,6 +578,7 @@ export function DonorReceivedRequests() {
                           <div className="flex items-center gap-2">
                             <Link href={`/blood-requests/${req._id}`} className="w-full">
                               <Button
+                                type="button"
                                 size="sm"
                                 className="w-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5"
                               >
@@ -588,6 +592,7 @@ export function DonorReceivedRequests() {
                             {isCompatible ? (
                               <div className="grid grid-cols-2 gap-2">
                                 <Button
+                                  type="button"
                                   size="sm"
                                   disabled={actionLoadingId === req._id}
                                   onClick={() => setActiveModal({ request: req, action: 'accept' })}
@@ -598,7 +603,7 @@ export function DonorReceivedRequests() {
                                 </Button>
 
                                 <Link href={`/blood-requests/${req._id}`} className="block">
-                                  <Button variant="outline" size="sm" className="w-full text-xs rounded-xl flex items-center justify-center gap-1">
+                                  <Button type="button" variant="outline" size="sm" className="w-full text-xs rounded-xl flex items-center justify-center gap-1">
                                     <span>{isBn ? 'বিবরণ' : 'Details'}</span>
                                     <ExternalLink className="w-3 h-3" />
                                   </Button>
@@ -608,6 +613,7 @@ export function DonorReceivedRequests() {
                               <div className="flex items-center gap-2">
                                 <Link href={`/blood-requests/${req._id}`} className="w-full">
                                   <Button
+                                    type="button"
                                     size="sm"
                                     className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm"
                                   >
@@ -771,6 +777,7 @@ export function DonorReceivedRequests() {
                         {isPending && (
                           <div className="grid grid-cols-2 gap-2.5">
                             <Button
+                              type="button"
                               size="sm"
                               disabled={actionLoadingId === req?._id}
                               onClick={() => setActiveModal({ request: req, action: 'accept' })}
@@ -781,6 +788,7 @@ export function DonorReceivedRequests() {
                             </Button>
 
                             <Button
+                              type="button"
                               size="sm"
                               variant="outline"
                               disabled={actionLoadingId === req?._id}
@@ -820,7 +828,7 @@ export function DonorReceivedRequests() {
 
                             <div className="flex items-center justify-between gap-2 pt-1">
                               <Link href={`/blood-requests/${req?._id}`} className="flex-1">
-                                <Button variant="outline" size="sm" className="w-full text-xs rounded-xl flex items-center justify-center gap-1">
+                                <Button type="button" variant="outline" size="sm" className="w-full text-xs rounded-xl flex items-center justify-center gap-1">
                                   <span>{isBn ? 'সম্পূর্ণ বিবরণ' : 'View Request'}</span>
                                   <ExternalLink className="w-3 h-3" />
                                 </Button>
@@ -840,12 +848,13 @@ export function DonorReceivedRequests() {
                         {isDeclined && (
                           <div className="flex items-center justify-between gap-2">
                             <Link href={`/blood-requests/${req?._id}`} className="flex-1">
-                              <Button variant="outline" size="sm" className="w-full text-xs rounded-xl flex items-center justify-center gap-1">
+                              <Button type="button" variant="outline" size="sm" className="w-full text-xs rounded-xl flex items-center justify-center gap-1">
                                 <span>{isBn ? 'বিবরণ দেখুন' : 'View Request'}</span>
                                 <ExternalLink className="w-3 h-3" />
                               </Button>
                             </Link>
                             <Button
+                              type="button"
                               size="sm"
                               onClick={() => handleRespond(req?._id, 'accept')}
                               className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl"
@@ -857,7 +866,7 @@ export function DonorReceivedRequests() {
 
                         {isCompleted && (
                           <Link href={`/blood-requests/${req?._id}`} className="block">
-                            <Button variant="outline" size="sm" className="w-full text-xs rounded-xl flex items-center justify-center gap-1">
+                            <Button type="button" variant="outline" size="sm" className="w-full text-xs rounded-xl flex items-center justify-center gap-1">
                               <span>{isBn ? 'আবেদনের অবস্থা দেখুন' : 'View Request'}</span>
                               <ExternalLink className="w-3 h-3" />
                             </Button>
@@ -897,6 +906,7 @@ export function DonorReceivedRequests() {
                 )}
               </h3>
               <button
+                type="button"
                 onClick={() => setActiveModal(null)}
                 className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
@@ -933,6 +943,7 @@ export function DonorReceivedRequests() {
 
             <div className="flex items-center justify-end gap-2.5 pt-2">
               <Button
+                type="button"
                 variant="outline"
                 size="sm"
                 disabled={Boolean(actionLoadingId)}
@@ -942,6 +953,7 @@ export function DonorReceivedRequests() {
                 {isBn ? 'বাতিল' : 'Cancel'}
               </Button>
               <Button
+                type="button"
                 size="sm"
                 disabled={Boolean(actionLoadingId)}
                 onClick={() => handleRespond(activeModal.request._id, activeModal.action, modalMessage)}
