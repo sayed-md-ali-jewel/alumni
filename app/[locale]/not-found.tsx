@@ -10,7 +10,7 @@ export default function NotFoundLocale() {
   const isBn = locale === 'bn';
 
   return (
-    <div className="container mx-auto px-4 py-20 flex items-center justify-center min-h-[60vh]">
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-16 sm:py-20 flex items-center justify-center min-h-[60vh]">
       <div className="text-center space-y-6 max-w-md">
         <div className="w-16 h-16 rounded-2xl bg-primary text-white flex items-center justify-center mx-auto shadow-lg">
           <GraduationCap className="w-8 h-8 text-amber-300" />

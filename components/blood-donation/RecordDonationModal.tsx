@@ -204,22 +204,22 @@ export function RecordDonationModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 xs:p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in">
       <div
-        className="relative w-full max-w-lg rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="relative w-full max-w-lg rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-red-600 via-rose-600 to-rose-700 text-white px-6 py-5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20">
-              <Droplet className="w-5 h-5 fill-current text-white" />
+        <div className="bg-gradient-to-r from-red-600 via-rose-600 to-rose-700 text-white px-4 xs:px-6 py-4 xs:py-5 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 xs:gap-3 min-w-0">
+            <div className="w-9 h-9 xs:w-10 xs:h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 shrink-0">
+              <Droplet className="w-4 h-4 xs:w-5 xs:h-5 fill-current text-white" />
             </div>
-            <div>
-              <h3 className="font-bold text-lg leading-tight">
+            <div className="min-w-0">
+              <h3 className="font-bold text-base xs:text-lg leading-tight truncate">
                 {isBn ? 'রক্তদান রেকর্ড করুন' : 'Record Blood Donation'}
               </h3>
-              <p className="text-xs text-rose-100 mt-0.5">
+              <p className="text-[11px] xs:text-xs text-rose-100 mt-0.5 line-clamp-1">
                 {defaultData?.donorName
                   ? isBn
                     ? `${defaultData.donorName}-এর রক্তদান নিশ্চিত করুন`
@@ -233,14 +233,14 @@ export function RecordDonationModal({
           <button
             onClick={onClose}
             disabled={loading}
-            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/25 transition-colors text-white disabled:opacity-50"
+            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/25 transition-colors text-white disabled:opacity-50 shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Body Content */}
-        <div className="p-6 overflow-y-auto custom-scrollbar space-y-6">
+        <div className="p-4 xs:p-6 overflow-y-auto custom-scrollbar space-y-5">
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Informational Banner */}
             <div className="flex items-start gap-2.5 p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-100 dark:border-rose-900/40 text-xs text-rose-800 dark:text-rose-200">
@@ -487,20 +487,20 @@ export function RecordDonationModal({
             </div>
 
             {/* Submit Buttons */}
-            <div className="pt-2 flex items-center justify-end gap-3">
+            <div className="pt-2 flex flex-col-reverse xs:flex-row items-stretch xs:items-center justify-end gap-2.5 xs:gap-3">
               <Button
                 type="button"
                 variant="outline"
                 disabled={loading}
                 onClick={onClose}
-                className="rounded-xl text-xs"
+                className="w-full xs:w-auto rounded-xl text-xs"
               >
                 {isBn ? 'বাতিল' : 'Cancel'}
               </Button>
               <Button
                 type="submit"
                 disabled={loading}
-                className="bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs gap-2 shadow-lg shadow-rose-600/25 disabled:opacity-60 disabled:cursor-not-allowed py-2 px-5"
+                className="w-full xs:w-auto bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs gap-2 shadow-lg shadow-rose-600/25 disabled:opacity-60 disabled:cursor-not-allowed py-2 px-5"
               >
                 {loading ? (
                   <>

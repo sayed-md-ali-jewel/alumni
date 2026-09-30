@@ -370,7 +370,7 @@ export default function ProfilePage() {
   const progressPercentage = Math.round((currentStep / totalSteps) * 100);
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 max-w-4xl space-y-8">
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-10 max-w-4xl space-y-6 sm:space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
@@ -378,7 +378,7 @@ export default function ProfilePage() {
             <Sliders className="w-4 h-4" />
             <span>{isBn ? 'প্রোফাইল উইজার্ড ও সেটিংস' : 'Profile Wizard & Settings'}</span>
           </div>
-          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
             {t('editProfile')}
           </h1>
         </div>
@@ -423,7 +423,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Step Navigation Tabs */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 pt-2">
+        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-2 xs:gap-2.5 pt-2">
           {stepsConfig.map((step) => {
             const Icon = step.icon;
             const isActive = currentStep === step.id;

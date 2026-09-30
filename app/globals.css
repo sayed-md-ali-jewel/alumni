@@ -70,9 +70,44 @@
   * {
     @apply border-border;
   }
+  html {
+    @apply scroll-smooth;
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
   body {
     @apply bg-background text-foreground transition-colors duration-200 antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden;
+    min-width: 320px;
+  }
+  img, svg, video, canvas, audio, iframe, embed, object {
+    max-width: 100%;
+    height: auto;
+  }
+  /* Prevent text overflow on narrow viewports */
+  p, h1, h2, h3, h4, h5, h6, span, a, li {
+    overflow-wrap: break-word;
+  }
+}
+
+/* Responsive Table Wrapper */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ultra-wide Container Bounding */
+@media (min-width: 2560px) {
+  .container {
+    max-width: 1720px;
+  }
+}
+
+@media (min-width: 3440px) {
+  .container {
+    max-width: 1920px;
   }
 }
 

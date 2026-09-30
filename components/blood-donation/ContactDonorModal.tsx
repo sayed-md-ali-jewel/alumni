@@ -128,19 +128,19 @@ export function ContactDonorModal({ donor, bloodRequest, isOpen, onClose, onSucc
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 xs:p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
       <div
-        className="relative w-full max-w-lg rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="relative w-full max-w-lg rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header banner */}
-        <div className="bg-gradient-to-r from-rose-600 via-red-600 to-rose-700 text-white px-6 py-5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20">
-              <HeartHandshake className="w-5 h-5 text-white" />
+        <div className="bg-gradient-to-r from-rose-600 via-red-600 to-rose-700 text-white px-4 xs:px-6 py-4 xs:py-5 flex items-center justify-between">
+          <div className="flex items-center gap-2.5 xs:gap-3">
+            <div className="w-9 h-9 xs:w-10 xs:h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 shrink-0">
+              <HeartHandshake className="w-4 h-4 xs:w-5 xs:h-5 text-white" />
             </div>
             <div>
-              <h3 className="font-bold text-lg leading-tight">
+              <h3 className="font-bold text-base xs:text-lg leading-tight">
                 {isBn ? `${user?.name}-কে রক্তের অনুরোধ পাঠান` : `Contact ${user?.name}`}
               </h3>
               <p className="text-xs text-rose-100 flex items-center gap-1.5 mt-0.5">
@@ -162,7 +162,7 @@ export function ContactDonorModal({ donor, bloodRequest, isOpen, onClose, onSucc
 
         {/* Self Warning Banner */}
         {isSelf && (
-          <div className="bg-red-50 dark:bg-red-950/40 border-b border-red-200 dark:border-red-900 px-6 py-2.5 flex items-center gap-2 text-xs text-red-800 dark:text-red-300">
+          <div className="bg-red-50 dark:bg-red-950/40 border-b border-red-200 dark:border-red-900 px-4 xs:px-6 py-2.5 flex items-center gap-2 text-xs text-red-800 dark:text-red-300">
             <AlertTriangle className="w-4 h-4 shrink-0 text-red-600" />
             <span className="font-semibold">
               {isBn
@@ -174,7 +174,7 @@ export function ContactDonorModal({ donor, bloodRequest, isOpen, onClose, onSucc
 
         {/* Privacy Note */}
         {!isSelf && (
-          <div className="bg-amber-50 dark:bg-amber-950/30 border-b border-amber-200/60 dark:border-amber-900/40 px-6 py-2.5 flex items-center gap-2 text-xs text-amber-800 dark:text-amber-300">
+          <div className="bg-amber-50 dark:bg-amber-950/30 border-b border-amber-200/60 dark:border-amber-900/40 px-4 xs:px-6 py-2.5 flex items-center gap-2 text-xs text-amber-800 dark:text-amber-300">
             <ShieldCheck className="w-4 h-4 shrink-0 text-amber-600" />
             <span>
               {isBn
@@ -185,7 +185,7 @@ export function ContactDonorModal({ donor, bloodRequest, isOpen, onClose, onSucc
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
+        <form onSubmit={handleSubmit} className="p-4 xs:p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">

@@ -43,7 +43,7 @@ export default async function JobDetailPage({
   const postedBy = job.postedBy;
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 max-w-4xl space-y-8">
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-10 max-w-4xl space-y-6 sm:space-y-8">
       {/* Back button */}
       <Link href="/jobs" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-primary transition-colors">
         <ArrowLeft className="w-4 h-4" />
@@ -52,7 +52,7 @@ export default async function JobDetailPage({
 
       {/* Main Job Card */}
       <Card className="border-slate-200 dark:border-slate-800 shadow-md">
-        <CardContent className="p-6 sm:p-8 space-y-6">
+        <CardContent className="p-4 xs:p-6 sm:p-8 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-6">
             <div className="space-y-2">
               <div className="flex items-center gap-2">

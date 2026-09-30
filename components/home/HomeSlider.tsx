@@ -131,50 +131,50 @@ export function HomeSlider({ slides, stats, isBn }: HomeSliderProps) {
         </div>
       )}
 
-      <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container relative z-10 mx-auto px-3 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
           {/* LEFT SECTION: Title, Description, Buttons */}
-          <div className="lg:col-span-7 xl:col-span-8 space-y-6 sm:space-y-7 animate-in fade-in duration-500">
+          <div className="lg:col-span-7 xl:col-span-8 space-y-5 sm:space-y-7 animate-in fade-in duration-500">
             {/* Top Badge */}
             {badge && (
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-300 border border-primary/20 text-xs sm:text-sm font-semibold shadow-sm">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-300 border border-primary/20 text-xs sm:text-sm font-semibold shadow-sm max-w-full">
                 <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
                 <span className="truncate">{badge}</span>
               </div>
             )}
 
             {/* Main Headline */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5.5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.18] sm:leading-[1.16]">
+            <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-5.5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.2] sm:leading-[1.16]">
               {title}
             </h1>
 
             {/* Description */}
-            <p className="text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
+            <p className="text-sm sm:text-base lg:text-lg text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
               {description}
             </p>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-3.5 pt-2">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 pt-2">
               {primaryBtnText && (
-                <Link href={primaryBtnLink}>
+                <Link href={primaryBtnLink} className="w-full sm:w-auto">
                   <Button
                     size="lg"
-                    className="gap-2 bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 rounded-xl px-6"
+                    className="w-full sm:w-auto gap-2 bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 rounded-xl px-5 sm:px-6 text-sm sm:text-base"
                   >
-                    <Users className="w-5 h-5" />
+                    <Users className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span>{primaryBtnText}</span>
                   </Button>
                 </Link>
               )}
               {secondaryBtnText && (
-                <Link href={secondaryBtnLink}>
+                <Link href={secondaryBtnLink} className="w-full sm:w-auto">
                   <Button
                     size="lg"
                     variant="outline"
-                    className="gap-2 border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl px-6 text-slate-800 dark:text-slate-200"
+                    className="w-full sm:w-auto gap-2 border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl px-5 sm:px-6 text-slate-800 dark:text-slate-200 text-sm sm:text-base"
                   >
-                    <HeartHandshake className="w-5 h-5 text-rose-500" />
+                    <HeartHandshake className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500" />
                     <span>{secondaryBtnText}</span>
                   </Button>
                 </Link>
@@ -183,21 +183,21 @@ export function HomeSlider({ slides, stats, isBn }: HomeSliderProps) {
 
             {/* Slide Navigation Controls */}
             {activeSlides.length > 1 && (
-              <div className="flex items-center gap-4 pt-4">
+              <div className="flex items-center gap-3 sm:gap-4 pt-3 sm:pt-4">
                 <div className="flex items-center gap-1.5">
                   <button
                     onClick={handlePrev}
                     aria-label="Previous slide"
-                    className="w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 transition-all shadow-sm active:scale-95"
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 transition-all shadow-sm active:scale-95"
                   >
-                    <ChevronLeft className="w-5 h-5" />
+                    <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                   <button
                     onClick={handleNext}
                     aria-label="Next slide"
-                    className="w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 transition-all shadow-sm active:scale-95"
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 transition-all shadow-sm active:scale-95"
                   >
-                    <ChevronRight className="w-5 h-5" />
+                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                 </div>
 
@@ -210,7 +210,7 @@ export function HomeSlider({ slides, stats, isBn }: HomeSliderProps) {
                       aria-label={`Go to slide ${idx + 1}`}
                       className={`h-2 rounded-full transition-all duration-300 ${
                         idx === currentIndex
-                          ? 'w-7 bg-primary'
+                          ? 'w-6 sm:w-7 bg-primary'
                           : 'w-2 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400'
                       }`}
                     />
@@ -229,14 +229,14 @@ export function HomeSlider({ slides, stats, isBn }: HomeSliderProps) {
 
           {/* RIGHT SECTION: Dynamic Statistics Numbers & Labels */}
           <div className="lg:col-span-5 xl:col-span-4 animate-in fade-in slide-in-from-right-4 duration-500">
-            <div className="p-6 sm:p-7 rounded-3xl bg-white/85 dark:bg-slate-900/85 border border-slate-200/90 dark:border-slate-800 backdrop-blur-md shadow-xl shadow-slate-200/50 dark:shadow-slate-950/50 space-y-4">
+            <div className="p-4 xs:p-6 sm:p-7 rounded-3xl bg-white/85 dark:bg-slate-900/85 border border-slate-200/90 dark:border-slate-800 backdrop-blur-md shadow-xl shadow-slate-200/50 dark:shadow-slate-950/50 space-y-4">
               
               <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
                     <GraduationCap className="w-4 h-4" />
                   </div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                     {isBn ? 'প্ল্যাটফর্মের মূল পরিসংখ্যান' : 'Live Association Metrics'}
                   </span>
                 </div>
@@ -246,7 +246,7 @@ export function HomeSlider({ slides, stats, isBn }: HomeSliderProps) {
               </div>
 
               {/* Statistics Grid */}
-              <div className="grid grid-cols-2 gap-3.5">
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5">
                 
                 {/* Total Alumni */}
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-primary-50/70 to-transparent dark:from-primary-950/30 border border-primary-100/70 dark:border-primary-900/40 space-y-1">

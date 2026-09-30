@@ -128,7 +128,7 @@ export default function EventDetailPage() {
   const attendeesCount = eventData.attendees?.length || 0;
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 max-w-5xl space-y-8">
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-10 max-w-5xl space-y-6 sm:space-y-8">
       {/* Back button */}
       <Link href="/events" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-primary transition-colors">
         <ArrowLeft className="w-4 h-4" />
@@ -136,42 +136,42 @@ export default function EventDetailPage() {
       </Link>
 
       {/* Main Event Hero */}
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {eventData.image && (
-          <div className="relative h-64 sm:h-96 w-full rounded-3xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800">
+          <div className="relative h-48 xs:h-64 sm:h-96 w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800">
             <img src={eventData.image} alt={title} className="w-full h-full object-cover" />
-            <div className="absolute top-4 left-4">
-              <Badge className="bg-slate-900/90 text-white backdrop-blur-md px-3 py-1 text-xs">
+            <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
+              <Badge className="bg-slate-900/90 text-white backdrop-blur-md px-2.5 sm:px-3 py-0.5 sm:py-1 text-xs">
                 {eventData.category}
               </Badge>
             </div>
           </div>
         )}
 
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 text-sm font-bold text-amber-600 dark:text-amber-400">
-            <Calendar className="w-4 h-4" />
+        <div className="space-y-2 sm:space-y-3">
+          <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-600 dark:text-amber-400">
+            <Calendar className="w-4 h-4 shrink-0" />
             <span>{formatDate(eventData.date, locale)}</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+          <h1 className="text-2xl xs:text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
             {title}
           </h1>
 
-          <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-            <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
+          <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            <MapPin className="w-4 h-4 text-primary shrink-0" />
             <span>{eventData.location}</span>
           </div>
         </div>
       </div>
 
       {/* Two Column Details and RSVP Action Card */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         {/* Left Column: Description & Attendee list */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-2 space-y-6 sm:space-y-8">
           <Card className="border-slate-200 dark:border-slate-800">
-            <CardContent className="p-6 sm:p-8 space-y-6">
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center gap-2">
+            <CardContent className="p-4 xs:p-6 sm:p-8 space-y-6">
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center gap-2">
                 <span>{t('eventDetails')}</span>
               </h3>
               <RichContentRenderer content={desc} />
@@ -180,7 +180,7 @@ export default function EventDetailPage() {
 
           {/* Confirmed Attendees Section */}
           <Card className="border-slate-200 dark:border-slate-800">
-            <CardContent className="p-6 space-y-4">
+            <CardContent className="p-4 xs:p-6 space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-bold text-slate-900 dark:text-white">
                   {isBn ? 'অংশগ্রহণকারী সদস্যবৃন্দ' : 'Registered Attendees'}

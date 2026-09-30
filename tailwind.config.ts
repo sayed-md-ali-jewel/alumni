@@ -10,12 +10,24 @@ const config: Config = {
   theme: {
     container: {
       center: true,
-      padding: "1.5rem",
+      padding: {
+        DEFAULT: '1rem',
+        xs: '1rem',
+        sm: '1.5rem',
+        lg: '2rem',
+        '2xl': '2.5rem',
+      },
       screens: {
-        "2xl": "1360px",
+        '2xl': '1440px',
+        '3xl': '1680px',
       },
     },
     extend: {
+      screens: {
+        xs: '380px',
+        '3xl': '1792px',
+        '4k': '2560px',
+      },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         bengali: ["var(--font-bengali)", "Hind Siliguri", "sans-serif"],

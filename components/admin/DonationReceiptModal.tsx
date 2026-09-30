@@ -39,20 +39,20 @@ export function DonationReceiptModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 xs:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in">
       <div
-        className="relative w-full max-w-xl rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="relative w-full max-w-xl rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Bar */}
-        <div className="bg-slate-100 dark:bg-slate-800 px-6 py-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-700">
-          <div className="flex items-center gap-2">
-            <GraduationCap className="w-5 h-5 text-rose-600" />
-            <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+        <div className="bg-slate-100 dark:bg-slate-800 px-3.5 xs:px-6 py-3 xs:py-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-700 gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <GraduationCap className="w-5 h-5 text-rose-600 shrink-0" />
+            <h3 className="font-bold text-xs xs:text-sm text-slate-900 dark:text-white truncate">
               {isBn ? 'অফিসিয়াল অনুদান মানি রসিদ' : 'Official Donation Receipt'}
             </h3>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <Button
               size="sm"
               variant="outline"
@@ -60,7 +60,7 @@ export function DonationReceiptModal({
               className="rounded-xl text-xs gap-1.5 h-8 print:hidden"
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>{isBn ? 'প্রিন্ট' : 'Print Receipt'}</span>
+              <span className="hidden xs:inline">{isBn ? 'প্রিন্ট' : 'Print'}</span>
             </Button>
             <button
               onClick={onClose}
@@ -72,7 +72,7 @@ export function DonationReceiptModal({
         </div>
 
         {/* Receipt Voucher Body */}
-        <div className="p-6 sm:p-8 space-y-6 overflow-y-auto custom-scrollbar flex-1 bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-950">
+        <div className="p-4 xs:p-6 sm:p-8 space-y-5 xs:space-y-6 overflow-y-auto custom-scrollbar flex-1 bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-950">
           {/* Top Logo & Title */}
           <div className="text-center space-y-1 pb-4 border-b border-dashed border-slate-200 dark:border-slate-700">
             <div className="w-12 h-12 rounded-2xl bg-rose-600 text-white flex items-center justify-center mx-auto shadow-md mb-2">

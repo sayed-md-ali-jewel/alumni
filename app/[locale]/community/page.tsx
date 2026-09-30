@@ -136,7 +136,7 @@ export default function CommunityPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 max-w-4xl space-y-8">
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-10 max-w-4xl space-y-6 sm:space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
@@ -144,17 +144,17 @@ export default function CommunityPage() {
             <MessageSquare className="w-4 h-4" />
             <span>{isBn ? 'নেটওয়ার্কিং ও ফোরাম' : 'Networking & Forum'}</span>
           </div>
-          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">
+          <h1 className="text-2xl xs:text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
             {t('title')}
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
             {t('subtitle')}
           </p>
         </div>
 
         <Button
           onClick={() => setShowNewModal(true)}
-          className="gap-2 bg-primary hover:bg-primary/90 shadow-md"
+          className="w-full sm:w-auto gap-2 bg-primary hover:bg-primary/90 shadow-md"
         >
           <PlusCircle className="w-4 h-4" />
           <span>{t('newPost')}</span>

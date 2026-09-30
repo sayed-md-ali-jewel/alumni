@@ -271,8 +271,8 @@ export default function BloodRequestDetailPage() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950 py-10 px-4 sm:px-6 lg:px-8">
-      <div className="container mx-auto max-w-5xl space-y-8">
+    <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950 py-8 sm:py-10 px-3 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-5xl space-y-6 sm:space-y-8">
         {/* Navigation Breadcrumb */}
         <Link
           href="/blood-requests"
@@ -284,7 +284,7 @@ export default function BloodRequestDetailPage() {
 
         {/* Main Request Card */}
         <div
-          className={`relative bg-white dark:bg-slate-900 rounded-3xl border shadow-xl p-6 sm:p-10 overflow-hidden ${
+          className={`relative bg-white dark:bg-slate-900 rounded-3xl border shadow-xl p-4 xs:p-6 sm:p-10 overflow-hidden ${
             isEmergency
               ? 'border-red-300 dark:border-red-900/80 ring-2 ring-red-500/20'
               : 'border-slate-200 dark:border-slate-800'

@@ -191,10 +191,10 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md transition-colors duration-200 shadow-sm">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex h-20 items-center justify-between">
+      <div className="container mx-auto px-3 sm:px-6 lg:px-8 flex h-16 sm:h-20 items-center justify-between">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-3 group shrink-0">
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-primary-900 via-primary-700 to-primary-500 text-white flex items-center justify-center shadow-md shadow-primary/20 transition-transform duration-200 group-hover:scale-105 border border-primary-400/30 overflow-hidden shrink-0">
+        <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
+          <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-primary-900 via-primary-700 to-primary-500 text-white flex items-center justify-center shadow-md shadow-primary/20 transition-transform duration-200 group-hover:scale-105 border border-primary-400/30 overflow-hidden shrink-0">
             {settings.logoUrl ? (
               <img
                 src={settings.logoUrl}
@@ -202,14 +202,15 @@ export function Navbar() {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <GraduationCap className="w-6 h-6 text-amber-300" />
+              <GraduationCap className="w-5 h-5 sm:w-6 sm:h-6 text-amber-300" />
             )}
           </div>
-          <div className="flex flex-col min-w-0">
-            <span className="font-bold text-base sm:text-xl tracking-tight text-slate-900 dark:text-white leading-tight truncate max-w-[130px] sm:max-w-none">
+          {/* Logo Title & Tagline: Hidden on mobile (<sm), visible on tablet & desktop */}
+          <div className="hidden sm:flex flex-col min-w-0">
+            <span className="font-bold text-sm sm:text-xl tracking-tight text-slate-900 dark:text-white leading-tight truncate">
               {siteName}
             </span>
-            <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 dark:text-slate-400 tracking-wider uppercase truncate max-w-[130px] sm:max-w-none">
+            <span className="text-[9px] sm:text-[11px] font-medium text-slate-500 dark:text-slate-400 tracking-wider uppercase truncate">
               {tagline}
             </span>
           </div>
@@ -300,17 +301,29 @@ export function Navbar() {
         </div>
 
         {/* Mobile / Tablet Action Controls (when hamburger menu appears) */}
-        <div className="flex items-center gap-1.5 sm:gap-2 xl:hidden shrink-0">
-          <LanguageSwitcher />
-          <ThemeToggle />
-          <NotificationBell />
+        <div className="flex items-center gap-2 xl:hidden shrink-0">
+          {/* Tablet only utilities */}
+          <div className="hidden sm:flex items-center gap-2">
+            <LanguageSwitcher />
+            <ThemeToggle />
+            <NotificationBell />
+          </div>
 
-          {/* Mobile Profile Pill or Login Icon */}
+          {/* Hamburger Menu Toggle Button [ ☰ ] */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="flex items-center justify-center w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors shadow-xs border border-slate-200/90 dark:border-slate-700/80 focus:outline-none focus:ring-2 focus:ring-primary/50 shrink-0"
+            aria-label="Toggle Navigation"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+
+          {/* Mobile Login / User Icon Button [ Login/User ] */}
           {session ? (
             <div className="relative" ref={mobileProfileDropdownRef}>
               <button
                 onClick={() => setMobileProfileDropdownOpen(!mobileProfileDropdownOpen)}
-                className="flex items-center gap-1.5 sm:gap-2 pl-1 pr-2 sm:pr-3 py-1 rounded-full bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 transition-all duration-200 border border-slate-200/90 dark:border-slate-700 shadow-xs hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 group shrink-0"
+                className="flex items-center justify-center w-9 h-9 sm:w-auto sm:px-2.5 sm:py-1 rounded-xl sm:rounded-full bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors border border-slate-200/90 dark:border-slate-700/80 shadow-xs focus:outline-none focus:ring-2 focus:ring-primary/50 shrink-0"
                 aria-label="User profile menu"
               >
                 <Avatar
@@ -319,15 +332,15 @@ export function Navbar() {
                   size="sm"
                   className="w-7 h-7 rounded-full border border-slate-100 dark:border-slate-700 object-cover shrink-0"
                 />
-                <span className="hidden sm:inline text-xs font-bold text-slate-800 dark:text-slate-100 max-w-[80px] md:max-w-[110px] truncate">
+                <span className="hidden sm:inline ml-2 text-xs font-bold text-slate-800 dark:text-slate-100 max-w-[90px] md:max-w-[110px] truncate">
                   {user?.name?.split(' ')[0] || 'Account'}
                 </span>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 transition-transform duration-200 group-hover:translate-y-0.5" />
+                <ChevronDown className="hidden sm:inline w-3.5 h-3.5 ml-1 text-slate-500 dark:text-slate-400" />
               </button>
 
               {/* Mobile Profile Dropdown Menu */}
               {mobileProfileDropdownOpen && (
-                <div className="absolute right-0 mt-2">
+                <div className="absolute right-0 mt-2 z-50">
                   {renderProfileDropdownContent(() => setMobileProfileDropdownOpen(false))}
                 </div>
               )}
@@ -336,36 +349,38 @@ export function Navbar() {
             <div className="relative" ref={mobileAuthDropdownRef}>
               <button
                 onClick={() => setMobileAuthDropdownOpen(!mobileAuthDropdownOpen)}
-                className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all duration-200 shadow-sm border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-primary/50 group"
+                className="flex items-center justify-center w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors shadow-xs border border-slate-200/90 dark:border-slate-700/80 focus:outline-none focus:ring-2 focus:ring-primary/50 shrink-0"
                 aria-label="Account / Login"
                 title={locale === 'bn' ? 'লগইন / নিবন্ধন' : 'Login / Register'}
               >
-                <LogIn className="w-4 h-4 text-slate-700 dark:text-slate-200 transition-transform duration-200 group-hover:scale-110" />
+                <LogIn className="w-4 h-4 text-slate-700 dark:text-slate-200" />
               </button>
 
               {/* Mobile Login / Register Popover */}
               {mobileAuthDropdownOpen && (
-                <div className="absolute right-0 mt-2">
+                <div className="absolute right-0 mt-2 z-50">
                   {renderAuthDropdownContent(() => setMobileAuthDropdownOpen(false))}
                 </div>
               )}
             </div>
           )}
-
-          {/* Hamburger Menu Toggle Button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="flex items-center justify-center w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all duration-200 shadow-sm border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-primary/50 shrink-0"
-            aria-label="Toggle Navigation"
-          >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
         </div>
       </div>
 
       {/* Mobile Navigation Drawer (Absolute Overlay) */}
       {mobileMenuOpen && (
         <div className="xl:hidden absolute top-full left-0 right-0 w-full border-b border-slate-200/90 dark:border-slate-800/90 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg px-4 py-5 space-y-3 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 max-h-[calc(100vh-5rem)] overflow-y-auto">
+          {/* Mobile Utility Row inside Drawer */}
+          <div className="flex sm:hidden items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              {locale === 'bn' ? 'ভাষা ও থিম' : 'Settings'}
+            </span>
+            <div className="flex items-center gap-2">
+              <LanguageSwitcher />
+              <ThemeToggle />
+              <NotificationBell />
+            </div>
+          </div>
           <nav className="flex flex-col space-y-1">
             {navItems.map((item) => {
               const active = isActive(item.href);

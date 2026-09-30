@@ -30,6 +30,7 @@ export function formatDate(date: string | Date, locale: string = 'bn'): string {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+      timeZone: 'UTC',
     };
     return new Intl.DateTimeFormat('bn-BD', options).format(d);
   }
@@ -38,6 +39,7 @@ export function formatDate(date: string | Date, locale: string = 'bn'): string {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
+    timeZone: 'UTC',
   };
   return new Intl.DateTimeFormat('en-US', options).format(d);
 }

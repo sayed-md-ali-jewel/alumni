@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/Button';
-import { toBengaliNumerals } from '@/lib/utils';
+import { formatCurrency, toBengaliNumerals } from '@/lib/utils';
 import { SiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
 import {
   Sparkles,
@@ -69,36 +69,36 @@ export function HomeHeroTwoColumn({ stats, settings, isBn }: HomeHeroTwoColumnPr
             )}
 
             {/* Main Headline */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5.5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.18] sm:leading-[1.16]">
+            <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-5.5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.2] sm:leading-[1.16]">
               {heroTitle}
             </h1>
 
             {/* Description / Subtitle */}
-            <p className="text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
+            <p className="text-sm xs:text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
               {heroSubtitle}
             </p>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-3.5 pt-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
               {heroPrimaryBtnText && (
-                <Link href={heroPrimaryBtnLink}>
+                <Link href={heroPrimaryBtnLink} className="w-full sm:w-auto">
                   <Button
                     size="lg"
-                    className="gap-2 bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 rounded-xl px-6 font-bold"
+                    className="w-full sm:w-auto gap-2 bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 rounded-xl px-6 font-bold text-sm sm:text-base"
                   >
-                    <Users className="w-5 h-5" />
+                    <Users className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span>{heroPrimaryBtnText}</span>
                   </Button>
                 </Link>
               )}
               {heroSecondaryBtnText && (
-                <Link href={heroSecondaryBtnLink}>
+                <Link href={heroSecondaryBtnLink} className="w-full sm:w-auto">
                   <Button
                     size="lg"
                     variant="outline"
-                    className="gap-2 border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl px-6 text-slate-800 dark:text-slate-200 font-bold bg-white dark:bg-slate-900"
+                    className="w-full sm:w-auto gap-2 border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl px-6 text-slate-800 dark:text-slate-200 font-bold bg-white dark:bg-slate-900 text-sm sm:text-base"
                   >
-                    <HeartHandshake className="w-5 h-5 text-rose-500" />
+                    <HeartHandshake className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500" />
                     <span>{heroSecondaryBtnText}</span>
                   </Button>
                 </Link>
@@ -108,14 +108,14 @@ export function HomeHeroTwoColumn({ stats, settings, isBn }: HomeHeroTwoColumnPr
 
           {/* RIGHT SECTION: Floating Metrics Card (Image 2 design) */}
           <div className="lg:col-span-5 xl:col-span-4 animate-in fade-in slide-in-from-right-4 duration-500">
-            <div className="p-6 sm:p-7 rounded-3xl bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-800 backdrop-blur-md shadow-xl shadow-slate-200/50 dark:shadow-slate-950/50 space-y-4">
+            <div className="p-4 sm:p-7 rounded-3xl bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-800 backdrop-blur-md shadow-xl shadow-slate-200/50 dark:shadow-slate-950/50 space-y-4">
               {/* Header */}
               <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
                     <GraduationCap className="w-4 h-4" />
                   </div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <span className="text-[11px] xs:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                     {isBn ? 'লাইভ প্ল্যাটফর্ম পরিসংখ্যান' : 'Live Association Metrics'}
                   </span>
                 </div>
@@ -126,16 +126,16 @@ export function HomeHeroTwoColumn({ stats, settings, isBn }: HomeHeroTwoColumnPr
               </div>
 
               {/* Statistics 2x2 Grid */}
-              <div className="grid grid-cols-2 gap-3.5">
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5">
                 {/* Total Alumni */}
-                <div className="p-4 rounded-2xl bg-gradient-to-br from-primary-50/80 to-transparent dark:from-primary-950/30 border border-primary-100/70 dark:border-primary-900/40 space-y-1">
+                <div className="p-3 xs:p-4 rounded-2xl bg-gradient-to-br from-primary-50/80 to-transparent dark:from-primary-950/30 border border-primary-100/70 dark:border-primary-900/40 space-y-1">
                   <div className="flex items-center gap-1.5 text-primary">
-                    <Users className="w-4 h-4" />
-                    <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                    <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <span className="text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400">
                       {isBn ? 'নিবন্ধিত প্রাক্তন' : 'Total Alumni'}
                     </span>
                   </div>
-                  <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                  <div className="text-xl xs:text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
                     {isBn ? `${toBengaliNumerals(stats.totalAlumni)}+` : `${stats.totalAlumni}+`}
                   </div>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
@@ -210,9 +210,7 @@ export function HomeHeroTwoColumn({ stats, settings, isBn }: HomeHeroTwoColumnPr
                   </div>
                   <div className="text-right">
                     <div className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">
-                      {isBn
-                        ? `৳ ${toBengaliNumerals(stats.totalRaised.toLocaleString('en-IN'))}`
-                        : `৳ ${stats.totalRaised.toLocaleString('en-IN')}`}
+                      {formatCurrency(stats.totalRaised, isBn ? 'bn' : 'en')}
                     </div>
                   </div>
                 </div>

@@ -85,7 +85,7 @@ export default async function AlumniProfileDetailPage({
   };
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 max-w-5xl space-y-8">
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-10 max-w-5xl space-y-8">
       {/* Back button */}
       <Link
         href="/directory"
@@ -98,17 +98,17 @@ export default async function AlumniProfileDetailPage({
       {/* Main Profile Header Card */}
       <Card className="border-slate-200 dark:border-slate-800 shadow-lg overflow-hidden rounded-3xl">
         {/* Banner */}
-        <div className="h-32 sm:h-44 w-full bg-gradient-to-r from-primary-900 via-primary-700 to-amber-600 relative" />
+        <div className="h-28 xs:h-32 sm:h-44 w-full bg-gradient-to-r from-primary-900 via-primary-700 to-amber-600 relative" />
 
-        <CardContent className="px-6 sm:px-8 pb-8 pt-0 relative">
+        <CardContent className="px-4 xs:px-6 sm:px-8 pb-8 pt-0 relative">
           {/* Avatar and Badges */}
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between -mt-16 sm:-mt-20 gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between -mt-14 xs:-mt-16 sm:-mt-20 gap-4 mb-6">
             <div className="relative">
               <Avatar
                 src={user?.image}
                 fallback={user?.name || 'AL'}
                 size="xl"
-                className="w-28 h-28 sm:w-36 sm:h-36 ring-4 ring-white dark:ring-slate-900 shadow-xl"
+                className="w-24 h-24 xs:w-28 xs:h-28 sm:w-36 sm:h-36 ring-4 ring-white dark:ring-slate-900 shadow-xl"
               />
             </div>
 

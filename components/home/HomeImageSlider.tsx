@@ -115,7 +115,7 @@ export function HomeImageSlider({
 
   return (
     <section
-      className="relative w-full overflow-hidden bg-slate-950 group h-[380px] sm:h-[460px] md:h-[540px] lg:h-[600px] xl:h-[660px] border-b border-slate-200/80 dark:border-slate-800/80 select-none"
+      className="relative w-full overflow-hidden bg-slate-950 group h-[360px] xs:h-[420px] sm:h-[480px] md:h-[540px] lg:h-[600px] xl:h-[660px] border-b border-slate-200/80 dark:border-slate-800/80 select-none"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
@@ -154,36 +154,36 @@ export function HomeImageSlider({
       {/* Dynamic Slide Content Overlay (Title, Description, Button) */}
       {hasOverlay && (
         <div className="absolute inset-0 z-30 flex items-center">
-          <div className="container mx-auto px-6 sm:px-10 lg:px-16">
+          <div className="container mx-auto px-4 xs:px-6 sm:px-10 lg:px-16">
             <div
               key={currentIndex}
-              className="max-w-3xl space-y-4 sm:space-y-6 text-white animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both"
+              className="max-w-3xl space-y-3 xs:space-y-4 sm:space-y-6 text-white animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both"
             >
               {/* Title */}
               {showTitle && currentTitle && (
-                <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-5.5xl font-black tracking-tight leading-[1.15] text-white drop-shadow-md">
+                <h2 className="text-xl xs:text-2xl sm:text-4xl md:text-5xl lg:text-5.5xl font-black tracking-tight leading-[1.18] text-white drop-shadow-md">
                   {currentTitle}
                 </h2>
               )}
 
               {/* Description */}
               {showDescription && currentDescription && (
-                <p className="text-sm sm:text-base md:text-lg lg:text-xl text-slate-200/90 max-w-2xl leading-relaxed drop-shadow-sm font-normal">
+                <p className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl text-slate-200/90 max-w-2xl leading-relaxed drop-shadow-sm font-normal line-clamp-3 xs:line-clamp-none">
                   {currentDescription}
                 </p>
               )}
 
               {/* Action Button */}
               {showButton && currentButtonText && (
-                <div className="pt-2">
+                <div className="pt-1 sm:pt-2">
                   <Link href={currentButtonLink}>
                     <Button
                       size="lg"
-                      className="gap-2 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl px-7 py-3 text-sm sm:text-base shadow-xl shadow-primary/40 hover:scale-105 active:scale-95 transition-all"
+                      className="gap-2 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl px-5 py-2.5 sm:px-7 sm:py-3 text-xs xs:text-sm sm:text-base shadow-xl shadow-primary/40 hover:scale-105 active:scale-95 transition-all"
                     >
-                      <Users className="w-5 h-5" />
+                      <Users className="w-4 h-4 sm:w-5 sm:h-5" />
                       <span>{currentButtonText}</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </Button>
                   </Link>
                 </div>
@@ -199,29 +199,29 @@ export function HomeImageSlider({
           <button
             onClick={handlePrev}
             aria-label="Previous slide image"
-            className="absolute left-4 sm:left-8 md:left-12 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-black/40 hover:bg-black/80 text-white backdrop-blur-md border border-white/25 flex items-center justify-center transition-all opacity-80 sm:opacity-0 group-hover:opacity-100 hover:scale-110 active:scale-95 shadow-xl hover:shadow-primary/30"
+            className="absolute left-2 xs:left-4 sm:left-8 md:left-12 top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-black/40 hover:bg-black/80 text-white backdrop-blur-md border border-white/25 flex items-center justify-center transition-all opacity-80 sm:opacity-0 group-hover:opacity-100 hover:scale-110 active:scale-95 shadow-xl hover:shadow-primary/30"
           >
-            <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7" />
+            <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7" />
           </button>
           <button
             onClick={handleNext}
             aria-label="Next slide image"
-            className="absolute right-4 sm:right-8 md:right-12 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-black/40 hover:bg-black/80 text-white backdrop-blur-md border border-white/25 flex items-center justify-center transition-all opacity-80 sm:opacity-0 group-hover:opacity-100 hover:scale-110 active:scale-95 shadow-xl hover:shadow-primary/30"
+            className="absolute right-2 xs:right-4 sm:right-8 md:right-12 top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-black/40 hover:bg-black/80 text-white backdrop-blur-md border border-white/25 flex items-center justify-center transition-all opacity-80 sm:opacity-0 group-hover:opacity-100 hover:scale-110 active:scale-95 shadow-xl hover:shadow-primary/30"
           >
-            <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7" />
+            <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7" />
           </button>
 
           {/* Bottom Pagination Dots with Smooth Pill Expansion */}
-          <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20 shadow-lg">
+          <div className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20 shadow-lg">
             {displaySlides.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setCurrentIndex(idx)}
                 aria-label={`Go to slide image ${idx + 1}`}
-                className={`h-2.5 rounded-full transition-all duration-300 ${
+                className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 ${
                   idx === currentIndex
-                    ? 'w-8 bg-white shadow-md shadow-white/40'
-                    : 'w-2.5 bg-white/40 hover:bg-white/70'
+                    ? 'w-6 sm:w-8 bg-white shadow-md shadow-white/40'
+                    : 'w-2 sm:w-2.5 bg-white/40 hover:bg-white/70'
                 }`}
               />
             ))}

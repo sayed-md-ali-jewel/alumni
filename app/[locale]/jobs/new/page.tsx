@@ -95,25 +95,25 @@ export default function NewJobPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 max-w-3xl space-y-6">
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-10 max-w-3xl space-y-6">
       <Link href="/jobs" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-primary transition-colors">
         <ArrowLeft className="w-4 h-4" />
         <span>{isBn ? 'ক্যারিয়ার হবে ফিরে যান' : 'Back to Jobs'}</span>
       </Link>
 
       <Card className="border-slate-200 dark:border-slate-800 shadow-xl">
-        <CardHeader className="space-y-2">
-          <CardTitle className="text-2xl font-extrabold text-slate-900 dark:text-white">
+        <CardHeader className="p-4 xs:p-6 space-y-2">
+          <CardTitle className="text-xl xs:text-2xl font-extrabold text-slate-900 dark:text-white">
             {t('newJobTitle')}
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-xs sm:text-sm">
             {isBn
               ? 'আপনার কোম্পানি বা নেটওয়ার্কের চাকরির সুযোগ ও রেফারেল শেয়ার করুন'
               : 'Share verified career openings and direct referral opportunities with fellow alumni'}
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="space-y-4">
+        <CardContent className="p-4 xs:p-6 pt-0 xs:pt-0 space-y-4">
           {error && (
             <div className="p-3 rounded-xl bg-destructive/10 text-destructive text-sm flex items-center gap-2 border border-destructive/20">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />

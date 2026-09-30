@@ -60,12 +60,12 @@ export function HomeHeroCentered({ stats, settings, isBn }: HomeHeroCenteredProp
           )}
 
           {/* Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15] sm:leading-[1.15]">
+          <h1 className="text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.2] sm:leading-[1.15]">
             {heroTitle}
           </h1>
 
           {/* Subtitle */}
-          <p className="text-base sm:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm xs:text-base sm:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
             {heroSubtitle}
           </p>
 
@@ -75,9 +75,9 @@ export function HomeHeroCentered({ stats, settings, isBn }: HomeHeroCenteredProp
               <Link href={heroPrimaryBtnLink} className="w-full sm:w-auto">
                 <Button
                   size="lg"
-                  className="w-full sm:w-auto gap-2 bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 font-bold rounded-xl px-7"
+                  className="w-full sm:w-auto gap-2 bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 font-bold rounded-xl px-7 text-sm sm:text-base"
                 >
-                  <Users className="w-5 h-5" />
+                  <Users className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span>{heroPrimaryBtnText}</span>
                 </Button>
               </Link>
@@ -87,9 +87,9 @@ export function HomeHeroCentered({ stats, settings, isBn }: HomeHeroCenteredProp
                 <Button
                   size="lg"
                   variant="outline"
-                  className="w-full sm:w-auto gap-2 border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold rounded-xl px-7 bg-white dark:bg-slate-900"
+                  className="w-full sm:w-auto gap-2 border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold rounded-xl px-7 bg-white dark:bg-slate-900 text-sm sm:text-base"
                 >
-                  <HeartHandshake className="w-5 h-5 text-rose-500" />
+                  <HeartHandshake className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500" />
                   <span>{heroSecondaryBtnText}</span>
                 </Button>
               </Link>
@@ -98,43 +98,43 @@ export function HomeHeroCentered({ stats, settings, isBn }: HomeHeroCenteredProp
 
           {/* 4 Stat Cards in a row at bottom (Image 1 design) */}
           {settings.heroShowStats !== false && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-10 sm:pt-14 max-w-4xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 pt-8 sm:pt-14 max-w-4xl mx-auto">
               {/* Registered Alumni */}
-              <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow text-center">
-                <div className="text-2xl sm:text-3xl font-black text-primary mb-1 tracking-tight">
+              <div className="p-3 xs:p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow text-center">
+                <div className="text-xl xs:text-2xl sm:text-3xl font-black text-primary mb-1 tracking-tight">
                   {isBn ? `${toBengaliNumerals(stats.totalAlumni)}+` : `${stats.totalAlumni}+`}
                 </div>
-                <div className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400">
+                <div className="text-[11px] xs:text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400">
                   {isBn ? 'নিবন্ধিত প্রাক্তন' : 'Registered Alumni'}
                 </div>
               </div>
 
               {/* Graduating Batches */}
-              <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow text-center">
-                <div className="text-2xl sm:text-3xl font-black text-amber-500 mb-1 tracking-tight">
+              <div className="p-3 xs:p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow text-center">
+                <div className="text-xl xs:text-2xl sm:text-3xl font-black text-amber-500 mb-1 tracking-tight">
                   {isBn ? `${toBengaliNumerals(stats.batchesCount)}+` : `${stats.batchesCount}+`}
                 </div>
-                <div className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400">
+                <div className="text-[11px] xs:text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400">
                   {isBn ? 'অধিভুক্ত ব্যাচ' : 'Graduating Batches'}
                 </div>
               </div>
 
               {/* Blood Donors */}
-              <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow text-center">
-                <div className="text-2xl sm:text-3xl font-black text-rose-600 mb-1 tracking-tight">
+              <div className="p-3 xs:p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow text-center">
+                <div className="text-xl xs:text-2xl sm:text-3xl font-black text-rose-600 mb-1 tracking-tight">
                   {isBn ? `${toBengaliNumerals(stats.totalDonors)}+` : `${stats.totalDonors}+`}
                 </div>
-                <div className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400">
+                <div className="text-[11px] xs:text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400">
                   {isBn ? 'স্বেচ্ছাসেবী রক্তদাতা' : 'Blood Donors'}
                 </div>
               </div>
 
               {/* Ready Donors */}
-              <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow text-center">
-                <div className="text-2xl sm:text-3xl font-black text-emerald-600 mb-1 tracking-tight">
+              <div className="p-3 xs:p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow text-center">
+                <div className="text-xl xs:text-2xl sm:text-3xl font-black text-emerald-600 mb-1 tracking-tight">
                   {isBn ? `${toBengaliNumerals(stats.availableDonors)}+` : `${stats.availableDonors}+`}
                 </div>
-                <div className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400">
+                <div className="text-[11px] xs:text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400">
                   {isBn ? 'প্রস্তুত রক্তদাতা' : 'Ready Donors'}
                 </div>
               </div>

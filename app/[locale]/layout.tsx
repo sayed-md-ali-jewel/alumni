@@ -11,6 +11,10 @@ import { PageTransitionProvider } from '@/components/providers/PageTransitionPro
 import { Navbar } from '@/components/shared/Navbar';
 import { Footer } from '@/components/shared/Footer';
 import { PwaRegister } from '@/components/pwa/PwaRegister';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { connectToDatabase } from '@/lib/mongodb';
+import { SiteSetting, DEFAULT_SITE_SETTINGS } from '@/models/SiteSetting';
 import '@/app/globals.css';
 
 const hindSiliguri = Hind_Siliguri({
@@ -75,7 +79,21 @@ export default async function LocaleLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  const messages = await getMessages();
+  const [messages, session] = await Promise.all([
+    getMessages(),
+    getServerSession(authOptions),
+  ]);
+
+  let initialSiteSettings = DEFAULT_SITE_SETTINGS;
+  try {
+    await connectToDatabase();
+    const doc = await SiteSetting.findOne({ key: 'site_settings' }).lean();
+    if (doc) {
+      initialSiteSettings = JSON.parse(JSON.stringify(doc));
+    }
+  } catch (e) {
+    // fallback to default
+  }
 
   return (
     <html
@@ -89,9 +107,12 @@ export default async function LocaleLayout({
         <link rel="manifest" href="/manifest.webmanifest" />
         <meta name="theme-color" content="#0f172a" />
       </head>
-      <body className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-primary/20">
+      <body
+        suppressHydrationWarning
+        className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-primary/20"
+      >
         <PwaRegister />
-        <SessionProvider>
+        <SessionProvider session={session}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -100,7 +121,7 @@ export default async function LocaleLayout({
           >
             <NextIntlClientProvider messages={messages} locale={locale}>
               <SweetAlertProvider>
-                <SiteSettingsProvider>
+                <SiteSettingsProvider initialSettings={initialSiteSettings}>
                   <PageTransitionProvider>
                     <Navbar />
                     <main className="flex-1">{children}</main>

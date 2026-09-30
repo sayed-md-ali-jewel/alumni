@@ -182,24 +182,24 @@ export function CampaignModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 xs:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in">
       <div
-        className="relative w-full max-w-2xl rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="relative w-full max-w-2xl rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white px-6 py-5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20">
-              <Building2 className="w-5 h-5 text-white" />
+        <div className="bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white px-4 xs:px-6 py-4 xs:py-5 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 xs:gap-3 min-w-0">
+            <div className="w-9 h-9 xs:w-10 xs:h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 shrink-0">
+              <Building2 className="w-4 h-4 xs:w-5 xs:h-5 text-white" />
             </div>
-            <div>
-              <h3 className="font-bold text-lg leading-tight">
+            <div className="min-w-0">
+              <h3 className="font-bold text-base xs:text-lg leading-tight truncate">
                 {isEditing
                   ? (isBn ? 'ক্যাম্পেইন সম্পাদনা' : 'Edit Campaign Details')
                   : (isBn ? 'নতুন অনুদান ক্যাম্পেইন তৈরি' : 'Create New Campaign')}
               </h3>
-              <p className="text-xs text-rose-100 mt-0.5">
+              <p className="text-[11px] xs:text-xs text-rose-100 mt-0.5 line-clamp-1">
                 {isBn
                   ? 'বিদ্যালয়ের উন্নয়ন ও শিক্ষার্থীদের সহায়তায় নতুন তহবিল ফান্ড চালু করুন'
                   : 'Launch and manage public fundraising and endowment causes'}
@@ -208,14 +208,14 @@ export function CampaignModal({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/25 transition-colors text-white"
+            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/25 transition-colors text-white shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
+        <form onSubmit={handleSubmit} className="p-4 xs:p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
           {/* Titles in EN & BN */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>

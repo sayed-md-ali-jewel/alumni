@@ -58,7 +58,7 @@ export default async function NewsArticlePage({
   const content = isBn ? post.content_bn : post.content_en;
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 max-w-4xl space-y-8">
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-10 max-w-4xl space-y-6 sm:space-y-8">
       {/* Back button */}
       <Link href="/news" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-primary transition-colors">
         <ArrowLeft className="w-4 h-4" />
@@ -66,14 +66,14 @@ export default async function NewsArticlePage({
       </Link>
 
       {/* Article Header */}
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         <Badge className="bg-primary text-white text-xs">{post.category}</Badge>
 
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+        <h1 className="text-2xl xs:text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
           {title}
         </h1>
 
-        <div className="flex items-center justify-between border-y border-slate-200 dark:border-slate-800 py-3 text-xs text-slate-500">
+        <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2 border-y border-slate-200 dark:border-slate-800 py-3 text-xs text-slate-500">
           <div className="flex items-center gap-2">
             <Avatar src={post.authorId?.image} fallback={post.authorId?.name || 'AL'} size="sm" />
             <div>
@@ -92,13 +92,13 @@ export default async function NewsArticlePage({
 
       {/* Hero Image */}
       {post.image && (
-        <div className="relative h-64 sm:h-96 w-full rounded-3xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800">
+        <div className="relative h-48 xs:h-64 sm:h-96 w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800">
           <img src={post.image} alt={title} className="w-full h-full object-cover" />
         </div>
       )}
 
       {/* Article Body Content */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+      <div className="p-4 xs:p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
         <RichContentRenderer content={content} />
       </div>
 

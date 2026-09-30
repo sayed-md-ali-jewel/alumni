@@ -83,19 +83,19 @@ export function CompleteDonationModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 xs:p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
       <div
-        className="relative w-full max-w-md rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col"
+        className="relative w-full max-w-md rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white px-6 py-5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20">
-              <CheckCircle2 className="w-5 h-5 text-white" />
+        <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white px-4 xs:px-6 py-4 xs:py-5 flex items-center justify-between">
+          <div className="flex items-center gap-2.5 xs:gap-3">
+            <div className="w-9 h-9 xs:w-10 xs:h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 shrink-0">
+              <CheckCircle2 className="w-4 h-4 xs:w-5 xs:h-5 text-white" />
             </div>
             <div>
-              <h3 className="font-bold text-lg leading-tight">
+              <h3 className="font-bold text-base xs:text-lg leading-tight">
                 {isBn ? 'রক্তদান সম্পন্ন নিশ্চিত করুন' : 'Confirm Blood Donation'}
               </h3>
               <p className="text-xs text-emerald-100 flex items-center gap-1.5 mt-0.5">
@@ -115,7 +115,7 @@ export function CompleteDonationModal({
         </div>
 
         {/* 3-Month Recovery Notice */}
-        <div className="bg-emerald-50 dark:bg-emerald-950/30 border-b border-emerald-200/60 dark:border-emerald-900/40 px-6 py-2.5 flex items-start gap-2 text-xs text-emerald-800 dark:text-emerald-300">
+        <div className="bg-emerald-50 dark:bg-emerald-950/30 border-b border-emerald-200/60 dark:border-emerald-900/40 px-4 xs:px-6 py-2.5 flex items-start gap-2 text-xs text-emerald-800 dark:text-emerald-300">
           <ShieldCheck className="w-4 h-4 shrink-0 text-emerald-600 mt-0.5" />
           <span>
             {isBn
@@ -125,7 +125,7 @@ export function CompleteDonationModal({
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 xs:p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
           <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-xs space-y-1.5">
             <div className="flex justify-between text-slate-500 dark:text-slate-400">
               <span>{isBn ? 'রোগী / গ্রহীতা (Given To):' : 'Given To / Patient:'}</span>

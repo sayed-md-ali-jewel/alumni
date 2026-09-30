@@ -227,7 +227,7 @@ export default async function HomePage({
       )}
 
       {/* Academic Groups Hub Section */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="container mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div>
             <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary mb-1.5">
@@ -338,9 +338,9 @@ export default async function HomePage({
       </section>
 
       {/* Emergency Blood Aid & Donor Network Section */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-gradient-to-r from-rose-950/90 via-slate-900 to-slate-900 border border-rose-900/40 p-6 sm:p-10 shadow-2xl relative overflow-hidden">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-8">
+      <section className="container mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="rounded-3xl bg-gradient-to-r from-rose-950/90 via-slate-900 to-slate-900 border border-rose-900/40 p-4 xs:p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 sm:gap-8 mb-8">
             <div className="space-y-3 max-w-2xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold uppercase tracking-wider">
                 <Droplet className="w-3.5 h-3.5 fill-current text-rose-500 animate-pulse" />
@@ -356,15 +356,15 @@ export default async function HomePage({
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 shrink-0">
-              <Link href="/blood-requests/create">
-                <Button size="default" className="bg-rose-600 hover:bg-rose-700 text-white font-bold gap-2 shadow-lg shadow-rose-600/30">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 shrink-0">
+              <Link href="/blood-requests/create" className="w-full sm:w-auto">
+                <Button size="default" className="w-full sm:w-auto bg-rose-600 hover:bg-rose-700 text-white font-bold gap-2 shadow-lg shadow-rose-600/30">
                   <AlertTriangle className="w-4 h-4" />
                   <span>{isBn ? 'জরুরি রক্তের আবেদন' : 'Post Blood Request'}</span>
                 </Button>
               </Link>
-              <Link href="/blood-donors">
-                <Button size="default" variant="outline" className="border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white hover:text-white gap-2 shadow-sm">
+              <Link href="/blood-donors" className="w-full sm:w-auto">
+                <Button size="default" variant="outline" className="w-full sm:w-auto border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white hover:text-white gap-2 shadow-sm">
                   <Droplet className="w-4 h-4 text-rose-400" />
                   <span>{isBn ? 'রক্তদাতা খুঁজুন' : 'Find Blood Donors'}</span>
                 </Button>
@@ -440,7 +440,7 @@ export default async function HomePage({
       </section>
 
       {/* Featured Alumni Spotlight */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="container mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div>
             <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-1.5">
@@ -463,63 +463,93 @@ export default async function HomePage({
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
           {data.spotlightProfiles.map((profile: any) => {
-            const user = profile.userId;
+            const user = profile.userId || {};
             const blood = profile.bloodGroup || user?.bloodGroup;
+            const displayName = user?.name || 'Alumni Member';
+            const displayGroup = profile.group || profile.department;
+            const batchText = profile.batchYear
+              ? isBn
+                ? `ব্যাচ '${toBengaliNumerals(String(profile.batchYear).slice(-2))}`
+                : `Batch '${String(profile.batchYear).slice(-2)}`
+              : null;
+
             return (
-              <Card key={profile._id.toString()} className="group hover:-translate-y-1 transition-all duration-200 overflow-hidden border-slate-200 dark:border-slate-800">
-                <CardContent className="p-6 space-y-4">
-                  <div className="flex items-start justify-between">
-                    <Avatar
-                      src={user?.image}
-                      fallback={user?.name || 'AL'}
-                      size="lg"
-                      className="ring-2 ring-primary/20 group-hover:ring-primary/50 transition-all"
-                    />
-                    <div className="flex flex-col items-end gap-1">
-                      {user?.isVerified && (
-                        <Badge variant="success" className="gap-1 text-[10px] px-2">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                          <span>{isBn ? 'যাচাইকৃত' : 'Verified'}</span>
-                        </Badge>
-                      )}
-                      {blood && (
-                        <span className="px-2 py-0.5 rounded bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 font-bold text-[10px] border border-rose-200 dark:border-rose-900/50">
-                          {blood}
-                        </span>
+              <Card
+                key={profile._id.toString()}
+                className="group rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 flex flex-col justify-between overflow-hidden"
+              >
+                <CardContent className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4">
+                  {/* Top: Avatar & Badges */}
+                  <div className="space-y-3.5">
+                    <div className="flex items-start justify-between gap-3">
+                      <Avatar
+                        src={user?.image}
+                        name={displayName}
+                        fallback={displayName}
+                        size="lg"
+                        className="w-14 h-14 rounded-full ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all shadow-xs"
+                      />
+                      <div className="flex flex-col items-end gap-1.5 shrink-0">
+                        {user?.isVerified && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-900/40 text-[11px] font-bold">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                            <span>{isBn ? 'যাচাইকৃত' : 'Verified'}</span>
+                          </span>
+                        )}
+                        {blood && (
+                          <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/40 text-[10px] font-extrabold min-w-[28px] text-center">
+                            {blood}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Name, Designation & Company */}
+                    <div className="space-y-1">
+                      <Link
+                        href={`/directory/${profile._id}`}
+                        className="block font-bold text-base text-slate-900 dark:text-white group-hover:text-primary transition-colors truncate"
+                      >
+                        {displayName}
+                      </Link>
+                      <p className="text-xs font-medium text-slate-600 dark:text-slate-400 truncate">
+                        {profile.jobTitle || (isBn ? 'প্রাক্তন শিক্ষার্থী' : 'Alumnus')}
+                      </p>
+                      {profile.company && (
+                        <p className="text-xs font-semibold text-primary truncate">
+                          @{profile.company}
+                        </p>
                       )}
                     </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <h3 className="font-bold text-base text-slate-900 dark:text-white line-clamp-1 group-hover:text-primary transition-colors">
-                      {user?.name}
-                    </h3>
-                    <p className="text-xs font-medium text-slate-600 dark:text-slate-300 line-clamp-1">
-                      {profile.jobTitle || (isBn ? 'প্রাক্তন শিক্ষার্থী' : 'Alumnus')}
-                    </p>
-                    {profile.company && (
-                      <p className="text-xs text-primary font-semibold line-clamp-1">
-                        @{profile.company}
-                      </p>
-                    )}
-                  </div>
+                  {/* Bottom Meta & View Profile Button */}
+                  <div className="space-y-3 pt-1">
+                    <div className="flex items-center justify-between text-xs">
+                      {batchText && (
+                        <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-medium">
+                          {batchText}
+                        </span>
+                      )}
+                      {displayGroup && (
+                        <span className="font-bold text-slate-800 dark:text-slate-200 text-xs truncate ml-auto">
+                          {displayGroup}
+                        </span>
+                      )}
+                    </div>
 
-                  <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
-                    <span className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-mono">
-                      {isBn ? `ব্যাচ ${toBengaliNumerals(profile.batchYear)}` : `Batch '${String(profile.batchYear).slice(-2)}`}
-                    </span>
-                    <span className="truncate max-w-[120px] font-semibold text-slate-700 dark:text-slate-300">
-                      {profile.group || profile.department}
-                    </span>
+                    <Link href={`/directory/${profile._id}`} className="block">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-primary hover:text-white hover:border-primary border-slate-200/90 dark:border-slate-800 rounded-xl sm:rounded-2xl h-9 transition-colors shadow-none"
+                      >
+                        {isBn ? 'প্রোফাইল দেখুন' : 'View Profile'}
+                      </Button>
+                    </Link>
                   </div>
-
-                  <Link href={`/directory/${profile._id}`} className="block pt-2">
-                    <Button variant="outline" size="sm" className="w-full text-xs">
-                      {isBn ? 'প্রোফাইল দেখুন' : 'View Profile'}
-                    </Button>
-                  </Link>
                 </CardContent>
               </Card>
             );
@@ -528,7 +558,7 @@ export default async function HomePage({
       </section>
 
       {/* Upcoming Events & Reunions */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="container mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div>
             <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary mb-1.5">
@@ -608,8 +638,8 @@ export default async function HomePage({
       </section>
 
       {/* Giving Back & Endowments Banner */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-gradient-to-r from-slate-900 via-primary-950 to-slate-900 border border-slate-800 p-8 sm:p-12 text-white shadow-xl relative overflow-hidden">
+      <section className="container mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="rounded-3xl bg-gradient-to-r from-slate-900 via-primary-950 to-slate-900 border border-slate-800 p-5 xs:p-8 sm:p-12 text-white shadow-xl relative overflow-hidden">
           <div className="max-w-3xl space-y-6">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-400/10 text-amber-400 border border-amber-400/20 text-xs font-bold uppercase tracking-wider">
               <HeartHandshake className="w-4 h-4" />
@@ -628,11 +658,11 @@ export default async function HomePage({
                 : 'Directly fund undergraduate tuition scholarships, state-of-the-art tech labs, and emergency student medical aid. Fully secured via SSLCommerz and Direct Bank Deposit.'}
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 pt-2 sm:pt-4">
               {data.donationCampaigns.map((camp, idx) => (
                 <div
                   key={idx}
-                  className="p-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 space-y-3"
+                  className="p-4 xs:p-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 space-y-3"
                 >
                   <h4 className="font-bold text-base text-amber-300">
                     {isBn ? camp.title_bn : camp.title}
@@ -645,14 +675,14 @@ export default async function HomePage({
               ))}
             </div>
 
-            <div className="pt-4 flex flex-wrap gap-3">
-              <Link href="/donate">
-                <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold shadow-lg shadow-amber-500/20">
+            <div className="pt-3 sm:pt-4 flex flex-wrap gap-2.5 sm:gap-3">
+              <Link href="/donate" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold shadow-lg shadow-amber-500/20 text-sm sm:text-base">
                   {isBn ? 'অনলাইনে অনুদান দিন (SSLCommerz)' : 'Donate Online (SSLCommerz)'}
                 </Button>
               </Link>
-              <Link href="/donate/bank-transfer">
-                <Button size="lg" variant="outline" className="border-slate-600 bg-slate-800/60 text-white hover:bg-white/10 hover:text-white">
+              <Link href="/donate/bank-transfer" className="w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto border-slate-600 bg-slate-800/60 text-white hover:bg-white/10 hover:text-white text-sm sm:text-base">
                   {isBn ? 'সরাসরি ব্যাংক ডিপোজিট' : 'Direct Bank Deposit'}
                 </Button>
               </Link>
@@ -662,7 +692,7 @@ export default async function HomePage({
       </section>
 
       {/* Latest News & Stories */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="container mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div>
             <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1.5">
@@ -728,8 +758,8 @@ export default async function HomePage({
       </section>
 
       {/* Join Community CTA */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-primary text-white p-8 sm:p-12 text-center space-y-6 shadow-xl relative overflow-hidden">
+      <section className="container mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="rounded-3xl bg-primary text-white p-6 xs:p-8 sm:p-12 text-center space-y-6 shadow-xl relative overflow-hidden">
           <div className="max-w-2xl mx-auto space-y-4">
             <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
               {isBn ? 'আপনি কি আমাদের প্রাক্তন শিক্ষার্থী?' : 'Are You an Alumnus?'}

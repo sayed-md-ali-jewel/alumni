@@ -38,12 +38,20 @@ const SiteSettingsContext = createContext<SiteSettingsContextType>({
   refetch: async () => {},
 });
 
-export function SiteSettingsProvider({ children }: { children: React.ReactNode }) {
+export function SiteSettingsProvider({
+  children,
+  initialSettings,
+}: {
+  children: React.ReactNode;
+  initialSettings?: SiteSettings;
+}) {
   const locale = useLocale();
   const isBn = locale === 'bn';
 
-  const [settings, setSettings] = useState<SiteSettings>(DEFAULT_SITE_SETTINGS);
-  const [isLoading, setIsLoading] = useState(true);
+  const [settings, setSettings] = useState<SiteSettings>(
+    initialSettings || DEFAULT_SITE_SETTINGS
+  );
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchSettings = useCallback(async () => {
     try {

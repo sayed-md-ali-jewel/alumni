@@ -390,7 +390,7 @@ export function SweetAlertProvider({ children }: { children: ReactNode }) {
       {/* Modern Alert & Confirm Modal */}
       {isOpen && alertOptions && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-2.5 xs:p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200"
           onClick={closeAlert}
           onKeyDown={(e) => {
             if (e.key === 'Escape') closeAlert();
@@ -399,13 +399,13 @@ export function SweetAlertProvider({ children }: { children: ReactNode }) {
           tabIndex={-1}
         >
           <div
-            className="relative w-full max-w-md p-6 sm:p-8 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200/80 dark:border-slate-800 text-center space-y-5 animate-in zoom-in-95 duration-200"
+            className="relative w-full max-w-md p-5 xs:p-6 sm:p-8 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200/80 dark:border-slate-800 text-center space-y-4 xs:space-y-5 animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close button */}
             <button
               onClick={closeAlert}
-              className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="absolute top-3.5 right-3.5 xs:top-4 xs:right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               aria-label="Close"
             >
               <X className="w-4 h-4" />
@@ -416,18 +416,18 @@ export function SweetAlertProvider({ children }: { children: ReactNode }) {
 
             {/* Content */}
             <div className="space-y-2">
-              <h3 className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              <h3 className="text-lg xs:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                 {alertOptions.title}
               </h3>
               {alertOptions.text && (
-                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                <p className="text-xs xs:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                   {alertOptions.text}
                 </p>
               )}
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center justify-center gap-3 pt-2">
+            <div className="flex items-center justify-center gap-2.5 xs:gap-3 pt-2">
               {alertOptions.showCancelButton && (
                 <Button
                   type="button"
@@ -459,12 +459,12 @@ export function SweetAlertProvider({ children }: { children: ReactNode }) {
       {/* Modern Interactive SweetAlert Prompt Modal */}
       {isPromptOpen && promptOptions && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-2.5 xs:p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200"
           onClick={closePrompt}
           tabIndex={-1}
         >
           <div
-            className="relative w-full max-w-md p-6 sm:p-8 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200/80 dark:border-slate-800 text-left space-y-5 animate-in zoom-in-95 duration-200"
+            className="relative w-full max-w-md p-5 xs:p-6 sm:p-8 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200/80 dark:border-slate-800 text-left space-y-4 xs:space-y-5 animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close button */}

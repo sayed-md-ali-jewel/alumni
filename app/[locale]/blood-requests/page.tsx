@@ -81,17 +81,17 @@ export default function BloodRequestsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950 py-10 px-4 sm:px-6 lg:px-8">
-      <div className="container mx-auto max-w-7xl space-y-10">
+    <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950 py-8 sm:py-10 px-3 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-7xl space-y-8 sm:space-y-10">
         {/* Header Hero */}
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-red-900 via-rose-800 to-amber-900 text-white p-8 sm:p-12 shadow-2xl border border-red-800/40">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-red-900 via-rose-800 to-amber-900 text-white p-5 xs:p-8 sm:p-12 shadow-2xl border border-red-800/40">
           <div className="relative z-10 max-w-3xl space-y-4">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-500/20 backdrop-blur-md border border-red-400/30 text-xs font-bold text-red-200 uppercase tracking-wider">
               <AlertOctagon className="w-3.5 h-3.5 text-red-300 animate-pulse" />
               <span>{isBn ? 'জরুরী রক্তের চাহিদা বোর্ড' : 'Emergency Blood Requests'}</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+            <h1 className="text-2xl xs:text-3xl sm:text-5xl font-black tracking-tight leading-tight">
               {isBn ? 'চলমান রক্তের চাহিদা সমূহ' : 'Active Blood Requests'}
             </h1>
 
@@ -101,17 +101,17 @@ export default function BloodRequestsPage() {
                 : 'View urgent and emergency blood requests from school alumni and their families. Find matching donors or post an emergency request for prompt assistance.'}
             </p>
 
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <Link href="/blood-requests/create">
-                <Button className="bg-white text-red-900 hover:bg-rose-50 font-bold rounded-2xl shadow-lg flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-2">
+              <Link href="/blood-requests/create" className="w-full sm:w-auto">
+                <Button className="w-full sm:w-auto bg-white text-red-900 hover:bg-rose-50 font-bold rounded-2xl shadow-lg flex items-center justify-center gap-2">
                   <PlusCircle className="w-4 h-4 text-red-600" />
                   <span>{isBn ? 'নতুন রক্তের আবেদন তৈরি করুন' : 'Post Blood Request'}</span>
                 </Button>
               </Link>
-              <Link href="/blood-donors">
+              <Link href="/blood-donors" className="w-full sm:w-auto">
                 <Button
                   variant="outline"
-                  className="border-white/40 bg-white/10 text-white hover:bg-white/20 hover:text-white font-bold rounded-2xl flex items-center gap-2 backdrop-blur-sm"
+                  className="w-full sm:w-auto border-white/40 bg-white/10 text-white hover:bg-white/20 hover:text-white font-bold rounded-2xl flex items-center justify-center gap-2 backdrop-blur-sm"
                 >
                   <Droplet className="w-4 h-4 text-rose-300 fill-current" />
                   <span>{isBn ? 'রক্তদাতা ডিরেক্টরি খুঁজুন' : 'Search Blood Donors'}</span>

@@ -208,8 +208,8 @@ export default function CreateBloodRequestPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950 py-10 px-4 sm:px-6 lg:px-8">
-      <div className="container mx-auto max-w-3xl space-y-8">
+    <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950 py-8 sm:py-10 px-3 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-3xl space-y-6 sm:space-y-8">
         {/* Back Link */}
         <Link
           href="/blood-requests"
@@ -220,12 +220,12 @@ export default function CreateBloodRequestPage() {
         </Link>
 
         {/* Header Card */}
-        <div className="bg-gradient-to-r from-rose-900 via-red-800 to-rose-700 text-white p-8 rounded-3xl shadow-xl flex items-center justify-between gap-6 border border-rose-700/60">
+        <div className="bg-gradient-to-r from-rose-900 via-red-800 to-rose-700 text-white p-5 xs:p-8 rounded-3xl shadow-xl flex items-center justify-between gap-6 border border-rose-700/60">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-rose-200">
               {isBn ? 'জরুরী সহায়তা প্ল্যাটফর্ম' : 'Emergency Assistance'}
             </span>
-            <h1 className="text-2xl sm:text-3xl font-black mt-1">
+            <h1 className="text-xl xs:text-2xl sm:text-3xl font-black mt-1">
               {isBn ? 'রক্তের নতুন আবেদন পোস্ট করুন' : 'Post a Blood Request'}
             </h1>
             <p className="text-xs sm:text-sm text-rose-100/90 mt-1 max-w-xl">
@@ -240,7 +240,7 @@ export default function CreateBloodRequestPage() {
         </div>
 
         {/* Request Form */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-4 xs:p-6 sm:p-8 shadow-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Auto-Populate "For Myself" Selector */}
             <div className="p-4 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200/80 dark:border-rose-900/40 flex items-center justify-between gap-3">

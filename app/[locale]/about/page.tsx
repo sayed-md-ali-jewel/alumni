@@ -56,17 +56,17 @@ export default function AboutPage({
   ];
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16 max-w-5xl">
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12 sm:space-y-16 max-w-5xl">
       {/* Header */}
       <div className="text-center space-y-4 max-w-3xl mx-auto">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
           <GraduationCap className="w-4 h-4 text-amber-500" />
           <span>{isBn ? 'পরিচিতি ও ইতিহাস' : 'Legacy & Heritage'}</span>
         </div>
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+        <h1 className="text-2xl xs:text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           {t('title')}
         </h1>
-        <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300">
+        <p className="text-sm sm:text-base lg:text-lg text-slate-600 dark:text-slate-300">
           {t('subtitle')}
         </p>
       </div>
@@ -74,7 +74,7 @@ export default function AboutPage({
       {/* Mission & Vision Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="border-slate-200 dark:border-slate-800 shadow-md">
-          <CardContent className="p-8 space-y-4">
+          <CardContent className="p-5 xs:p-6 sm:p-8 space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
               <Target className="w-6 h-6" />
             </div>

@@ -40,9 +40,10 @@ export function CommunityFooterBadge() {
   const isBn = locale === 'bn';
 
   const [settings, setSettings] = useState<CommunitySettingsState>(DEFAULT_STATE);
-  const [loaded, setLoaded] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     let isMounted = true;
     async function loadSettings() {
       try {
@@ -69,7 +70,7 @@ export function CommunityFooterBadge() {
       } catch (err) {
         console.error('Failed to load community footer settings:', err);
       } finally {
-        if (isMounted) setLoaded(true);
+        // loaded
       }
     }
     loadSettings();
@@ -78,7 +79,7 @@ export function CommunityFooterBadge() {
     };
   }, []);
 
-  if (!settings.enabled) {
+  if (!mounted || !settings.enabled) {
     return null;
   }
 

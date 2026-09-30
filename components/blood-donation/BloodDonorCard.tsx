@@ -81,7 +81,7 @@ export function BloodDonorCard({ donor, onContact }: BloodDonorCardProps) {
   };
 
   return (
-    <div className="group relative bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800/90 p-5 shadow-sm hover:shadow-xl hover:shadow-rose-500/5 transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between overflow-hidden">
+    <div className="group relative bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800/90 p-3.5 xs:p-5 shadow-sm hover:shadow-xl hover:shadow-rose-500/5 transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between overflow-hidden">
       {/* Top blood glow accent bar */}
       <div
         className={`absolute top-0 left-0 right-0 h-1.5 ${
@@ -294,7 +294,7 @@ export function BloodDonorCard({ donor, onContact }: BloodDonorCardProps) {
       </div>
 
       {/* Action Buttons */}
-      <div className="pt-4 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-2.5 mt-4">
+      <div className="pt-4 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-1.5 xs:gap-2.5 mt-4">
         {isSelf ? (
           <Button
             size="sm"

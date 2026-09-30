@@ -48,14 +48,14 @@ export default function NewsPage() {
   }, [category]);
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-6 sm:space-y-8">
       {/* Header */}
       <div className="space-y-3">
         <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary">
           <Newspaper className="w-4 h-4" />
           <span>{isBn ? 'খবর ও অর্জন' : 'Media & Updates'}</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+        <h1 className="text-2xl xs:text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           {t('title')}
         </h1>
         <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 max-w-3xl">

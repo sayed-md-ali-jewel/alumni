@@ -107,17 +107,17 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-[calc(100vh-200px)]">
+    <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-12 flex items-center justify-center min-h-[calc(100vh-200px)]">
       <div className="w-full max-w-lg space-y-6">
         <Card className="border-slate-200 dark:border-slate-800 shadow-xl rounded-3xl">
-          <CardHeader className="text-center space-y-2">
-            <div className="w-14 h-14 rounded-2xl bg-primary text-white flex items-center justify-center mx-auto shadow-md">
-              <GraduationCap className="w-7 h-7 text-amber-300" />
+          <CardHeader className="text-center space-y-2 p-5 sm:p-6">
+            <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-primary text-white flex items-center justify-center mx-auto shadow-md">
+              <GraduationCap className="w-6 h-6 sm:w-7 sm:h-7 text-amber-300" />
             </div>
-            <CardTitle className="text-2xl font-extrabold text-slate-900 dark:text-white">
+            <CardTitle className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
               {t('registerTitle')}
             </CardTitle>
-            <CardDescription>{t('registerSubtitle')}</CardDescription>
+            <CardDescription className="text-xs sm:text-sm">{t('registerSubtitle')}</CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-4">

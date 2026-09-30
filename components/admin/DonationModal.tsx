@@ -217,24 +217,24 @@ export function DonationModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 xs:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in">
       <div
-        className="relative w-full max-w-2xl rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="relative w-full max-w-2xl rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white px-6 py-5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20">
-              <HeartHandshake className="w-5 h-5 text-white" />
+        <div className="bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white px-4 xs:px-6 py-4 xs:py-5 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 xs:gap-3 min-w-0">
+            <div className="w-9 h-9 xs:w-10 xs:h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 shrink-0">
+              <HeartHandshake className="w-4 h-4 xs:w-5 xs:h-5 text-white" />
             </div>
-            <div>
-              <h3 className="font-bold text-lg leading-tight">
+            <div className="min-w-0">
+              <h3 className="font-bold text-base xs:text-lg leading-tight truncate">
                 {isEditing
                   ? (isBn ? 'অনুদান রেকর্ড সম্পাদনা' : 'Edit Donation Record')
                   : (isBn ? 'নতুন অনুদান রেকর্ড যোগ করুন' : 'Record New Donation')}
               </h3>
-              <p className="text-xs text-rose-100 mt-0.5">
+              <p className="text-[11px] xs:text-xs text-rose-100 mt-0.5 line-clamp-1">
                 {isBn
                   ? 'অফলাইন ও অনলাইন তহবিলের জন্য অফিসিয়াল মানি রসিদ ও লেজার এন্ট্রি'
                   : 'Official Treasury ledger entry and receipt voucher generation'}
@@ -243,14 +243,14 @@ export function DonationModal({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/25 transition-colors text-white"
+            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/25 transition-colors text-white shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
+        <form onSubmit={handleSubmit} className="p-4 xs:p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
           {/* Donor Information */}
           <div className="space-y-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80">
             <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">

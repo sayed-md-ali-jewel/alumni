@@ -53,11 +53,11 @@ export function BloodStatsBar({
   return (
     <div className="w-full space-y-6">
       {/* 4 Metric Cards Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Total Donors */}
         <div
           onClick={() => onSelectAvailability && onSelectAvailability('all')}
-          className={`p-5 rounded-3xl border transition-all duration-200 cursor-pointer ${
+          className={`p-3.5 xs:p-5 rounded-3xl border transition-all duration-200 cursor-pointer ${
             selectedAvailability === 'all'
               ? 'bg-rose-50/80 dark:bg-rose-950/30 border-rose-300 dark:border-rose-800 shadow-md'
               : 'bg-white/80 dark:bg-slate-900/80 border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-rose-300'
@@ -67,7 +67,7 @@ export function BloodStatsBar({
             <span className="text-xs font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider">
               {isBn ? 'মোট নিবন্ধিত রক্তদাতা' : 'Total Donors'}
             </span>
-            <div className="w-9 h-9 rounded-2xl bg-rose-500 text-white flex items-center justify-center shadow-md shadow-rose-500/20">
+            <div className="w-8 h-8 xs:w-9 xs:h-9 rounded-2xl bg-rose-500 text-white flex items-center justify-center shadow-md shadow-rose-500/20">
               <Droplet className="w-4 h-4 fill-current" />
             </div>
           </div>
@@ -82,7 +82,7 @@ export function BloodStatsBar({
         {/* Available Donors */}
         <div
           onClick={() => onSelectAvailability && onSelectAvailability('available')}
-          className={`p-5 rounded-3xl border transition-all duration-200 cursor-pointer ${
+          className={`p-3.5 xs:p-5 rounded-3xl border transition-all duration-200 cursor-pointer ${
             selectedAvailability === 'available'
               ? 'bg-emerald-50/90 dark:bg-emerald-950/40 border-emerald-400 dark:border-emerald-700 shadow-md ring-2 ring-emerald-500/20'
               : 'bg-white/80 dark:bg-slate-900/80 border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-emerald-300'
@@ -93,7 +93,7 @@ export function BloodStatsBar({
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>{isBn ? 'রক্তদানে প্রস্তুত' : 'Available Donors'}</span>
             </span>
-            <div className="w-9 h-9 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
+            <div className="w-8 h-8 xs:w-9 xs:h-9 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
               <Activity className="w-4 h-4" />
             </div>
           </div>
@@ -108,7 +108,7 @@ export function BloodStatsBar({
         {/* Recently Donated (Resting) */}
         <div
           onClick={() => onSelectAvailability && onSelectAvailability('resting')}
-          className={`p-5 rounded-3xl border transition-all duration-200 cursor-pointer ${
+          className={`p-3.5 xs:p-5 rounded-3xl border transition-all duration-200 cursor-pointer ${
             selectedAvailability === 'resting'
               ? 'bg-amber-50/90 dark:bg-amber-950/40 border-amber-400 dark:border-amber-700 shadow-md ring-2 ring-amber-500/20'
               : 'bg-white/80 dark:bg-slate-900/80 border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-amber-300'
@@ -119,7 +119,7 @@ export function BloodStatsBar({
               <span className="w-2 h-2 rounded-full bg-amber-500" />
               <span>{isBn ? 'বিশ্রামকালীন দাতা' : 'Recently Donated'}</span>
             </span>
-            <div className="w-9 h-9 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-md shadow-amber-500/20">
+            <div className="w-8 h-8 xs:w-9 xs:h-9 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-md shadow-amber-500/20">
               <Clock className="w-4 h-4" />
             </div>
           </div>
@@ -132,12 +132,12 @@ export function BloodStatsBar({
         </div>
 
         {/* Active Requests */}
-        <div className="p-5 rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+        <div className="p-3.5 xs:p-5 rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-wider">
               {isBn ? 'সক্রিয় রক্তের চাহিদা' : 'Active Requests'}
             </span>
-            <div className="w-9 h-9 rounded-2xl bg-red-600 text-white flex items-center justify-center shadow-md shadow-red-600/25">
+            <div className="w-8 h-8 xs:w-9 xs:h-9 rounded-2xl bg-red-600 text-white flex items-center justify-center shadow-md shadow-red-600/25">
               <Heart className="w-4 h-4" />
             </div>
           </div>
@@ -152,17 +152,17 @@ export function BloodStatsBar({
 
       {/* Blood Group Distribution Selector Bar with Group-wise Available & Resting breakdown */}
       {onSelectBloodGroup && (
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-5 shadow-sm space-y-3">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-3.5 xs:p-5 shadow-sm space-y-3">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <Droplet className="w-4 h-4 text-rose-500 fill-current" />
-              <h4 className="font-bold text-sm text-slate-900 dark:text-white">
+              <h4 className="font-bold text-xs xs:text-sm text-slate-900 dark:text-white">
                 {isBn ? 'রক্তের গ্রুপ অনুযায়ী প্রাপ্যতা ও পরিসংখ্যান' : 'Donors by Blood Group (Available & Resting)'}
               </h4>
             </div>
 
             {/* Visual Legend */}
-            <div className="flex items-center gap-3 text-xs font-semibold">
+            <div className="flex items-center gap-2 xs:gap-3 text-[11px] xs:text-xs font-semibold">
               <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
                 <span>{isBn ? 'প্রস্তুত (Available)' : 'Available'}</span>
@@ -174,7 +174,7 @@ export function BloodStatsBar({
             </div>
           </div>
 
-          <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2">
+          <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-1.5 xs:gap-2">
             {/* All Groups Button */}
             <button
               type="button"

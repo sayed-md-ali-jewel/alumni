@@ -225,15 +225,15 @@ export default function DonatePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950 py-10 px-4 sm:px-6 lg:px-8">
-      <div className="container mx-auto max-w-5xl space-y-10">
+    <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950 py-8 sm:py-10 px-3 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-5xl space-y-8 sm:space-y-10">
         {/* Header */}
         <div className="text-center space-y-3 max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold uppercase tracking-wider border border-amber-500/20">
             <HeartHandshake className="w-4 h-4" />
             <span>{isBn ? 'বিদ্যাপীঠে অবদান ও সমাজসেবা' : 'Giving Back to Alma Mater'}</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h1 className="text-2xl xs:text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
             {t('title')}
           </h1>
           <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -244,7 +244,7 @@ export default function DonatePage() {
         {/* Success Modal / State */}
         {successData ? (
           <Card className="rounded-3xl border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden bg-white dark:bg-slate-900 animate-in zoom-in-95 duration-200">
-            <div className="p-8 sm:p-12 text-center space-y-6 max-w-xl mx-auto">
+            <div className="p-5 xs:p-8 sm:p-12 text-center space-y-6 max-w-xl mx-auto">
               <div className="w-16 h-16 rounded-3xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-md shadow-emerald-500/10">
                 <CheckCircle2 className="w-9 h-9" />
               </div>
@@ -332,7 +332,7 @@ export default function DonatePage() {
                           : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
                       }`}
                     >
-                      <CardContent className="p-5 sm:p-6 space-y-4">
+                      <CardContent className="p-4 xs:p-5 sm:p-6 space-y-4">
                         <div className="space-y-1">
                           <h4 className="font-bold text-base text-slate-900 dark:text-white">
                             {isBn ? camp.title_bn : camp.title_en}
@@ -368,8 +368,8 @@ export default function DonatePage() {
 
             {/* Donation Form Card */}
             <Card className="rounded-3xl border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden bg-white dark:bg-slate-900">
-              <CardHeader className="bg-slate-50/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 p-6 sm:p-8">
-                <CardTitle className="text-xl font-bold text-slate-900 dark:text-white">
+              <CardHeader className="bg-slate-50/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 p-4 xs:p-6 sm:p-8">
+                <CardTitle className="text-lg xs:text-xl font-bold text-slate-900 dark:text-white">
                   {isBn ? 'অনুদানের তথ্য ও পেমেন্ট বিবরণ' : 'Donation & Payment Details'}
                 </CardTitle>
                 <CardDescription className="text-xs sm:text-sm">
@@ -379,7 +379,7 @@ export default function DonatePage() {
                 </CardDescription>
               </CardHeader>
 
-              <CardContent className="p-6 sm:p-8 space-y-8">
+              <CardContent className="p-4 xs:p-6 sm:p-8 space-y-8">
                 {error && (
                   <div className="p-3.5 rounded-2xl bg-destructive/10 text-destructive text-sm flex items-center gap-2.5 border border-destructive/20">
                     <AlertCircle className="w-5 h-5 flex-shrink-0" />

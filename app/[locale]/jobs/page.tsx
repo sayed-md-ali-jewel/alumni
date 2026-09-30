@@ -70,24 +70,24 @@ export default function JobsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-6 sm:space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-2">
+        <div className="space-y-1.5 sm:space-y-2">
           <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary">
             <Briefcase className="w-4 h-4" />
             <span>{isBn ? 'ক্যারিয়ার ও কর্মসংস্থান' : 'Career Opportunities'}</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          <h1 className="text-2xl xs:text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             {t('title')}
           </h1>
-          <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400">
+          <p className="text-xs sm:text-base text-slate-500 dark:text-slate-400">
             {t('subtitle')}
           </p>
         </div>
 
-        <Link href="/jobs/new">
-          <Button className="gap-2 bg-primary hover:bg-primary/90 shadow-md">
+        <Link href="/jobs/new" className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto gap-2 bg-primary hover:bg-primary/90 shadow-md">
             <PlusCircle className="w-4 h-4" />
             <span>{t('postJob')}</span>
           </Button>
@@ -95,7 +95,7 @@ export default function JobsPage() {
       </div>
 
       {/* Search & Type Filter Card */}
-      <Card className="border-slate-200 dark:border-slate-800 p-4 sm:p-6 shadow-sm">
+      <Card className="border-slate-200 dark:border-slate-800 p-3.5 xs:p-5 sm:p-6 shadow-sm">
         <form onSubmit={handleSearchSubmit} className="flex flex-col md:flex-row gap-3">
           <div className="relative flex-1">
             <Input
@@ -110,7 +110,7 @@ export default function JobsPage() {
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="h-10 rounded-xl border border-input bg-background px-3 py-2 text-sm text-slate-700 dark:text-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary min-w-[180px]"
+            className="h-10 rounded-xl border border-input bg-background px-3 py-2 text-sm text-slate-700 dark:text-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary w-full md:w-auto md:min-w-[180px]"
           >
             {types.map((tp) => (
               <option key={tp.value} value={tp.value}>
@@ -119,7 +119,7 @@ export default function JobsPage() {
             ))}
           </select>
 
-          <Button type="submit" className="gap-2">
+          <Button type="submit" className="w-full md:w-auto gap-2">
             <Search className="w-4 h-4" />
             <span>{isBn ? 'খুঁজুন' : 'Search'}</span>
           </Button>
@@ -128,7 +128,7 @@ export default function JobsPage() {
 
       {/* Job Cards Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
@@ -137,23 +137,23 @@ export default function JobsPage() {
           ))}
         </div>
       ) : jobs.length === 0 ? (
-        <div className="text-center py-16 space-y-3 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-8">
-          <Briefcase className="w-12 h-12 text-slate-300 mx-auto" />
-          <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200">
+        <div className="text-center py-12 sm:py-16 space-y-3 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8">
+          <Briefcase className="w-10 h-10 sm:w-12 sm:h-12 text-slate-300 mx-auto" />
+          <h3 className="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-200">
             {isBn ? 'কোনো চাকরির বিজ্ঞপ্তি পাওয়া যায়নি' : 'No job listings found'}
           </h3>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {jobs.map((job) => (
             <Card
               key={job._id}
               className="group hover:-translate-y-1 transition-all duration-200 border-slate-200 dark:border-slate-800 flex flex-col justify-between"
             >
-              <CardContent className="p-6 space-y-4">
+              <CardContent className="p-4 xs:p-6 space-y-4">
                 <div className="flex items-start justify-between gap-4">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
+                  <div className="space-y-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <Badge variant="secondary" className="text-xs uppercase font-bold">
                         {job.type.replace('_', ' ')}
                       </Badge>
@@ -165,11 +165,11 @@ export default function JobsPage() {
                       )}
                     </div>
 
-                    <h3 className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-primary transition-colors">
+                    <h3 className="font-bold text-base xs:text-lg text-slate-900 dark:text-white group-hover:text-primary transition-colors">
                       {job.title}
                     </h3>
 
-                    <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-300">
+                    <div className="flex items-center gap-2 xs:gap-3 text-xs text-slate-600 dark:text-slate-300 flex-wrap">
                       <span className="font-semibold flex items-center gap-1">
                         <Building className="w-3.5 h-3.5 text-slate-400" />
                         {job.company}
@@ -185,8 +185,8 @@ export default function JobsPage() {
 
                 {job.salaryRange && (
                   <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 border border-slate-100 dark:border-slate-800">
-                    <DollarSign className="w-3.5 h-3.5" />
-                    <span>{job.salaryRange}</span>
+                    <DollarSign className="w-3.5 h-3.5 shrink-0" />
+                    <span className="truncate">{job.salaryRange}</span>
                   </div>
                 )}
 
@@ -194,10 +194,10 @@ export default function JobsPage() {
                   {job.description}
                 </p>
 
-                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-col xs:flex-row items-stretch xs:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 min-w-0">
                     <Avatar src={job.postedBy?.image} fallback={job.postedBy?.name || 'AL'} size="sm" />
-                    <span className="text-xs text-slate-500">
+                    <span className="text-xs text-slate-500 truncate">
                       {isBn ? 'পোস্ট করেছেন: ' : 'Posted by '}
                       <span className="font-semibold text-slate-800 dark:text-slate-200">
                         {job.postedBy?.name}
@@ -205,8 +205,8 @@ export default function JobsPage() {
                     </span>
                   </div>
 
-                  <Link href={`/jobs/${job._id}`}>
-                    <Button size="sm" variant="outline" className="text-xs gap-1">
+                  <Link href={`/jobs/${job._id}`} className="w-full xs:w-auto">
+                    <Button size="sm" variant="outline" className="w-full xs:w-auto text-xs gap-1">
                       <span>{isBn ? 'আবেদন / বিস্তারিত' : 'Apply / View'}</span>
                       <ExternalLink className="w-3 h-3" />
                     </Button>

@@ -168,15 +168,15 @@ export default function DirectoryPage() {
   }, [profiles, sortOrder]);
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10">
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8 sm:space-y-10">
       {/* Modern Hero Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-primary-950 to-slate-900 p-8 sm:p-12 text-white shadow-xl border border-slate-800">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-primary-950 to-slate-900 p-5 xs:p-8 sm:p-12 text-white shadow-xl border border-slate-800">
         {/* Subtle Ambient Glows */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary-500/15 rounded-full blur-3xl -z-0 pointer-events-none" />
         <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl -z-0 pointer-events-none" />
 
         <div className="relative z-10 max-w-3xl space-y-4">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white leading-[1.15]">
+          <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white leading-[1.18] sm:leading-[1.15]">
             {isBn
               ? "অ্যালামনাই ডিরেক্টরি ও গ্র্যাজুয়েট নেটওয়ার্ক"
               : "Alumni Directory & Network"}
@@ -188,8 +188,8 @@ export default function DirectoryPage() {
               : "Discover and connect with school alumni across Science, Commerce, and Humanities streams, graduating batches, and emergency blood groups worldwide."}
           </p>
 
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            <div className="px-3.5 py-2 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md text-xs font-semibold flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-2">
+            <div className="px-3 py-1.5 xs:px-3.5 xs:py-2 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md text-xs font-semibold flex items-center gap-2">
               <Users className="w-4 h-4 text-primary-300" />
               <span>
                 {isBn
@@ -197,7 +197,7 @@ export default function DirectoryPage() {
                   : `Total Alumni: ${totalCount} Members`}
               </span>
             </div>
-            <div className="px-3.5 py-2 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md text-xs font-semibold flex items-center gap-2">
+            <div className="px-3 py-1.5 xs:px-3.5 xs:py-2 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md text-xs font-semibold flex items-center gap-2">
               <GraduationCap className="w-4 h-4 text-amber-300" />
               <span>
                 {isBn
@@ -216,7 +216,7 @@ export default function DirectoryPage() {
             setGroup("all");
             setPage(1);
           }}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
+          className={`px-3.5 xs:px-4 py-2 xs:py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
             group === "all"
               ? "bg-primary text-white shadow-md shadow-primary/20 scale-[1.02]"
               : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -233,7 +233,7 @@ export default function DirectoryPage() {
             setGroup("Science");
             setPage(1);
           }}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
+          className={`px-3.5 xs:px-4 py-2 xs:py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
             group === "Science"
               ? "bg-blue-600 text-white shadow-md shadow-blue-600/20 scale-[1.02]"
               : "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 border border-blue-200/80 dark:border-blue-900/50 hover:bg-blue-50 dark:hover:bg-blue-950/40"
@@ -248,7 +248,7 @@ export default function DirectoryPage() {
             setGroup("Commerce");
             setPage(1);
           }}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
+          className={`px-3.5 xs:px-4 py-2 xs:py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
             group === "Commerce"
               ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 scale-[1.02]"
               : "bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 border border-amber-200/80 dark:border-amber-900/50 hover:bg-amber-50 dark:hover:bg-amber-950/40"
@@ -263,7 +263,7 @@ export default function DirectoryPage() {
             setGroup("Humanities");
             setPage(1);
           }}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
+          className={`px-3.5 xs:px-4 py-2 xs:py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
             group === "Humanities"
               ? "bg-purple-600 text-white shadow-md shadow-purple-600/20 scale-[1.02]"
               : "bg-white dark:bg-slate-900 text-purple-600 dark:text-purple-400 border border-purple-200/80 dark:border-purple-900/50 hover:bg-purple-50 dark:hover:bg-purple-950/40"
@@ -277,7 +277,7 @@ export default function DirectoryPage() {
       </div>
 
       {/* Flat Filter & Live Search Toolbar */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-5 sm:p-6 shadow-sm space-y-4">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-3.5 xs:p-5 sm:p-6 shadow-sm space-y-4">
         <form onSubmit={handleSearchSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5">
             {/* Live Search Input */}

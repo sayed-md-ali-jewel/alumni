@@ -185,7 +185,7 @@ export function AdminCommandPalette({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-start justify-center pt-20 sm:pt-28 px-4">
+    <div className="fixed inset-0 z-[100] flex items-start justify-center pt-12 xs:pt-20 sm:pt-28 px-2.5 xs:px-4">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-slate-950/70 backdrop-blur-md transition-opacity animate-in fade-in"
