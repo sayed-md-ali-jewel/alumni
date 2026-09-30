@@ -13,12 +13,14 @@ interface DirectoryUserActionsProps {
   targetUser: any; // User or AlumniProfile
   variant?: 'detail' | 'card';
   className?: string;
+  showBlock?: boolean;
 }
 
 export function DirectoryUserActions({
   targetUser,
   variant = 'detail',
   className = '',
+  showBlock = false,
 }: DirectoryUserActionsProps) {
   const { data: session } = useSession();
   const locale = useLocale();
@@ -49,14 +51,14 @@ export function DirectoryUserActions({
           size="sm"
           variant="outline"
           onClick={handleOpenModal}
-          className="h-8 px-2.5 rounded-xl text-xs font-semibold gap-1 text-primary border-primary/30 hover:bg-primary/5"
+          className="h-8 px-3 rounded-xl text-xs font-semibold gap-1.5 text-primary border-primary/30 hover:bg-primary/5 hover:border-primary/50 transition-colors shadow-none"
           title={isBn ? 'ব্যক্তিগত বার্তা পাঠান' : 'Send private message'}
         >
           <MessageSquare className="w-3.5 h-3.5" />
-          <span className="hidden xs:inline">{isBn ? 'বার্তা' : 'Message'}</span>
+          <span>{isBn ? 'বার্তা' : 'Message'}</span>
         </Button>
 
-        {targetUserId && (
+        {showBlock && targetUserId && (
           <BlockUserButton
             targetUserId={targetUserId}
             targetUserName={resolvedUser?.name || 'User'}

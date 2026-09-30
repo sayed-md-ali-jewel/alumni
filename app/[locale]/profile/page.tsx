@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
-import { Link } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -60,8 +60,9 @@ export default function ProfilePage() {
   const t = useTranslations('profile');
   const common = useTranslations('common');
   const locale = useLocale();
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const { data: session, update } = useSession();
+  const { data: session, status, update } = useSession();
   const { showToast, showAlert, showErrorToast, showSuccessToast } = useSweetAlert();
 
   const isBn = locale === 'bn';
@@ -175,8 +176,16 @@ export default function ProfilePage() {
   };
 
   useEffect(() => {
-    fetchProfile();
-  }, [session]);
+    if (status === 'unauthenticated') {
+      router.replace('/login?callbackUrl=/profile');
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      fetchProfile();
+    }
+  }, [status, session]);
 
   const handleLastDonationDateChange = (val: string) => {
     if (!val) {
@@ -374,11 +383,34 @@ export default function ProfilePage() {
     },
   ];
 
-  if (loading) {
+  if (status === 'loading' || (loading && status === 'authenticated')) {
     return (
-      <div className="container mx-auto px-4 py-16 text-center space-y-4">
+      <div className="container mx-auto px-4 py-20 text-center space-y-4">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
         <p className="text-sm text-slate-500">{common('loading')}</p>
+      </div>
+    );
+  }
+
+  if (status === 'unauthenticated' || !session) {
+    return (
+      <div className="container mx-auto px-4 py-20 text-center max-w-md space-y-4">
+        <div className="w-16 h-16 rounded-3xl bg-primary/10 text-primary flex items-center justify-center mx-auto shadow-inner">
+          <Lock className="w-8 h-8" />
+        </div>
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+          {isBn ? 'প্রোফাইল দেখতে সাইন ইন করুন' : 'Sign In Required'}
+        </h2>
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          {isBn
+            ? 'আপনার প্রোফাইল দেখতে বা সম্পাদনা করতে অনুগ্রহ করে লগইন করুন।'
+            : 'Please sign in to view or update your alumni profile.'}
+        </p>
+        <Link href="/login?callbackUrl=/profile" className="inline-block pt-2">
+          <Button className="bg-primary hover:bg-primary/90 text-white rounded-2xl text-xs font-bold px-6 h-10 shadow-md">
+            {isBn ? 'লগইন করুন' : 'Sign In'}
+          </Button>
+        </Link>
       </div>
     );
   }

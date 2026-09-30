@@ -28,7 +28,6 @@ const BlockedUserSchema = new Schema<IBlockedUser>(
 );
 
 BlockedUserSchema.index({ blockerId: 1, blockedUserId: 1 }, { unique: true });
-BlockedUserSchema.index({ blockedUserId: 1 });
 
 export const BlockedUser: Model<IBlockedUser> =
   mongoose.models.BlockedUser || mongoose.model<IBlockedUser>('BlockedUser', BlockedUserSchema);

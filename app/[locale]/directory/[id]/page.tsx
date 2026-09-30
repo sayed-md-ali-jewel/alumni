@@ -45,15 +45,17 @@ async function getProfile(id: string) {
 
     let profile = await AlumniProfile.findById(id)
       .populate('userId', 'name email image isVerified role phone bloodGroup')
-      .populate('committeePost', 'name_en name_bn sortOrder isActive isDefault');
+      .populate('committeePost', 'name_en name_bn sortOrder isActive isDefault')
+      .lean();
 
-    if (!profile) {
+    if (!profile && mongoose.Types.ObjectId.isValid(id)) {
       profile = await AlumniProfile.findOne({ userId: id })
         .populate('userId', 'name email image isVerified role phone bloodGroup')
-        .populate('committeePost', 'name_en name_bn sortOrder isActive isDefault');
+        .populate('committeePost', 'name_en name_bn sortOrder isActive isDefault')
+        .lean();
     }
 
-    return profile;
+    return profile ? JSON.parse(JSON.stringify(profile)) : null;
   } catch (e) {
     return null;
   }

@@ -20,6 +20,8 @@ import { HomeHeroTwoColumn } from '@/components/home/HomeHeroTwoColumn';
 import { HomeImageSlider } from '@/components/home/HomeImageSlider';
 import { getActiveSliderItems, getIsSliderEnabled } from '@/lib/slider';
 import { SiteSetting, DEFAULT_SITE_SETTINGS } from '@/models/SiteSetting';
+import { DirectoryUserActions } from '@/components/requests/DirectoryUserActions';
+import { LinkedInIcon, FacebookIcon, WhatsAppIcon } from '@/components/shared/SocialIcons';
 import {
   Users,
   GraduationCap,
@@ -31,6 +33,7 @@ import {
   ChevronRight,
   MapPin,
   CheckCircle2,
+  Check,
   TrendingUp,
   Droplet,
   HeartPulse,
@@ -41,7 +44,25 @@ import {
   AlertTriangle,
   Clock,
   Building2,
+  Briefcase,
+  Mail,
+  ExternalLink,
 } from 'lucide-react';
+
+const groupLabelBn: Record<string, string> = {
+  Science: 'বিজ্ঞান',
+  Commerce: 'ব্যবসায় শিক্ষা',
+  Humanities: 'মানবিক',
+};
+
+const groupColors: Record<string, string> = {
+  Science:
+    'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-900/40',
+  Commerce:
+    'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900/40',
+  Humanities:
+    'bg-purple-50 text-purple-600 border-purple-100 dark:bg-purple-950/40 dark:text-purple-400 dark:border-purple-900/40',
+};
 
 async function getHomeData() {
   try {
@@ -68,9 +89,10 @@ async function getHomeData() {
       User.countDocuments({ role: 'alumni' }),
       AlumniProfile.distinct('batchYear'),
       AlumniProfile.find({ visibility: 'public' })
-        .populate('userId', 'name image isVerified bloodGroup')
+        .populate('userId', 'name image isVerified bloodGroup email')
         .sort({ updatedAt: -1 })
-        .limit(4),
+        .limit(3)
+        .lean(),
       Event.find({ date: { $gte: new Date() } })
         .sort({ date: 1 })
         .limit(3),
@@ -158,7 +180,7 @@ async function getHomeData() {
       siteSettings: (siteSettingsDoc as any) || DEFAULT_SITE_SETTINGS,
       isSliderEnabled: isSliderEnabled !== false,
       slides: JSON.parse(JSON.stringify(sliderItems || [])),
-      spotlightProfiles,
+      spotlightProfiles: JSON.parse(JSON.stringify(spotlightProfiles || [])),
       upcomingEvents,
       latestNews,
       activeBloodRequests,
@@ -463,7 +485,7 @@ export default async function HomePage({
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {data.spotlightProfiles.map((profile: any) => {
             const user = profile.userId || {};
             const blood = profile.bloodGroup || user?.bloodGroup;
@@ -471,84 +493,152 @@ export default async function HomePage({
             const displayGroup = profile.group || profile.department;
             const batchText = profile.batchYear
               ? isBn
-                ? `ব্যাচ '${toBengaliNumerals(String(profile.batchYear).slice(-2))}`
-                : `Batch '${String(profile.batchYear).slice(-2)}`
+                ? `ব্যাচ '${toBengaliNumerals(String(profile.batchYear))}`
+                : `Batch '${profile.batchYear}`
               : null;
+            const locationText = profile.location || profile.donorLocation || 'Dhaka, Bangladesh';
 
             return (
               <Card
                 key={profile._id.toString()}
-                className="group rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 flex flex-col justify-between overflow-hidden"
+                className="group rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 flex flex-col justify-between overflow-hidden"
               >
                 <CardContent className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4">
-                  {/* Top: Avatar & Badges */}
+                  {/* Top: Avatar & Verified Info */}
                   <div className="space-y-3.5">
-                    <div className="flex items-start justify-between gap-3">
-                      <Avatar
-                        src={user?.image}
-                        name={displayName}
-                        fallback={displayName}
-                        size="lg"
-                        className="w-14 h-14 rounded-full ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all shadow-xs"
-                      />
-                      <div className="flex flex-col items-end gap-1.5 shrink-0">
+                    <div className="flex items-start gap-3.5">
+                      {/* Avatar */}
+                      <div className="relative shrink-0">
+                        <Avatar
+                          src={user?.image}
+                          name={displayName}
+                          fallback={displayName}
+                          size="lg"
+                          className="w-14 h-14 rounded-2xl ring-1 ring-slate-200 dark:ring-slate-700 shadow-xs object-cover bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 font-bold"
+                        />
                         {user?.isVerified && (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-900/40 text-[11px] font-bold">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                            <span>{isBn ? 'যাচাইকৃত' : 'Verified'}</span>
-                          </span>
+                          <div
+                            className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center ring-2 ring-white dark:ring-slate-900 shadow-xs"
+                            title={isBn ? 'যাচাইকৃত সদস্য' : 'Verified Member'}
+                          >
+                            <Check className="w-3 h-3 stroke-[3] text-white" />
+                          </div>
                         )}
-                        {blood && (
-                          <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/40 text-[10px] font-extrabold min-w-[28px] text-center">
-                            {blood}
-                          </span>
+                      </div>
+
+                      {/* Name & Status */}
+                      <div className="min-w-0 flex-1 space-y-1">
+                        <Link
+                          href={`/directory/${profile._id}`}
+                          className="block font-bold text-base text-slate-900 dark:text-white hover:text-primary transition-colors truncate"
+                        >
+                          {displayName}
+                        </Link>
+
+                        {user?.isVerified ? (
+                          <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                            <span>{isBn ? 'যাচাইকৃত সদস্য' : 'Verified Member'}</span>
+                          </div>
+                        ) : (
+                          <div className="text-xs text-slate-500 truncate">
+                            {profile.jobTitle || (isBn ? 'প্রাক্তন শিক্ষার্থী' : 'Alumni Member')}
+                          </div>
                         )}
                       </div>
                     </div>
 
-                    {/* Name, Designation & Company */}
-                    <div className="space-y-1">
-                      <Link
-                        href={`/directory/${profile._id}`}
-                        className="block font-bold text-base text-slate-900 dark:text-white group-hover:text-primary transition-colors truncate"
-                      >
-                        {displayName}
-                      </Link>
-                      <p className="text-xs font-medium text-slate-600 dark:text-slate-400 truncate">
-                        {profile.jobTitle || (isBn ? 'প্রাক্তন শিক্ষার্থী' : 'Alumnus')}
-                      </p>
-                      {profile.company && (
-                        <p className="text-xs font-semibold text-primary truncate">
-                          @{profile.company}
-                        </p>
+                    {/* Batch, Academic Stream & Blood Group Badges */}
+                    <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                      {batchText && (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium">
+                          <GraduationCap className="w-3.5 h-3.5 text-slate-400" />
+                          <span>{batchText}</span>
+                        </span>
+                      )}
+
+                      {displayGroup && (
+                        <span
+                          className={`px-3 py-1 rounded-full border text-xs font-semibold ${
+                            groupColors[displayGroup] ||
+                            'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-900/40'
+                          }`}
+                        >
+                          {isBn ? groupLabelBn[displayGroup] || displayGroup : displayGroup}
+                        </span>
+                      )}
+
+                      {blood && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/40 text-xs font-bold">
+                          <Droplet className="w-3 h-3 fill-rose-500 text-rose-500" />
+                          <span>{blood}</span>
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Professional & Location Meta */}
+                    <div className="space-y-1.5 pt-1 text-xs text-slate-600 dark:text-slate-300">
+                      {(profile.jobTitle || profile.company) && (
+                        <div className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-300">
+                          <Briefcase className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
+                          <span className="line-clamp-2 leading-relaxed font-medium">
+                            {profile.jobTitle && profile.company
+                              ? `${profile.jobTitle} at ${profile.company}`
+                              : profile.jobTitle || profile.company}
+                          </span>
+                        </div>
+                      )}
+
+                      {locationText && (
+                        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                          <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span className="truncate">{locationText}</span>
+                        </div>
                       )}
                     </div>
                   </div>
 
-                  {/* Bottom Meta & View Profile Button */}
-                  <div className="space-y-3 pt-1">
-                    <div className="flex items-center justify-between text-xs">
-                      {batchText && (
-                        <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-medium">
-                          {batchText}
-                        </span>
+                  {/* Bottom Actions: Socials, Message & View Profile */}
+                  <div className="pt-3.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2 mt-auto">
+                    {/* Social / Email Icons */}
+                    <div className="flex items-center gap-1.5">
+                      {profile.linkedin && (
+                        <a
+                          href={profile.linkedin}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/50 flex items-center justify-center transition-colors border border-slate-200/60 dark:border-slate-700/60"
+                          title="LinkedIn"
+                        >
+                          <LinkedInIcon className="w-3.5 h-3.5" />
+                        </a>
                       )}
-                      {displayGroup && (
-                        <span className="font-bold text-slate-800 dark:text-slate-200 text-xs truncate ml-auto">
-                          {displayGroup}
-                        </span>
+                      {(user?.email || profile.email) && (
+                        <a
+                          href={`mailto:${user?.email || profile.email}`}
+                          className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/50 flex items-center justify-center transition-colors border border-slate-200/60 dark:border-slate-700/60"
+                          title={user?.email || profile.email || 'Email'}
+                        >
+                          <Mail className="w-3.5 h-3.5" />
+                        </a>
                       )}
                     </div>
 
-                    <Link href={`/directory/${profile._id}`} className="block">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-primary hover:text-white hover:border-primary border-slate-200/90 dark:border-slate-800 rounded-xl sm:rounded-2xl h-9 transition-colors shadow-none"
-                      >
-                        {isBn ? 'প্রোফাইল দেখুন' : 'View Profile'}
-                      </Button>
-                    </Link>
+                    {/* Actions: Message + Profile */}
+                    <div className="flex items-center gap-2 ml-auto">
+                      <DirectoryUserActions targetUser={profile} variant="card" showBlock={false} />
+
+                      <Link href={`/directory/${profile._id}`}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 text-xs rounded-xl px-3 gap-1.5 font-semibold hover:bg-primary hover:text-white hover:border-primary border-slate-200 dark:border-slate-700 transition-colors shadow-none"
+                        >
+                          <span>{isBn ? 'প্রোফাইল' : 'Profile'}</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

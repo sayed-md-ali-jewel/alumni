@@ -133,6 +133,9 @@ export function WhatsAppChatView({
   const [filterTab, setFilterTab] = useState<'all' | 'unread'>('all');
   const [totalUnread, setTotalUnread] = useState<number>(0);
 
+  // Presence & Online State Management
+  const [presenceMap, setPresenceMap] = useState<Record<string, boolean>>({});
+
   // Active Chat State
   const [activeContactId, setActiveContactId] = useState<string | null>(initialContactId || null);
   const [activeContact, setActiveContact] = useState<any | null>(null);
@@ -198,17 +201,33 @@ export function WhatsAppChatView({
       const res = await fetch(`/api/user-requests/conversations?${params.toString()}`);
       if (res.ok) {
         const data = await res.json();
-        setConversations(data.conversations || []);
+        const convList: any[] = data.conversations || [];
+        setConversations(convList);
         setTotalUnread(data.totalUnread || 0);
+
+        // Update real-time presence map from conversation list
+        const updatedPresence: Record<string, boolean> = {};
+        convList.forEach((c: any) => {
+          if (c.contactId) {
+            updatedPresence[c.contactId] = Boolean(c.isOnline ?? c.contact?.isOnline ?? false);
+          }
+        });
+        setPresenceMap((prev) => ({ ...prev, ...updatedPresence }));
 
         // If activeContact is selected, update its local data
         if (activeContactId) {
-          const matched = (data.conversations || []).find(
+          const matched = convList.find(
             (c: any) => c.contactId === activeContactId
           );
           if (matched) {
             setActiveContact(matched.contact);
             setIsContactBlocked(matched.isBlocked);
+            if (matched.contactId) {
+              setPresenceMap((prev) => ({
+                ...prev,
+                [matched.contactId]: Boolean(matched.isOnline ?? matched.contact?.isOnline ?? false),
+              }));
+            }
           }
         }
       }
@@ -239,6 +258,11 @@ export function WhatsAppChatView({
 
           if (data.contact) {
             setActiveContact(data.contact);
+            const isOnline = Boolean(data.isOnline ?? data.contact?.isOnline ?? false);
+            setPresenceMap((prev) => ({
+              ...prev,
+              [contactId]: isOnline,
+            }));
           }
           setIsContactBlocked(Boolean(data.isBlocked));
 
@@ -315,7 +339,7 @@ export function WhatsAppChatView({
   }, [activeContactId, fetchMessages, onActiveConversationChange]);
 
   // ----------------------------------------------------
-  // 3. Real-time Background Polling
+  // 3. Real-time Background Polling & Presence Tracker
   // ----------------------------------------------------
   useEffect(() => {
     const interval = setInterval(() => {
@@ -327,6 +351,49 @@ export function WhatsAppChatView({
 
     return () => clearInterval(interval);
   }, [fetchConversations, fetchMessages, activeContactId]);
+
+  // Real-time presence polling for all active contacts in conversation list + open chat
+  useEffect(() => {
+    if (!currentUserId) return;
+
+    let isSubscribed = true;
+    const fetchRealTimePresence = async () => {
+      const contactIds = Array.from(
+        new Set(
+          conversations
+            .map((c) => c.contactId)
+            .concat(activeContactId ? [activeContactId] : [])
+            .filter(Boolean)
+        )
+      );
+
+      if (contactIds.length === 0) return;
+
+      try {
+        const res = await fetch(`/api/presence?userIds=${contactIds.join(',')}`);
+        if (res.ok && isSubscribed) {
+          const data = await res.json();
+          if (data?.presence) {
+            const nextMap: Record<string, boolean> = {};
+            for (const [id, info] of Object.entries(data.presence as Record<string, any>)) {
+              nextMap[id] = Boolean(info?.isOnline);
+            }
+            setPresenceMap((prev) => ({ ...prev, ...nextMap }));
+          }
+        }
+      } catch {
+        // ignore
+      }
+    };
+
+    fetchRealTimePresence();
+    const presenceTimer = setInterval(fetchRealTimePresence, 4000);
+
+    return () => {
+      isSubscribed = false;
+      clearInterval(presenceTimer);
+    };
+  }, [currentUserId, conversations, activeContactId]);
 
   // ----------------------------------------------------
   // 4. Scroll Detection
@@ -675,6 +742,12 @@ export function WhatsAppChatView({
     );
   };
 
+  const activeContactUserId = (activeContact?._id || activeContactId)?.toString();
+  const isActiveContactOnline = Boolean(
+    activeContactUserId &&
+    (presenceMap[activeContactUserId] ?? activeContact?.isOnline ?? false)
+  );
+
   return (
     <div
       className={`w-full max-w-[4000px] mx-auto rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xl overflow-hidden flex h-[620px] sm:h-[680px] md:h-[720px] lg:h-[760px] xl:h-[800px] max-h-[85vh] ${className}`}
@@ -835,6 +908,9 @@ export function WhatsAppChatView({
               const lastMsg = conv.lastMessage || {};
               const isActive = activeContactId === conv.contactId;
               const isLastMsgMine = lastMsg.senderId?.toString() === currentUserId;
+              const isContactOnline = Boolean(
+                presenceMap[conv.contactId] ?? conv.isOnline ?? contact.isOnline ?? false
+              );
 
               return (
                 <div
@@ -859,7 +935,9 @@ export function WhatsAppChatView({
                       className="w-11 h-11 rounded-full ring-1 ring-slate-200 dark:ring-slate-700 object-cover"
                     />
                     {/* Active/online indicator dot */}
-                    <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900" />
+                    {isContactOnline && (
+                      <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900 shadow-xs animate-in fade-in zoom-in-75 duration-200" />
+                    )}
                   </div>
 
                   {/* Details */}
@@ -985,7 +1063,9 @@ export function WhatsAppChatView({
                     size="md"
                     className="w-10 h-10 rounded-full ring-1 ring-slate-200 dark:ring-slate-700 object-cover"
                   />
-                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900" />
+                  {isActiveContactOnline && (
+                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900 shadow-xs animate-in fade-in zoom-in-75 duration-200" />
+                  )}
                 </div>
 
                 {/* Contact Name & Subtitle */}
@@ -993,14 +1073,28 @@ export function WhatsAppChatView({
                   <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate flex items-center gap-1.5">
                     <span>{activeContact?.name || 'Alumni Member'}</span>
                   </h3>
-                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium truncate flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>{isBn ? 'সক্রিয়' : 'Online / Active'}</span>
-                    {activeContact?.profile?.batchYear && (
+                  <p className="text-[11px] truncate flex items-center gap-1.5">
+                    {isActiveContactOnline ? (
+                      <>
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                        <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
+                          {isBn ? 'সক্রিয়' : 'Online / Active'}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-slate-400 font-normal">
+                        {isBn ? 'অফলাইন' : 'Offline'}
+                      </span>
+                    )}
+                    {activeContact?.profile?.batchYear ? (
                       <span className="text-slate-400 font-normal">
                         • Batch &apos;{String(activeContact.profile.batchYear).slice(-2)}
                       </span>
-                    )}
+                    ) : activeContact?.batchYear ? (
+                      <span className="text-slate-400 font-normal">
+                        • Batch &apos;{String(activeContact.batchYear).slice(-2)}
+                      </span>
+                    ) : null}
                   </p>
                 </div>
               </div>

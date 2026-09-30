@@ -11,6 +11,7 @@ import { PageTransitionProvider } from '@/components/providers/PageTransitionPro
 import { Navbar } from '@/components/shared/Navbar';
 import { Footer } from '@/components/shared/Footer';
 import { PwaRegister } from '@/components/pwa/PwaRegister';
+import { PresenceHeartbeat } from '@/components/providers/PresenceHeartbeat';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { connectToDatabase } from '@/lib/mongodb';
@@ -113,6 +114,7 @@ export default async function LocaleLayout({
       >
         <PwaRegister />
         <SessionProvider session={session}>
+          <PresenceHeartbeat />
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

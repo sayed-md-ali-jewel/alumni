@@ -5,6 +5,7 @@ import { connectToDatabase } from '@/lib/mongodb';
 import { User } from '@/models/User';
 import { UserRequest } from '@/models/UserRequest';
 import { getBlockedUserIds } from '@/lib/block-service';
+import { recordHeartbeat, isUserOnline } from '@/lib/presence-service';
 import mongoose from 'mongoose';
 
 export async function GET(req: Request) {
@@ -18,6 +19,9 @@ export async function GET(req: Request) {
     if (!currentUserId || !mongoose.Types.ObjectId.isValid(currentUserId)) {
       return NextResponse.json({ error: 'Invalid user session' }, { status: 401 });
     }
+
+    // Refresh current user's active heartbeat
+    recordHeartbeat(currentUserId);
 
     const { searchParams } = new URL(req.url);
     const searchQuery = (searchParams.get('search') || '').trim().toLowerCase();
@@ -104,9 +108,15 @@ export async function GET(req: Request) {
         const contactUser = userMap.get(contactIdStr);
         if (!contactUser) return null;
 
+        const online = isUserOnline(contactIdStr);
+
         return {
           contactId: contactIdStr,
-          contact: contactUser,
+          contact: {
+            ...contactUser,
+            isOnline: online,
+          },
+          isOnline: online,
           lastMessage: conv.lastMessage,
           unreadCount: conv.unreadCount || 0,
           totalMessages: conv.totalMessages || 0,

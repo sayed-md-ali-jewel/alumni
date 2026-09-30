@@ -8,6 +8,7 @@ import { UserRequest } from '@/models/UserRequest';
 import { Notification } from '@/models/Notification';
 import { UserRequestCreateSchema } from '@/lib/validations';
 import { canUserInteract, getBlockedUserIds } from '@/lib/block-service';
+import { recordHeartbeat, isUserOnline } from '@/lib/presence-service';
 import mongoose from 'mongoose';
 
 export async function GET(req: Request) {
@@ -21,6 +22,9 @@ export async function GET(req: Request) {
     if (!currentUserId || !mongoose.Types.ObjectId.isValid(currentUserId)) {
       return NextResponse.json({ error: 'Invalid user session' }, { status: 401 });
     }
+
+    // Refresh current user's heartbeat
+    recordHeartbeat(currentUserId);
 
     const { searchParams } = new URL(req.url);
     const conversationWith = searchParams.get('conversationWith');
@@ -80,10 +84,14 @@ export async function GET(req: Request) {
       ]);
 
       const isContactBlocked = blockedSet.has(conversationWith);
+      const isContactOnline = isUserOnline(conversationWith);
 
       return NextResponse.json({
         messages,
-        contact: contactUser ? { ...contactUser, profile: contactProfile } : null,
+        contact: contactUser
+          ? { ...contactUser, profile: contactProfile, isOnline: isContactOnline }
+          : null,
+        isOnline: isContactOnline,
         isBlocked: isContactBlocked,
         pagination: {
           total: totalMessages,
