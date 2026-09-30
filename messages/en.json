@@ -168,7 +168,14 @@
     "spotsLeft": "seats remaining",
     "date": "Date & Time",
     "location": "Venue Location",
-    "attendees": "Registered Attendees"
+    "attendees": "Registered Attendees",
+    "eventDetails": "Event Details",
+    "rsvp": "Confirm Attendance (RSVP)",
+    "going": "Going / Attending",
+    "interested": "Interested",
+    "declined": "Can't Go",
+    "rsvpSuccess": "Your RSVP has been confirmed!",
+    "organizer": "Organized By"
   },
   "news": {
     "title": "News & Stories",

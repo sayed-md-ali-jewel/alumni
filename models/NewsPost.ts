@@ -12,6 +12,7 @@ export interface INewsPost extends Document {
   image?: string;
   authorId: mongoose.Types.ObjectId;
   views: number;
+  allowSharing?: boolean;
   publishedAt: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -34,6 +35,7 @@ const NewsPostSchema = new Schema<INewsPost>(
     image: { type: String },
     authorId: { type: Schema.Types.ObjectId, ref: 'User' },
     views: { type: Number, default: 0 },
+    allowSharing: { type: Boolean, default: true },
     publishedAt: { type: Date, default: Date.now, index: true },
   },
   { timestamps: true }

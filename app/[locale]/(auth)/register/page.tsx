@@ -7,7 +7,7 @@ import { signIn } from 'next-auth/react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
-import { GraduationCap, AlertCircle, CheckCircle2, Droplet, XCircle } from 'lucide-react';
+import { GraduationCap, AlertCircle, CheckCircle2, Droplet, XCircle, Lock, Eye, EyeOff } from 'lucide-react';
 import { ALUMNI_GROUPS, BLOOD_GROUPS } from '@/lib/types';
 import { useSweetAlert } from '@/components/ui/SweetAlert';
 import { parseErrorMessages } from '@/lib/utils';
@@ -31,6 +31,8 @@ export default function RegisterPage() {
     phone: '',
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -268,28 +270,52 @@ export default function RegisterPage() {
                   <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                     {t('password')} *
                   </label>
-                  <Input
-                    type="password"
-                    required
-                    placeholder="••••••••"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="rounded-xl"
-                  />
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      placeholder="••••••••"
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      className="rounded-xl pl-9 pr-10"
+                    />
+                    <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors focus:outline-none"
+                      tabIndex={-1}
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="space-y-1.5">
                   <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                     {t('confirmPassword')} *
                   </label>
-                  <Input
-                    type="password"
-                    required
-                    placeholder="••••••••"
-                    value={formData.confirmPassword}
-                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                    className="rounded-xl"
-                  />
+                  <div className="relative">
+                    <Input
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      required
+                      placeholder="••••••••"
+                      value={formData.confirmPassword}
+                      onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                      className="rounded-xl pl-9 pr-10"
+                    />
+                    <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                      className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors focus:outline-none"
+                      tabIndex={-1}
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
               </div>
 

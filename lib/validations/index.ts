@@ -139,6 +139,7 @@ export const EventSchema = z.object({
   category: z.enum(['Reunion', 'Webinar', 'Gala', 'Workshop', 'Sports', 'Networking']),
   capacity: z.coerce.number().min(1).default(500),
   image: z.string().optional(),
+  allowSharing: z.boolean().default(true).optional(),
 });
 
 export const NewsSchema = z.object({
@@ -151,6 +152,7 @@ export const NewsSchema = z.object({
   content_en: z.string().min(1, 'English content is required'),
   category: z.enum(['Spotlight', 'Announcement', 'Achievement', 'Campus', 'Story']).default('Announcement'),
   image: z.string().optional(),
+  allowSharing: z.boolean().default(true).optional(),
 });
 
 export const JobPostSchema = z.object({

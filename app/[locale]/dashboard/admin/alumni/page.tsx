@@ -37,6 +37,8 @@ import {
   GraduationCap,
   Sparkles,
   Award,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import { useSweetAlert } from '@/components/ui/SweetAlert';
 import { ALUMNI_GROUPS, BLOOD_GROUPS, DONATION_STATUSES } from '@/lib/types';
@@ -117,6 +119,7 @@ export default function AdminAlumniPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingProfile, setEditingProfile] = useState<any | null>(null);
   const [formData, setFormData] = useState<AlumniFormData>(initialFormData);
+  const [showPassword, setShowPassword] = useState(false);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<'account' | 'academic' | 'professional' | 'blood' | 'social'>('account');
 
@@ -893,17 +896,28 @@ export default function AdminAlumniPage() {
                           </span>
                         )}
                       </label>
-                      <Input
-                        type="password"
-                        placeholder={
-                          editingProfile
-                            ? (isBn ? 'অপরিবর্তিত রাখতে খালি রাখুন' : 'Leave empty to keep unchanged')
-                            : 'Alumni@123456'
-                        }
-                        value={formData.password || ''}
-                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        className="rounded-xl text-xs font-mono"
-                      />
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder={
+                            editingProfile
+                              ? (isBn ? 'অপরিবর্তিত রাখতে খালি রাখুন' : 'Leave empty to keep unchanged')
+                              : 'Alumni@123456'
+                          }
+                          value={formData.password || ''}
+                          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                          className="rounded-xl text-xs font-mono pr-10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          aria-label={showPassword ? 'Hide password' : 'Show password'}
+                          className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors focus:outline-none"
+                          tabIndex={-1}
+                        >
+                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
                     </div>
 
                     <div className="space-y-1.5">

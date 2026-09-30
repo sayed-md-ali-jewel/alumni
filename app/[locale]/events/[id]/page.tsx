@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Avatar } from '@/components/ui/Avatar';
 import { RichContentRenderer } from '@/components/ui/RichContentRenderer';
+import { FloatingSocialShareBar } from '@/components/shared/FloatingSocialShareBar';
 import { formatDate, toBengaliNumerals } from '@/lib/utils';
 import {
   Calendar,
@@ -37,6 +38,7 @@ export default function EventDetailPage() {
   const [userRsvp, setUserRsvp] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [rsvpLoading, setRsvpLoading] = useState(false);
+  const [pendingStatus, setPendingStatus] = useState<string>('');
   const [rsvpSuccessMsg, setRsvpSuccessMsg] = useState('');
 
   const isBn = locale === 'bn';
@@ -79,6 +81,7 @@ export default function EventDetailPage() {
       return;
     }
 
+    setPendingStatus(status);
     setRsvpLoading(true);
     setRsvpSuccessMsg('');
 
@@ -107,6 +110,7 @@ export default function EventDetailPage() {
       console.error(e);
     } finally {
       setRsvpLoading(false);
+      setPendingStatus('');
     }
   };
 
@@ -128,12 +132,23 @@ export default function EventDetailPage() {
   const attendeesCount = eventData.attendees?.length || 0;
 
   return (
-    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-10 max-w-5xl space-y-6 sm:space-y-8">
-      {/* Back button */}
-      <Link href="/events" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-primary transition-colors">
-        <ArrowLeft className="w-4 h-4" />
-        <span>{isBn ? 'সকল ইভেন্টে ফিরে যান' : 'Back to Events'}</span>
-      </Link>
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-10 max-w-5xl space-y-6 sm:space-y-8 relative">
+      {/* Floating Sticky Social Share Bar (Desktop left vertical / Mobile bottom horizontal) */}
+      {eventData.allowSharing !== false && (
+        <FloatingSocialShareBar
+          title={title}
+          description={desc}
+          locale={locale}
+        />
+      )}
+
+      {/* Top Bar: Back button */}
+      <div className="flex items-center justify-between gap-4">
+        <Link href="/events" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-primary transition-colors">
+          <ArrowLeft className="w-4 h-4" />
+          <span>{isBn ? 'সকল ইভেন্টে ফিরে যান' : 'Back to Events'}</span>
+        </Link>
+      </div>
 
       {/* Main Event Hero */}
       <div className="space-y-4 sm:space-y-6">
@@ -240,34 +255,58 @@ export default function EventDetailPage() {
                 </div>
               )}
 
-              <div className="space-y-2.5">
-                <Button
-                  className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
-                  isLoading={rsvpLoading}
-                  onClick={() => handleRsvp('going')}
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>{t('going')}</span>
-                </Button>
+              {(() => {
+                const currentStatusLower = userRsvp?.toLowerCase() || '';
+                const isGoing = currentStatusLower === 'going';
+                const isInterested = currentStatusLower === 'interested';
+                const isDeclined = currentStatusLower === 'declined';
 
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  isLoading={rsvpLoading}
-                  onClick={() => handleRsvp('interested')}
-                >
-                  {t('interested')}
-                </Button>
+                return (
+                  <div className="space-y-2.5">
+                    <Button
+                      className={`w-full gap-2 transition-all ${
+                        isGoing
+                          ? 'bg-emerald-600 text-white opacity-60 cursor-not-allowed shadow-none'
+                          : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                      }`}
+                      disabled={rsvpLoading || isGoing}
+                      isLoading={rsvpLoading && pendingStatus === 'going'}
+                      onClick={() => handleRsvp('going')}
+                    >
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>{t('going')}</span>
+                    </Button>
 
-                <Button
-                  variant="ghost"
-                  className="w-full text-slate-500 hover:text-rose-600"
-                  isLoading={rsvpLoading}
-                  onClick={() => handleRsvp('declined')}
-                >
-                  {t('declined')}
-                </Button>
-              </div>
+                    <Button
+                      variant="outline"
+                      className={`w-full transition-all ${
+                        isInterested
+                          ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 border-slate-300 dark:border-slate-700 opacity-60 cursor-not-allowed shadow-none'
+                          : ''
+                      }`}
+                      disabled={rsvpLoading || isInterested}
+                      isLoading={rsvpLoading && pendingStatus === 'interested'}
+                      onClick={() => handleRsvp('interested')}
+                    >
+                      <span>{t('interested')}</span>
+                    </Button>
+
+                    <Button
+                      variant="ghost"
+                      className={`w-full transition-all ${
+                        isDeclined
+                          ? 'text-rose-500 bg-rose-50/70 dark:bg-rose-950/30 opacity-60 cursor-not-allowed shadow-none'
+                          : 'text-slate-500 hover:text-rose-600'
+                      }`}
+                      disabled={rsvpLoading || isDeclined}
+                      isLoading={rsvpLoading && pendingStatus === 'declined'}
+                      onClick={() => handleRsvp('declined')}
+                    >
+                      <span>{t('declined')}</span>
+                    </Button>
+                  </div>
+                );
+              })()}
 
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2 text-xs text-slate-500">
                 <div className="flex items-center justify-between">

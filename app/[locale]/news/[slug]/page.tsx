@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Avatar } from '@/components/ui/Avatar';
 import { RichContentRenderer } from '@/components/ui/RichContentRenderer';
+import { FloatingSocialShareBar } from '@/components/shared/FloatingSocialShareBar';
 import { formatDate } from '@/lib/utils';
 import {
   Calendar,
@@ -16,6 +17,41 @@ import {
   Newspaper,
   ChevronRight,
 } from 'lucide-react';
+
+export async function generateMetadata({
+  params: { locale, slug },
+}: {
+  params: { locale: string; slug: string };
+}) {
+  try {
+    await connectToDatabase();
+    const post = await NewsPost.findOne({ slug });
+    if (!post) return { title: 'News Article | KHS Alumni' };
+
+    const isBn = locale === 'bn';
+    const title = isBn ? post.title_bn : post.title_en;
+    const description = isBn ? post.summary_bn || post.title_bn : post.summary_en || post.title_en;
+
+    return {
+      title: `${title} | KHS Alumni`,
+      description,
+      openGraph: {
+        title,
+        description,
+        images: post.image ? [{ url: post.image }] : [],
+        type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: post.image ? [post.image] : [],
+      },
+    };
+  } catch (e) {
+    return { title: 'News Article | KHS Alumni' };
+  }
+}
 
 async function getArticle(slug: string) {
   try {
@@ -56,24 +92,38 @@ export default async function NewsArticlePage({
 
   const title = isBn ? post.title_bn : post.title_en;
   const content = isBn ? post.content_bn : post.content_en;
+  const summary = isBn ? post.summary_bn : post.summary_en;
 
   return (
-    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-10 max-w-4xl space-y-6 sm:space-y-8">
-      {/* Back button */}
-      <Link href="/news" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-primary transition-colors">
-        <ArrowLeft className="w-4 h-4" />
-        <span>{isBn ? 'সকল সংবাদে ফিরে যান' : 'Back to News'}</span>
-      </Link>
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-10 max-w-4xl space-y-6 sm:space-y-8 relative">
+      {/* Floating Sticky Social Share Bar (Desktop left vertical / Mobile bottom horizontal) */}
+      {post.allowSharing !== false && (
+        <FloatingSocialShareBar
+          title={title}
+          description={summary || content}
+          locale={locale}
+        />
+      )}
+
+      {/* Top Bar: Back button */}
+      <div className="flex items-center justify-between gap-4">
+        <Link href="/news" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-primary transition-colors">
+          <ArrowLeft className="w-4 h-4" />
+          <span>{isBn ? 'সকল সংবাদে ফিরে যান' : 'Back to News'}</span>
+        </Link>
+      </div>
 
       {/* Article Header */}
       <div className="space-y-3 sm:space-y-4">
-        <Badge className="bg-primary text-white text-xs">{post.category}</Badge>
+        <div className="flex items-center justify-between gap-2">
+          <Badge className="bg-primary text-white text-xs">{post.category}</Badge>
+        </div>
 
         <h1 className="text-2xl xs:text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
           {title}
         </h1>
 
-        <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2 border-y border-slate-200 dark:border-slate-800 py-3 text-xs text-slate-500">
+        <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-3 border-y border-slate-200 dark:border-slate-800 py-3 text-xs text-slate-500">
           <div className="flex items-center gap-2">
             <Avatar src={post.authorId?.image} fallback={post.authorId?.name || 'AL'} size="sm" />
             <div>
@@ -83,9 +133,11 @@ export default async function NewsArticlePage({
             </div>
           </div>
 
-          <div className="flex items-center gap-1">
-            <Eye className="w-3.5 h-3.5" />
-            <span>{post.views || 1} views</span>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1">
+              <Eye className="w-3.5 h-3.5" />
+              <span>{post.views || 1} views</span>
+            </div>
           </div>
         </div>
       </div>

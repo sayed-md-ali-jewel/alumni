@@ -23,6 +23,7 @@ import {
   Plus,
   RefreshCw,
   Search,
+  Share2,
 } from 'lucide-react';
 import { useSweetAlert } from '@/components/ui/SweetAlert';
 
@@ -53,6 +54,7 @@ export default function AdminEventsPage() {
     category: 'Reunion',
     capacity: 500,
     image: '',
+    allowSharing: true,
   });
 
   const fetchEvents = async () => {
@@ -86,6 +88,7 @@ export default function AdminEventsPage() {
       category: 'Reunion',
       capacity: 500,
       image: '',
+      allowSharing: true,
     });
     setError('');
     setShowModal(true);
@@ -115,6 +118,7 @@ export default function AdminEventsPage() {
       category: event.category || 'Reunion',
       capacity: event.capacity || 500,
       image: event.image || '',
+      allowSharing: event.allowSharing !== false,
     });
     setError('');
     setShowModal(true);
@@ -381,6 +385,36 @@ export default function AdminEventsPage() {
                   onChange={(url) => setFormData({ ...formData, image: url })}
                   helperText={isBn ? 'ইভেন্টের কভার ছবি আপলোড করুন (JPG, PNG, WEBP)' : 'Upload event cover image (JPG, PNG, WEBP up to 5MB)'}
                 />
+              </div>
+
+              {/* Social Sharing Toggle */}
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-center justify-between">
+                <div className="space-y-0.5 pr-4">
+                  <div className="flex items-center gap-2">
+                    <Share2 className="w-4 h-4 text-primary" />
+                    <span className="text-xs font-bold text-slate-900 dark:text-white">
+                      {isBn ? 'সোশ্যাল মিডিয়া শেয়ারিং' : 'Social Sharing'}
+                    </span>
+                    <Badge variant={formData.allowSharing ? 'success' : 'secondary'} className="text-[10px] px-1.5 py-0">
+                      {formData.allowSharing ? (isBn ? 'সক্রিয়' : 'Enabled') : (isBn ? 'নিষ্ক্রিয়' : 'Disabled')}
+                    </Badge>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    {isBn
+                      ? 'ভিজিটরদের এই ইভেন্টটি সোশ্যাল মিডিয়ায় (ফেসবুক, এক্স, হোয়াটসঅ্যাপ, লিঙ্কডইন) শেয়ার করার অনুমতি দিন।'
+                      : 'Allow visitors to share this Event on social media (Facebook, X/Twitter, WhatsApp, LinkedIn).'}
+                  </p>
+                </div>
+
+                <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input
+                    type="checkbox"
+                    checked={formData.allowSharing}
+                    onChange={(e) => setFormData({ ...formData, allowSharing: e.target.checked })}
+                    className="sr-only peer"
+                  />
+                  <div className="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-slate-600 peer-checked:bg-primary"></div>
+                </label>
               </div>
 
               <div className="space-y-8 pt-2">

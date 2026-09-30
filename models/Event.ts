@@ -10,6 +10,7 @@ export interface IEvent extends Document {
   category: 'Reunion' | 'Webinar' | 'Gala' | 'Workshop' | 'Sports' | 'Networking';
   image?: string;
   capacity?: number;
+  allowSharing?: boolean;
   createdBy: mongoose.Types.ObjectId;
   attendees: mongoose.Types.ObjectId[];
   createdAt: Date;
@@ -31,6 +32,7 @@ const EventSchema = new Schema<IEvent>(
     },
     image: { type: String },
     capacity: { type: Number, default: 500 },
+    allowSharing: { type: Boolean, default: true },
     createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
     attendees: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   },
