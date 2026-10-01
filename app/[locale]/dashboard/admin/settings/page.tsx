@@ -48,8 +48,10 @@ import {
   MailCheck,
   Zap,
   X,
+  Database,
 } from 'lucide-react';
 import { useSweetAlert } from '@/components/ui/SweetAlert';
+import { BackupRestorePanel } from '@/components/admin/BackupRestorePanel';
 
 export default function AdminSettingsPage() {
   const locale = useLocale();
@@ -57,7 +59,7 @@ export default function AdminSettingsPage() {
   const { showAlert, showConfirm, showToast } = useSweetAlert();
   const { updateSettingsLocally } = useSiteSettings();
 
-  const [activeTab, setActiveTab] = useState<'header' | 'hero' | 'footer' | 'contact' | 'social' | 'payment' | 'smtp' | 'preview'>('header');
+  const [activeTab, setActiveTab] = useState<'header' | 'hero' | 'footer' | 'contact' | 'social' | 'payment' | 'smtp' | 'backup' | 'preview'>('header');
   const [formData, setFormData] = useState(DEFAULT_SITE_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -343,27 +345,29 @@ export default function AdminSettingsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 shrink-0">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleResetDefaults}
-            className="border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-200 text-xs gap-1.5 rounded-xl"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>{isBn ? 'ডিফল্ট রিসেট' : 'Reset'}</span>
-          </Button>
+        {activeTab !== 'backup' && activeTab !== 'preview' && (
+          <div className="flex items-center gap-2.5 shrink-0">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleResetDefaults}
+              className="border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-200 text-xs gap-1.5 rounded-xl"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>{isBn ? 'ডিফল্ট রিসেট' : 'Reset'}</span>
+            </Button>
 
-          <Button
-            type="button"
-            onClick={() => handleSave()}
-            disabled={saving}
-            className="bg-primary hover:bg-primary/90 text-white font-bold text-xs gap-1.5 rounded-xl shadow-lg shadow-primary/30"
-          >
-            {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-            <span>{saving ? (isBn ? 'সংরক্ষণ হচ্ছে...' : 'Saving...') : (isBn ? 'পরিবর্তন সংরক্ষণ করুন' : 'Save Changes')}</span>
-          </Button>
-        </div>
+            <Button
+              type="button"
+              onClick={() => handleSave()}
+              disabled={saving}
+              className="bg-primary hover:bg-primary/90 text-white font-bold text-xs gap-1.5 rounded-xl shadow-lg shadow-primary/30"
+            >
+              {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+              <span>{saving ? (isBn ? 'সংরক্ষণ হচ্ছে...' : 'Saving...') : (isBn ? 'পরিবর্তন সংরক্ষণ করুন' : 'Save Changes')}</span>
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Tabs Navigation */}
@@ -450,6 +454,18 @@ export default function AdminSettingsPage() {
         >
           <Server className="w-4 h-4 text-rose-500" />
           <span>{isBn ? 'ইমেইল ও SMTP সেটিংস' : 'Email & SMTP Setup'}</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('backup')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
+            activeTab === 'backup'
+              ? 'bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-sm'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          <Database className="w-4 h-4 text-emerald-500" />
+          <span>{isBn ? 'ডাটা ব্যাকআপ ও রিস্টোর' : 'Export & Import Data'}</span>
         </button>
 
         <button
@@ -2020,16 +2036,20 @@ export default function AdminSettingsPage() {
         </div>
       )}
 
-      {/* Floating Save Bar */}
-      <div className="sticky bottom-4 z-20 flex items-center justify-between p-4 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 shadow-2xl backdrop-blur-md">
-        <div className="flex items-center gap-2 text-xs text-slate-500">
-          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-          <span>
-            {activeTab === 'smtp'
-              ? (isBn ? 'SMTP কনফিগারেশন সংরক্ষণ করতে সেভ করুন।' : 'Click save to apply SMTP & email server configuration.')
-              : (isBn ? 'পরিবর্তন করার পর সংরক্ষণ করুন' : 'Click save to apply changes globally across all pages.')}
-          </span>
-        </div>
+      {/* Tab: Backup & Restore (Export & Import All Data) */}
+      {activeTab === 'backup' && <BackupRestorePanel />}
+
+      {/* Floating Save Bar (Only for editable configuration tabs) */}
+      {activeTab !== 'backup' && activeTab !== 'preview' && (
+        <div className="sticky bottom-4 z-20 flex items-center justify-between p-4 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 shadow-2xl backdrop-blur-md">
+          <div className="flex items-center gap-2 text-xs text-slate-500">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+            <span>
+              {activeTab === 'smtp'
+                ? (isBn ? 'SMTP কনফিগারেশন সংরক্ষণ করতে সেভ করুন।' : 'Click save to apply SMTP & email server configuration.')
+                : (isBn ? 'পরিবর্তন করার পর সংরক্ষণ করুন' : 'Click save to apply changes globally across all pages.')}
+            </span>
+          </div>
 
         <div className="flex items-center gap-3">
           <Button
@@ -2060,6 +2080,8 @@ export default function AdminSettingsPage() {
           </Button>
         </div>
       </div>
+      )}
     </div>
   );
 }
+

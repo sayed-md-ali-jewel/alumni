@@ -22,6 +22,7 @@ import {
   Sliders,
   Droplet,
   AlertOctagon,
+  Database,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
@@ -109,6 +110,14 @@ export function AdminCommandPalette({
       title: isBn ? 'কমিউনিটি ও ফুটার কাস্টমাইজেশন' : 'Community & Footer Customization',
       subtitle: isBn ? 'ডায়নামিক নাম, হোয়াটসঅ্যাপ ও ফেসবুক লিঙ্ক' : 'Dynamic community name, WhatsApp & Facebook URLs',
       icon: Sliders,
+      category: isBn ? 'সিস্টেম' : 'System',
+      href: '/dashboard/admin/settings',
+    },
+    {
+      id: 'backup',
+      title: isBn ? 'ডাটা এক্সপোর্ট ও ইমপোর্ট ব্যাকআপ' : 'Export & Import Database Backup',
+      subtitle: isBn ? 'ইউজার, রক্তদাতা, অনুদান ও সেটিংসের সম্পূর্ণ ব্যাকআপ সংরক্ষণ ও রিস্টোর' : 'Download complete JSON database snapshots or restore from file',
+      icon: Database,
       category: isBn ? 'সিস্টেম' : 'System',
       href: '/dashboard/admin/settings',
     },
