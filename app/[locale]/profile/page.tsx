@@ -36,6 +36,9 @@ import {
   Phone,
   Mail,
   Sliders,
+  Globe,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import { useSweetAlert } from '@/components/ui/SweetAlert';
 import {
@@ -102,6 +105,14 @@ export default function ProfilePage() {
     skills: '',
     image: '',
     visibility: 'public',
+    contactPrivacy: {
+      email: 'public',
+      phone: 'public',
+      whatsapp: 'public',
+      facebook: 'public',
+      linkedin: 'public',
+      instagram: 'public',
+    },
     // Blood Donation System
     isBloodDonor: false,
     donationStatus: 'Available',
@@ -151,6 +162,14 @@ export default function ProfilePage() {
             skills: Array.isArray(data.profile.skills) ? data.profile.skills.join(', ') : '',
             image: data.user?.image || '',
             visibility: data.profile.visibility || 'public',
+            contactPrivacy: {
+              email: data.profile.contactPrivacy?.email || 'public',
+              phone: data.profile.contactPrivacy?.phone || 'public',
+              whatsapp: data.profile.contactPrivacy?.whatsapp || 'public',
+              facebook: data.profile.contactPrivacy?.facebook || 'public',
+              linkedin: data.profile.contactPrivacy?.linkedin || 'public',
+              instagram: data.profile.contactPrivacy?.instagram || 'public',
+            },
             // Blood donation
             isBloodDonor: data.profile.isBloodDonor || false,
             donationStatus: data.profile.donationStatus || 'Available',
@@ -185,7 +204,7 @@ export default function ProfilePage() {
     if (status === 'authenticated') {
       fetchProfile();
     }
-  }, [status, session]);
+  }, [status]);
 
   const handleLastDonationDateChange = (val: string) => {
     if (!val) {
@@ -327,6 +346,20 @@ export default function ProfilePage() {
       }
 
       setSaveSuccess(true);
+      if (data.profile?.contactPrivacy) {
+        setFormData((prev) => ({
+          ...prev,
+          contactPrivacy: {
+            email: data.profile.contactPrivacy.email || 'public',
+            phone: data.profile.contactPrivacy.phone || 'public',
+            whatsapp: data.profile.contactPrivacy.whatsapp || 'public',
+            facebook: data.profile.contactPrivacy.facebook || 'public',
+            linkedin: data.profile.contactPrivacy.linkedin || 'public',
+            instagram: data.profile.contactPrivacy.instagram || 'public',
+          },
+        }));
+      }
+
       await update({
         name: formData.name,
         image: formData.image,
@@ -482,12 +515,12 @@ export default function ProfilePage() {
                 key={step.id}
                 type="button"
                 onClick={() => handleStepClick(step.id)}
-                className={`flex items-center gap-3 sm:gap-3.5 p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl text-left transition-all duration-200 border min-h-[76px] sm:min-h-[84px] ${
+                className={`flex items-center gap-3 sm:gap-3.5 p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl text-left transition-all duration-200 border min-h-[76px] sm:min-h-[84px] cursor-pointer ${
                   isActive
-                    ? 'bg-primary/10 dark:bg-primary/20 border-primary text-primary shadow-md ring-2 ring-primary/25 scale-[1.01]'
+                    ? 'bg-primary/10 dark:bg-primary/20 border-primary dark:border-primary-500 text-primary shadow-md ring-2 ring-primary/25 scale-[1.01]'
                     : isCompleted
-                    ? 'bg-emerald-50/70 dark:bg-emerald-950/25 border-emerald-300 dark:border-emerald-800/60 text-slate-800 dark:text-slate-200 hover:border-emerald-400 dark:hover:border-emerald-700'
-                    : 'bg-white dark:bg-slate-850 border-slate-200/90 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-700 shadow-xs'
+                    ? 'bg-emerald-50/80 dark:bg-emerald-950/30 border-emerald-300 dark:border-emerald-800/60 text-slate-800 dark:text-slate-200 hover:border-emerald-400 dark:hover:border-emerald-700'
+                    : 'bg-white dark:bg-slate-800/90 border-slate-200/90 dark:border-slate-750 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 shadow-xs'
                 }`}
               >
                 <div
@@ -496,7 +529,7 @@ export default function ProfilePage() {
                       ? 'bg-primary text-white shadow-md shadow-primary/30 scale-105'
                       : isCompleted
                       ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/30'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700'
+                      : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200/80 dark:border-slate-700'
                   }`}
                 >
                   {isCompleted ? <Check className="w-4 h-4 sm:w-5 sm:h-5 stroke-[3]" /> : step.id}
@@ -506,12 +539,18 @@ export default function ProfilePage() {
                     isActive
                       ? 'text-primary dark:text-primary-400'
                       : isCompleted
-                      ? 'text-emerald-900 dark:text-emerald-200'
+                      ? 'text-emerald-900 dark:text-emerald-300'
                       : 'text-slate-800 dark:text-slate-100'
                   }`}>
                     {step.title}
                   </h4>
-                  <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 leading-tight">
+                  <p className={`text-[11px] sm:text-xs leading-tight ${
+                    isActive
+                      ? 'text-primary/80 dark:text-primary-300/80'
+                      : isCompleted
+                      ? 'text-emerald-700/80 dark:text-emerald-400/80'
+                      : 'text-slate-500 dark:text-slate-400'
+                  }`}>
                     {step.subtitle}
                   </p>
                 </div>
@@ -743,88 +782,330 @@ export default function ProfilePage() {
             {/* ================= STEP 3: SOCIAL MEDIA & PRIVACY ================= */}
             {currentStep === 3 && (
               <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                <div className="p-4 rounded-2xl bg-blue-50/60 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 text-xs text-blue-900 dark:text-blue-200">
-                  {isBn
-                    ? 'আপনার সোশ্যাল মিডিয়া ও WhatsApp লিংক যুক্ত করলে অন্য প্রাক্তন সদস্যরা সহজেই আপনার সাথে প্রফেশনাল নেটওয়ার্কিং করতে পারবেন।'
-                    : 'Adding your social media and WhatsApp allows verified fellow alumni to easily connect with you.'}
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Facebook Profile URL */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                      <span className="w-5 h-5 rounded-md bg-[#1877F2]/10 text-[#1877F2] flex items-center justify-center shrink-0">
-                        <FacebookIcon size={12} />
-                      </span>
-                      <span>{t('facebook')}</span>
-                    </label>
-                    <Input
-                      type="url"
-                      placeholder="https://facebook.com/username"
-                      value={formData.facebook}
-                      onChange={(e) => setFormData({ ...formData, facebook: e.target.value })}
-                      className="rounded-xl text-xs"
-                    />
-                  </div>
-
-                  {/* LinkedIn Profile URL */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                      <span className="w-5 h-5 rounded-md bg-[#0A66C2]/10 text-[#0A66C2] flex items-center justify-center shrink-0">
-                        <LinkedInIcon size={12} />
-                      </span>
-                      <span>{t('linkedin')}</span>
-                    </label>
-                    <Input
-                      type="url"
-                      placeholder="https://linkedin.com/in/username"
-                      value={formData.linkedin}
-                      onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
-                      className="rounded-xl text-xs"
-                    />
-                  </div>
-
-                  {/* Instagram Profile URL */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                      <span className="w-5 h-5 rounded-md bg-[#E4405F]/10 text-[#E4405F] flex items-center justify-center shrink-0">
-                        <InstagramIcon size={12} />
-                      </span>
-                      <span>{t('instagram')}</span>
-                    </label>
-                    <Input
-                      type="url"
-                      placeholder="https://instagram.com/username"
-                      value={formData.instagram}
-                      onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
-                      className="rounded-xl text-xs"
-                    />
-                  </div>
-
-                  {/* WhatsApp Number */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                      <span className="w-5 h-5 rounded-md bg-[#25D366]/10 text-[#25D366] flex items-center justify-center shrink-0">
-                        <WhatsAppIcon size={12} />
-                      </span>
-                      <span>{t('whatsapp')}</span>
-                    </label>
-                    <Input
-                      type="tel"
-                      placeholder="+8801711000001 / 01711000001"
-                      value={formData.whatsapp}
-                      onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-                      className="rounded-xl text-xs"
-                    />
-                    <p className="text-[10px] text-slate-400">
+                <div className="p-4 rounded-2xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 text-xs text-blue-900 dark:text-blue-200 flex items-start gap-3">
+                  <Sparkles className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <div className="space-y-0.5">
+                    <p className="font-bold">
+                      {isBn ? 'প্রোফাইল প্রাইভেসি ও প্ল্যাটফর্ম দৃশ্যমানতা' : 'Profile Privacy & Platform Visibility'}
+                    </p>
+                    <p className="text-[11px] text-blue-800/80 dark:text-blue-300/80">
                       {isBn
-                        ? 'নম্বর লিখলে ডিরেক্টরিতে সরাসরি ১-ক্লিকে WhatsApp চ্যাট শুরু করার বাটন প্রদর্শিত হবে।'
-                        : 'Enables a 1-click WhatsApp chat action on your public directory profile.'}
+                        ? 'আপনার প্রতিটি সোশ্যাল মিডিয়া ও যোগাযোগের মাধ্যমের জন্য আলাদাভাবে পাবলিক বা প্রাইভেট নিয়ন্ত্রণ করুন। প্রাইভেট চিহ্নিত মাধ্যমগুলো অন্য কোনো ব্যবহারকারী দেখতে পাবেন না।'
+                        : 'Configure privacy individually for each platform. Platforms marked as Private will be completely hidden from third parties and visitors on your public profile.'}
                     </p>
                   </div>
                 </div>
 
-                {/* Privacy / Visibility Settings */}
+                {/* Direct Contact Visibility (Email & Phone) */}
+                <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80 space-y-4">
+                  <div className="flex items-center justify-between gap-2 border-b border-slate-200/70 dark:border-slate-700/60 pb-3">
+                    <div className="space-y-0.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                        <Phone className="w-3.5 h-3.5 text-primary" />
+                        <span>{t('directContactHeading')}</span>
+                      </h4>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                        {t('directContactSubtitle')}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Email Address Privacy */}
+                    <div className="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                            <Mail className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                            {t('email')}
+                          </span>
+                        </div>
+
+                        <select
+                          value={formData.contactPrivacy.email}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              contactPrivacy: {
+                                ...formData.contactPrivacy,
+                                email: e.target.value as 'public' | 'private',
+                              },
+                            })
+                          }
+                          className={`h-7 px-2 text-[11px] font-bold rounded-lg border focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer transition-colors ${
+                            formData.contactPrivacy.email === 'public'
+                              ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
+                              : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-800'
+                          }`}
+                        >
+                          <option value="public">🌐 {t('publicVisible')}</option>
+                          <option value="private">🔒 {t('privateHidden')}</option>
+                        </select>
+                      </div>
+
+                      <p className="text-xs font-semibold text-slate-600 dark:text-slate-300 truncate">
+                        {formData.email || (isBn ? 'কোনো ইমেইল নেই' : 'No email address')}
+                      </p>
+                      <p className="text-[10px] text-slate-400">
+                        {formData.contactPrivacy.email === 'public'
+                          ? (isBn ? '✓ ইমেইল পাবলিক প্রোফাইল কার্ডে প্রদর্শিত হবে।' : '✓ Displayed on public profile contact card.')
+                          : (isBn ? '✕ দর্শনার্থীদের কাছ থেকে ইমেইল লুকানো থাকবে।' : '✕ Hidden from third parties on contact card.')}
+                      </p>
+                    </div>
+
+                    {/* Phone Number Privacy */}
+                    <div className="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                            <Phone className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                            {t('phone')}
+                          </span>
+                        </div>
+
+                        <select
+                          value={formData.contactPrivacy.phone}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              contactPrivacy: {
+                                ...formData.contactPrivacy,
+                                phone: e.target.value as 'public' | 'private',
+                              },
+                            })
+                          }
+                          className={`h-7 px-2 text-[11px] font-bold rounded-lg border focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer transition-colors ${
+                            formData.contactPrivacy.phone === 'public'
+                              ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
+                              : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-800'
+                          }`}
+                        >
+                          <option value="public">🌐 {t('publicVisible')}</option>
+                          <option value="private">🔒 {t('privateHidden')}</option>
+                        </select>
+                      </div>
+
+                      <Input
+                        type="tel"
+                        placeholder="+8801711000001 / 01711000001"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="rounded-xl text-xs bg-white dark:bg-slate-900"
+                      />
+                      <p className="text-[10px] text-slate-400">
+                        {formData.contactPrivacy.phone === 'public'
+                          ? (isBn ? '✓ মোবাইল নম্বর প্রোফাইল কার্ডে প্রদর্শিত হবে।' : '✓ Displayed on public profile contact card.')
+                          : (isBn ? '✕ দর্শনার্থীদের কাছ থেকে মোবাইল নম্বর লুকানো থাকবে।' : '✕ Hidden from third parties on contact card.')}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Social & Messaging Platforms with Individual Visibility Options */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                      <Share2 className="w-3.5 h-3.5 text-primary" />
+                      <span>{t('contactPrivacyHeading')}</span>
+                    </h4>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Facebook Profile */}
+                    <div className="p-4 rounded-2xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-750 space-y-2.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <label className="text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-lg bg-[#1877F2]/10 text-[#1877F2] flex items-center justify-center shrink-0">
+                            <FacebookIcon size={14} />
+                          </span>
+                          <span>{t('facebook')}</span>
+                        </label>
+
+                        <select
+                          value={formData.contactPrivacy.facebook}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              contactPrivacy: {
+                                ...formData.contactPrivacy,
+                                facebook: e.target.value as 'public' | 'private',
+                              },
+                            })
+                          }
+                          className={`h-7 px-2 text-[11px] font-bold rounded-lg border focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer transition-colors ${
+                            formData.contactPrivacy.facebook === 'public'
+                              ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
+                              : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-800'
+                          }`}
+                        >
+                          <option value="public">🌐 {t('publicVisible')}</option>
+                          <option value="private">🔒 {t('privateHidden')}</option>
+                        </select>
+                      </div>
+
+                      <Input
+                        type="url"
+                        placeholder="https://facebook.com/username"
+                        value={formData.facebook}
+                        onChange={(e) => setFormData({ ...formData, facebook: e.target.value })}
+                        className="rounded-xl text-xs bg-white dark:bg-slate-900"
+                      />
+                      <p className="text-[10px] text-slate-400">
+                        {formData.contactPrivacy.facebook === 'public'
+                          ? (isBn ? '✓ প্রোফাইল কার্ড ও ডিরেক্টরিতে ফেসবুক লিঙ্ক দৃশ্যমান থাকবে।' : '✓ Visible on profile card and directory.')
+                          : (isBn ? '✕ দর্শনার্থীদের কাছ থেকে ফেসবুক লিঙ্ক সম্পূর্ণ লুকানো থাকবে।' : '✕ Hidden from third parties and directory visitors.')}
+                      </p>
+                    </div>
+
+                    {/* LinkedIn Profile */}
+                    <div className="p-4 rounded-2xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-750 space-y-2.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <label className="text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-lg bg-[#0A66C2]/10 text-[#0A66C2] flex items-center justify-center shrink-0">
+                            <LinkedInIcon size={14} />
+                          </span>
+                          <span>{t('linkedin')}</span>
+                        </label>
+
+                        <select
+                          value={formData.contactPrivacy.linkedin}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              contactPrivacy: {
+                                ...formData.contactPrivacy,
+                                linkedin: e.target.value as 'public' | 'private',
+                              },
+                            })
+                          }
+                          className={`h-7 px-2 text-[11px] font-bold rounded-lg border focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer transition-colors ${
+                            formData.contactPrivacy.linkedin === 'public'
+                              ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
+                              : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-800'
+                          }`}
+                        >
+                          <option value="public">🌐 {t('publicVisible')}</option>
+                          <option value="private">🔒 {t('privateHidden')}</option>
+                        </select>
+                      </div>
+
+                      <Input
+                        type="url"
+                        placeholder="https://linkedin.com/in/username"
+                        value={formData.linkedin}
+                        onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
+                        className="rounded-xl text-xs bg-white dark:bg-slate-900"
+                      />
+                      <p className="text-[10px] text-slate-400">
+                        {formData.contactPrivacy.linkedin === 'public'
+                          ? (isBn ? '✓ প্রোফাইল কার্ড ও ডিরেক্টরিতে লিঙ্কডইন লিঙ্ক দৃশ্যমান থাকবে।' : '✓ Visible on profile card and directory.')
+                          : (isBn ? '✕ লিঙ্কডইন প্রোফাইল অন্য সবার কাছে লুকানো থাকবে।' : '✕ Hidden from third parties and directory visitors.')}
+                      </p>
+                    </div>
+
+                    {/* Instagram Profile */}
+                    <div className="p-4 rounded-2xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-750 space-y-2.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <label className="text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-lg bg-[#E4405F]/10 text-[#E4405F] flex items-center justify-center shrink-0">
+                            <InstagramIcon size={14} />
+                          </span>
+                          <span>{t('instagram')}</span>
+                        </label>
+
+                        <select
+                          value={formData.contactPrivacy.instagram}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              contactPrivacy: {
+                                ...formData.contactPrivacy,
+                                instagram: e.target.value as 'public' | 'private',
+                              },
+                            })
+                          }
+                          className={`h-7 px-2 text-[11px] font-bold rounded-lg border focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer transition-colors ${
+                            formData.contactPrivacy.instagram === 'public'
+                              ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
+                              : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-800'
+                          }`}
+                        >
+                          <option value="public">🌐 {t('publicVisible')}</option>
+                          <option value="private">🔒 {t('privateHidden')}</option>
+                        </select>
+                      </div>
+
+                      <Input
+                        type="url"
+                        placeholder="https://instagram.com/username"
+                        value={formData.instagram}
+                        onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
+                        className="rounded-xl text-xs bg-white dark:bg-slate-900"
+                      />
+                      <p className="text-[10px] text-slate-400">
+                        {formData.contactPrivacy.instagram === 'public'
+                          ? (isBn ? '✓ ইনস্টাগ্রাম লিঙ্ক পাবলিক প্রোফাইলে দেখা যাবে।' : '✓ Visible on profile card and directory.')
+                          : (isBn ? '✕ ইনস্টাগ্রাম লিঙ্ক পাবলিক প্রোফাইলে লুকানো থাকবে।' : '✕ Hidden from third parties on contact card.')}
+                      </p>
+                    </div>
+
+                    {/* WhatsApp Number */}
+                    <div className="p-4 rounded-2xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-750 space-y-2.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <label className="text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-lg bg-[#25D366]/10 text-[#25D366] flex items-center justify-center shrink-0">
+                            <WhatsAppIcon size={14} />
+                          </span>
+                          <span>{t('whatsapp')}</span>
+                        </label>
+
+                        <select
+                          value={formData.contactPrivacy.whatsapp}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              contactPrivacy: {
+                                ...formData.contactPrivacy,
+                                whatsapp: e.target.value as 'public' | 'private',
+                              },
+                            })
+                          }
+                          className={`h-7 px-2 text-[11px] font-bold rounded-lg border focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer transition-colors ${
+                            formData.contactPrivacy.whatsapp === 'public'
+                              ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
+                              : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-800'
+                          }`}
+                        >
+                          <option value="public">🌐 {t('publicVisible')}</option>
+                          <option value="private">🔒 {t('privateHidden')}</option>
+                        </select>
+                      </div>
+
+                      <Input
+                        type="tel"
+                        placeholder="+8801711000001 / 01711000001"
+                        value={formData.whatsapp}
+                        onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
+                        className="rounded-xl text-xs bg-white dark:bg-slate-900"
+                      />
+                      <p className="text-[10px] text-slate-400">
+                        {formData.contactPrivacy.whatsapp === 'public'
+                          ? (isBn
+                              ? '✓ নম্বর ও "Chat on WhatsApp" বাটন ডিরেক্টরি প্রোফাইল কার্ডে দৃশ্যমান থাকবে।'
+                              : '✓ Number and "Chat on WhatsApp" button visible on profile card.')
+                          : (isBn
+                              ? '✕ WhatsApp নম্বর ও চ্যাট বাটন অন্য দর্শনার্থীদের কাছে লুকানো থাকবে।'
+                              : '✕ WhatsApp number and direct chat button hidden from visitors.')}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Directory Visibility Settings */}
                 <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-slate-800">
                   <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                     <Lock className="w-3.5 h-3.5 text-primary" />

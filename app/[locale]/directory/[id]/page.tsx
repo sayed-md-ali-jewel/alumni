@@ -307,16 +307,23 @@ export default async function AlumniProfileDetailPage({
         {/* Contact info & Social Media Sidebar */}
         {(() => {
           const userPhone = user?.phone || profile.phone;
-          const hasAnyContact = Boolean(
-            user?.email ||
-            userPhone ||
-            profile.whatsapp ||
-            profile.facebook ||
-            profile.linkedin ||
-            profile.instagram
-          );
+          const contactPrivacy = profile.contactPrivacy || {};
 
-          if (!hasAnyContact) return null;
+          const isEmailPublic = Boolean(user?.email && contactPrivacy.email !== 'private');
+          const isPhonePublic = Boolean(userPhone && contactPrivacy.phone !== 'private');
+          const isWhatsAppPublic = Boolean(profile.whatsapp && contactPrivacy.whatsapp !== 'private');
+          const isFacebookPublic = Boolean(profile.facebook && contactPrivacy.facebook !== 'private');
+          const isLinkedInPublic = Boolean(profile.linkedin && contactPrivacy.linkedin !== 'private');
+          const isInstagramPublic = Boolean(profile.instagram && contactPrivacy.instagram !== 'private');
+
+          const hasAnyPublicContact = Boolean(
+            isEmailPublic ||
+            isPhonePublic ||
+            isWhatsAppPublic ||
+            isFacebookPublic ||
+            isLinkedInPublic ||
+            isInstagramPublic
+          );
 
           return (
             <div className="space-y-6">
@@ -324,161 +331,182 @@ export default async function AlumniProfileDetailPage({
                 <CardContent className="p-6 space-y-5">
                   <h3 className="font-bold text-base text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
                     <span>{isBn ? 'যোগাযোগের তথ্য' : 'Contact Information'}</span>
-                    <span className="text-[10px] uppercase font-bold text-primary px-2 py-0.5 rounded-md bg-primary/10">
-                      {isBn ? 'সক্রিয়' : 'Available'}
+                    <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-md ${
+                      hasAnyPublicContact
+                        ? 'text-primary bg-primary/10'
+                        : 'text-slate-500 bg-slate-100 dark:bg-slate-800'
+                    }`}>
+                      {hasAnyPublicContact
+                        ? (isBn ? 'সক্রিয়' : 'Available')
+                        : (isBn ? 'গোপনীয়' : 'Private')}
                     </span>
                   </h3>
 
-                  <div className="space-y-2.5 text-xs">
-                    {/* Email */}
-                    {user?.email && (
-                      <a
-                        href={`mailto:${user.email}`}
-                        className="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/70 text-slate-700 dark:text-slate-200 transition-all group border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
-                        title={user.email}
-                      >
-                        <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                          <Mail className="w-4 h-4" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                            {isBn ? 'ইমেইল' : 'Email'}
-                          </p>
-                          <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
-                            {user.email}
-                          </p>
-                        </div>
-                      </a>
-                    )}
+                  {hasAnyPublicContact ? (
+                    <div className="space-y-2.5 text-xs">
+                      {/* Email */}
+                      {isEmailPublic && (
+                        <a
+                          href={`mailto:${user.email}`}
+                          className="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/70 text-slate-700 dark:text-slate-200 transition-all group border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
+                          title={user.email}
+                        >
+                          <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                            <Mail className="w-4 h-4" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                              {isBn ? 'ইমেইল' : 'Email'}
+                            </p>
+                            <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
+                              {user.email}
+                            </p>
+                          </div>
+                        </a>
+                      )}
 
-                    {/* Phone */}
-                    {userPhone && (
-                      <a
-                        href={`tel:${userPhone}`}
-                        className="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/70 text-slate-700 dark:text-slate-200 transition-all group border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
-                        title={userPhone}
-                      >
-                        <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                          <Phone className="w-4 h-4" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                            {isBn ? 'ফোন নম্বর' : 'Phone'}
-                          </p>
-                          <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
-                            {userPhone}
-                          </p>
-                        </div>
-                      </a>
-                    )}
+                      {/* Phone */}
+                      {isPhonePublic && (
+                        <a
+                          href={`tel:${userPhone}`}
+                          className="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/70 text-slate-700 dark:text-slate-200 transition-all group border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
+                          title={userPhone}
+                        >
+                          <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                            <Phone className="w-4 h-4" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                              {isBn ? 'ফোন নম্বর' : 'Phone'}
+                            </p>
+                            <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
+                              {userPhone}
+                            </p>
+                          </div>
+                        </a>
+                      )}
 
-                    {/* WhatsApp */}
-                    {profile.whatsapp && (
-                      <a
-                        href={formatWhatsAppUrl(
-                          profile.whatsapp,
-                          isBn
-                            ? `হ্যালো ${user?.name || ''}, আমি স্কুল অ্যালামনাই প্ল্যাটফর্ম থেকে যোগাযোগ করছি।`
-                            : `Hello ${user?.name || ''}, reaching out from the Alumni Network.`
-                        )}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-[#25D366]/10 text-slate-700 dark:text-slate-200 transition-all group border border-transparent hover:border-[#25D366]/30"
-                        title={profile.whatsapp}
-                      >
-                        <div className="w-8 h-8 rounded-xl bg-[#25D366]/15 text-[#25D366] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                          <WhatsAppIcon size={16} />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
-                            WhatsApp
-                          </p>
-                          <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
-                            {profile.whatsapp}
-                          </p>
-                        </div>
-                        <ExternalLink className="w-3.5 h-3.5 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </a>
-                    )}
+                      {/* WhatsApp */}
+                      {isWhatsAppPublic && (
+                        <a
+                          href={formatWhatsAppUrl(
+                            profile.whatsapp,
+                            isBn
+                              ? `হ্যালো ${user?.name || ''}, আমি স্কুল অ্যালামনাই প্ল্যাটফর্ম থেকে যোগাযোগ করছি।`
+                              : `Hello ${user?.name || ''}, reaching out from the Alumni Network.`
+                          )}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-[#25D366]/10 text-slate-700 dark:text-slate-200 transition-all group border border-transparent hover:border-[#25D366]/30"
+                          title={profile.whatsapp}
+                        >
+                          <div className="w-8 h-8 rounded-xl bg-[#25D366]/15 text-[#25D366] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                            <WhatsAppIcon size={16} />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+                              WhatsApp
+                            </p>
+                            <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
+                              {profile.whatsapp}
+                            </p>
+                          </div>
+                          <ExternalLink className="w-3.5 h-3.5 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </a>
+                      )}
 
-                    {/* Facebook */}
-                    {profile.facebook && (
-                      <a
-                        href={profile.facebook}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-[#1877F2]/10 text-slate-700 dark:text-slate-200 transition-all group border border-transparent hover:border-[#1877F2]/30"
-                        title="Facebook Profile"
-                      >
-                        <div className="w-8 h-8 rounded-xl bg-[#1877F2]/15 text-[#1877F2] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                          <FacebookIcon size={16} />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[10px] font-semibold text-[#1877F2] uppercase tracking-wider">
-                            Facebook
-                          </p>
-                          <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
-                            {isBn ? 'ফেসবুক প্রোফাইল' : 'Facebook Profile'}
-                          </p>
-                        </div>
-                        <ExternalLink className="w-3.5 h-3.5 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </a>
-                    )}
+                      {/* Facebook */}
+                      {isFacebookPublic && (
+                        <a
+                          href={profile.facebook}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-[#1877F2]/10 text-slate-700 dark:text-slate-200 transition-all group border border-transparent hover:border-[#1877F2]/30"
+                          title="Facebook Profile"
+                        >
+                          <div className="w-8 h-8 rounded-xl bg-[#1877F2]/15 text-[#1877F2] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                            <FacebookIcon size={16} />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[10px] font-semibold text-[#1877F2] uppercase tracking-wider">
+                              Facebook
+                            </p>
+                            <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
+                              {isBn ? 'ফেসবুক প্রোফাইল' : 'Facebook Profile'}
+                            </p>
+                          </div>
+                          <ExternalLink className="w-3.5 h-3.5 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </a>
+                      )}
 
-                    {/* LinkedIn */}
-                    {profile.linkedin && (
-                      <a
-                        href={profile.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-[#0A66C2]/10 text-slate-700 dark:text-slate-200 transition-all group border border-transparent hover:border-[#0A66C2]/30"
-                        title="LinkedIn Profile"
-                      >
-                        <div className="w-8 h-8 rounded-xl bg-[#0A66C2]/15 text-[#0A66C2] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                          <LinkedInIcon size={16} />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[10px] font-semibold text-[#0A66C2] uppercase tracking-wider">
-                            LinkedIn
-                          </p>
-                          <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
-                            {isBn ? 'লিঙ্কডইন প্রোফাইল' : 'LinkedIn Profile'}
-                          </p>
-                        </div>
-                        <ExternalLink className="w-3.5 h-3.5 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </a>
-                    )}
+                      {/* LinkedIn */}
+                      {isLinkedInPublic && (
+                        <a
+                          href={profile.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-[#0A66C2]/10 text-slate-700 dark:text-slate-200 transition-all group border border-transparent hover:border-[#0A66C2]/30"
+                          title="LinkedIn Profile"
+                        >
+                          <div className="w-8 h-8 rounded-xl bg-[#0A66C2]/15 text-[#0A66C2] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                            <LinkedInIcon size={16} />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[10px] font-semibold text-[#0A66C2] uppercase tracking-wider">
+                              LinkedIn
+                            </p>
+                            <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
+                              {isBn ? 'লিঙ্কডইন প্রোফাইল' : 'LinkedIn Profile'}
+                            </p>
+                          </div>
+                          <ExternalLink className="w-3.5 h-3.5 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </a>
+                      )}
 
-                    {/* Instagram */}
-                    {profile.instagram && (
-                      <a
-                        href={profile.instagram}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-[#E4405F]/10 text-slate-700 dark:text-slate-200 transition-all group border border-transparent hover:border-[#E4405F]/30"
-                        title="Instagram Profile"
-                      >
-                        <div className="w-8 h-8 rounded-xl bg-[#E4405F]/15 text-[#E4405F] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                          <InstagramIcon size={16} />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[10px] font-semibold text-[#E4405F] uppercase tracking-wider">
-                            Instagram
-                          </p>
-                          <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
-                            {isBn ? 'ইনস্টাগ্রাম প্রোফাইল' : 'Instagram Profile'}
-                          </p>
-                        </div>
-                        <ExternalLink className="w-3.5 h-3.5 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </a>
-                    )}
-                  </div>
+                      {/* Instagram */}
+                      {isInstagramPublic && (
+                        <a
+                          href={profile.instagram}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-[#E4405F]/10 text-slate-700 dark:text-slate-200 transition-all group border border-transparent hover:border-[#E4405F]/30"
+                          title="Instagram Profile"
+                        >
+                          <div className="w-8 h-8 rounded-xl bg-[#E4405F]/15 text-[#E4405F] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                            <InstagramIcon size={16} />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[10px] font-semibold text-[#E4405F] uppercase tracking-wider">
+                              Instagram
+                            </p>
+                            <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
+                              {isBn ? 'ইনস্টাগ্রাম প্রোফাইল' : 'Instagram Profile'}
+                            </p>
+                          </div>
+                          <ExternalLink className="w-3.5 h-3.5 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </a>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-center space-y-1">
+                      <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                        {isBn
+                          ? '🔒 যোগাযোগের তথ্য ব্যক্তিগত রাখা হয়েছে।'
+                          : '🔒 Contact details are kept private.'}
+                      </p>
+                      <p className="text-[11px] text-slate-400">
+                        {isBn
+                          ? 'সরাসরি যোগাযোগ করতে নিচের বাটন ব্যবহার করে বার্তা পাঠান।'
+                          : 'You can send a secure message directly using the button below.'}
+                      </p>
+                    </div>
+                  )}
 
                   {/* Primary Action Buttons */}
                   <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800">
                     <DirectoryUserActions targetUser={profile} />
 
-                    {profile.whatsapp && (
+                    {isWhatsAppPublic && (
                       <a
                         href={formatWhatsAppUrl(
                           profile.whatsapp,
@@ -492,7 +520,7 @@ export default async function AlumniProfileDetailPage({
                       >
                         <Button
                           size="sm"
-                          className="w-full gap-2 text-xs rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold shadow-md shadow-[#25D366]/20 transition-all"
+                          className="w-full gap-2 text-xs rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold shadow-md shadow-[#25D366]/20 transition-all cursor-pointer"
                         >
                           <WhatsAppIcon size={15} />
                           <span>{isBn ? 'WhatsApp-এ বার্তা পাঠান' : 'Chat on WhatsApp'}</span>
@@ -500,12 +528,12 @@ export default async function AlumniProfileDetailPage({
                       </a>
                     )}
 
-                    {user?.email && (
+                    {isEmailPublic && (
                       <a href={`mailto:${user.email}`} className="block w-full">
                         <Button
                           size="sm"
                           variant="outline"
-                          className="w-full gap-2 text-xs rounded-xl font-bold text-slate-700 dark:text-slate-200"
+                          className="w-full gap-2 text-xs rounded-xl font-bold text-slate-700 dark:text-slate-200 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800"
                         >
                           <Mail className="w-3.5 h-3.5" />
                           <span>{isBn ? 'ইমেইল বার্তা পাঠান' : 'Send Message'}</span>

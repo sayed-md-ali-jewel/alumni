@@ -165,6 +165,7 @@ async function handleUpdate(req: Request, id: string) {
     if (instagram !== undefined) profileUpdates.instagram = instagram.trim();
     if (whatsapp !== undefined) profileUpdates.whatsapp = whatsapp.trim();
     if (visibility !== undefined) profileUpdates.visibility = visibility;
+    if (body.contactPrivacy !== undefined) profileUpdates.contactPrivacy = body.contactPrivacy;
     if (isBloodDonor !== undefined) {
       profileUpdates.isBloodDonor = Boolean(isBloodDonor);
       if (isBloodDonor) {

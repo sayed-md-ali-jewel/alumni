@@ -94,7 +94,7 @@ export default function RegisterPage() {
           email: formData.email,
           password: formData.password,
         });
-        router.push('/profile');
+        router.push('/messages');
       }, 1200);
     } catch (err: any) {
       const errorList = parseErrorMessages(err?.message || err);

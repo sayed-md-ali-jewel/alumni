@@ -8,6 +8,31 @@ export function PwaRegister() {
       return;
     }
 
+    const isLocalhost =
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.hostname.endsWith('.local');
+
+    const isDev = process.env.NODE_ENV !== 'production' || isLocalhost;
+
+    // In development or localhost, aggressively unregister service workers & clear caches to prevent stale chunks
+    if (isDev) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (const registration of registrations) {
+          registration.unregister();
+        }
+      });
+
+      if ('caches' in window) {
+        caches.keys().then((cacheNames) => {
+          for (const cacheName of cacheNames) {
+            caches.delete(cacheName);
+          }
+        });
+      }
+      return;
+    }
+
     const handleLoad = async () => {
       try {
         const registration = await navigator.serviceWorker.register('/sw.js', {
@@ -50,3 +75,4 @@ export function PwaRegister() {
 
   return null;
 }
+

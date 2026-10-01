@@ -1,21 +1,23 @@
 'use client';
 
-import React, { useState } from 'react';
-import { signIn } from 'next-auth/react';
+import React, { useState, Suspense } from 'react';
+import { signIn, getSession } from 'next-auth/react';
 import { useRouter, usePathname, Link } from '@/i18n/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
-import { GraduationCap, Lock, Mail, AlertCircle, Sparkles, Eye, EyeOff } from 'lucide-react';
+import { GraduationCap, Lock, Mail, AlertCircle, Sparkles, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useSweetAlert } from '@/components/ui/SweetAlert';
 import { parseErrorMessages } from '@/lib/utils';
 
-export default function LoginPage() {
+function LoginForm() {
   const t = useTranslations('auth');
   const common = useTranslations('common');
   const locale = useLocale();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { showErrorToast, showSuccessToast } = useSweetAlert();
 
   const [email, setEmail] = useState('');
@@ -50,7 +52,27 @@ export default function LoginPage() {
           locale === 'bn' ? 'লগইন সফল হয়েছে! স্বাগতম।' : 'Login successful! Welcome back.',
           locale === 'bn' ? 'সফল হয়েছে' : 'Success'
         );
-        router.push('/');
+
+        // Fetch fresh session to identify role
+        const session = await getSession();
+        const userRole = (session?.user as any)?.role;
+
+        const callbackUrl = searchParams.get('callbackUrl');
+
+        if (
+          callbackUrl &&
+          callbackUrl !== '/' &&
+          !callbackUrl.includes('/login') &&
+          !callbackUrl.includes('/register')
+        ) {
+          const cleanCallback = callbackUrl.replace(/^\/(bn|en)/, '') || '/';
+          router.push(cleanCallback);
+        } else if (userRole === 'admin' || userRole === 'super_admin') {
+          router.push('/dashboard/admin');
+        } else {
+          router.push('/messages');
+        }
+
         router.refresh();
       }
     } catch (err: any) {
@@ -186,3 +208,18 @@ export default function LoginPage() {
     </div>
   );
 }
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
+  );
+}
+

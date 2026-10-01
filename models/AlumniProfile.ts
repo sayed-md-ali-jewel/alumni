@@ -26,6 +26,14 @@ export interface IAlumniProfile extends Document {
   skills: string[];
   phone?: string;
   visibility: 'public' | 'alumni_only';
+  contactPrivacy?: {
+    email?: 'public' | 'private';
+    phone?: 'public' | 'private';
+    whatsapp?: 'public' | 'private';
+    facebook?: 'public' | 'private';
+    linkedin?: 'public' | 'private';
+    instagram?: 'public' | 'private';
+  };
 
   // Blood Donation System
   isBloodDonor: boolean;
@@ -45,6 +53,18 @@ export interface IAlumniProfile extends Document {
   createdAt: Date;
   updatedAt: Date;
 }
+
+const ContactPrivacySchema = new Schema(
+  {
+    email: { type: String, enum: ['public', 'private'], default: 'public' },
+    phone: { type: String, enum: ['public', 'private'], default: 'public' },
+    whatsapp: { type: String, enum: ['public', 'private'], default: 'public' },
+    facebook: { type: String, enum: ['public', 'private'], default: 'public' },
+    linkedin: { type: String, enum: ['public', 'private'], default: 'public' },
+    instagram: { type: String, enum: ['public', 'private'], default: 'public' },
+  },
+  { _id: false }
+);
 
 const AlumniProfileSchema = new Schema<IAlumniProfile>(
   {
@@ -75,6 +95,17 @@ const AlumniProfileSchema = new Schema<IAlumniProfile>(
       type: String,
       enum: ['public', 'alumni_only'],
       default: 'public',
+    },
+    contactPrivacy: {
+      type: ContactPrivacySchema,
+      default: () => ({
+        email: 'public',
+        phone: 'public',
+        whatsapp: 'public',
+        facebook: 'public',
+        linkedin: 'public',
+        instagram: 'public',
+      }),
     },
 
     // Blood Donation fields
@@ -131,6 +162,10 @@ AlumniProfileSchema.index({
   bio: 'text',
   donorLocation: 'text',
 });
+
+if (mongoose.models && mongoose.models.AlumniProfile) {
+  delete (mongoose.models as any).AlumniProfile;
+}
 
 export const AlumniProfile: Model<IAlumniProfile> =
   mongoose.models.AlumniProfile ||

@@ -74,6 +74,14 @@ export async function PUT(req: Request) {
         skills: skillsArray,
         phone: validatedData.phone || '',
         visibility: validatedData.visibility || 'public',
+        contactPrivacy: {
+          email: validatedData.contactPrivacy?.email || 'public',
+          phone: validatedData.contactPrivacy?.phone || 'public',
+          whatsapp: validatedData.contactPrivacy?.whatsapp || 'public',
+          facebook: validatedData.contactPrivacy?.facebook || 'public',
+          linkedin: validatedData.contactPrivacy?.linkedin || 'public',
+          instagram: validatedData.contactPrivacy?.instagram || 'public',
+        },
         // Blood donation fields
         isBloodDonor: validatedData.isBloodDonor,
         donationStatus: validatedData.donationStatus,

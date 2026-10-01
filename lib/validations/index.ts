@@ -57,6 +57,16 @@ export const ProfileUpdateSchema = z.object({
   phone: z.string().optional(),
   visibility: z.enum(['public', 'alumni_only']).default('public'),
   image: z.string().optional(),
+  contactPrivacy: z
+    .object({
+      email: z.enum(['public', 'private']).default('public'),
+      phone: z.enum(['public', 'private']).default('public'),
+      whatsapp: z.enum(['public', 'private']).default('public'),
+      facebook: z.enum(['public', 'private']).default('public'),
+      linkedin: z.enum(['public', 'private']).default('public'),
+      instagram: z.enum(['public', 'private']).default('public'),
+    })
+    .optional(),
   // Blood donor preferences
   isBloodDonor: z.boolean().default(false),
   donationStatus: z.enum(DONATION_STATUSES).default(DonationStatus.AVAILABLE),

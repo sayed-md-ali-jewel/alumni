@@ -662,7 +662,7 @@ export default function DirectoryPage() {
                           <div className="pt-3.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                             {/* Social Icons */}
                             <div className="flex items-center gap-1.5">
-                              {profile.linkedin && (
+                              {profile.linkedin && profile.contactPrivacy?.linkedin !== 'private' && (
                                 <a
                                   href={profile.linkedin}
                                   target="_blank"
@@ -673,7 +673,7 @@ export default function DirectoryPage() {
                                   <LinkedInIcon className="w-3.5 h-3.5" />
                                 </a>
                               )}
-                              {profile.facebook && (
+                              {profile.facebook && profile.contactPrivacy?.facebook !== 'private' && (
                                 <a
                                   href={profile.facebook}
                                   target="_blank"
@@ -684,7 +684,7 @@ export default function DirectoryPage() {
                                   <FacebookIcon className="w-3.5 h-3.5" />
                                 </a>
                               )}
-                              {whatsappLink && (
+                              {whatsappLink && profile.contactPrivacy?.whatsapp !== 'private' && (
                                 <a
                                   href={whatsappLink}
                                   target="_blank"
@@ -695,7 +695,7 @@ export default function DirectoryPage() {
                                   <WhatsAppIcon className="w-3.5 h-3.5" />
                                 </a>
                               )}
-                              {user.email && (
+                              {user.email && profile.contactPrivacy?.email !== 'private' && (
                                 <a
                                   href={`mailto:${user.email}`}
                                   className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/50 flex items-center justify-center transition-colors"

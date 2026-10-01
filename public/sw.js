@@ -65,6 +65,17 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Bypass caching completely on local development environments
+  if (
+    url.hostname === 'localhost' ||
+    url.hostname === '127.0.0.1' ||
+    url.hostname.endsWith('.local') ||
+    url.pathname.includes('webpack-hmr') ||
+    url.pathname.includes('hot-update')
+  ) {
+    return;
+  }
+
   // Non-GET requests (POST, PUT, DELETE, PATCH): Always Network Only
   if (request.method !== 'GET') {
     return;
