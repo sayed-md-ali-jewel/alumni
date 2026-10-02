@@ -36,6 +36,7 @@ import {
   formatWhatsAppUrl,
 } from '@/components/shared/SocialIcons';
 import { DirectoryUserActions } from '@/components/requests/DirectoryUserActions';
+import { ProfileAvatarWithPreview } from '@/components/shared/ProfileAvatarWithPreview';
 
 async function getProfile(id: string) {
   try {
@@ -107,11 +108,26 @@ export default async function AlumniProfileDetailPage({
           {/* Avatar and Badges */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between -mt-14 xs:-mt-16 sm:-mt-20 gap-4 mb-6">
             <div className="relative">
-              <Avatar
+              <ProfileAvatarWithPreview
                 src={user?.image}
-                fallback={user?.name || 'AL'}
+                name={user?.name || 'AL'}
+                batch={profile.batchYear}
+                group={profile.group}
+                bloodGroup={blood}
+                jobTitle={profile.jobTitle}
+                company={profile.company}
+                isVerified={user?.isVerified}
+                committeePostName={
+                  profile.committeePost
+                    ? isBn
+                      ? (profile.committeePost as any).name_bn || (profile.committeePost as any).name_en
+                      : (profile.committeePost as any).name_en || (profile.committeePost as any).name_bn
+                    : undefined
+                }
+                location={profile.location}
+                locale={locale}
                 size="xl"
-                className="w-24 h-24 xs:w-28 xs:h-28 sm:w-36 sm:h-36 ring-4 ring-white dark:ring-slate-900 shadow-xl"
+                avatarClassName="w-24 h-24 xs:w-28 xs:h-28 sm:w-36 sm:h-36 ring-4 ring-white dark:ring-slate-900 shadow-xl"
               />
             </div>
 

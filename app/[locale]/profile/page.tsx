@@ -610,6 +610,12 @@ export default function ProfilePage() {
                       ? 'সরাসরি ছবি আপলোড করুন (JPG, PNG, WEBP) অথবা ড্র্যাগ করে আনুন। সর্বোচ্চ ৫ মেগাবাইট।'
                       : 'Upload your photo directly (JPG, PNG, WEBP up to 5MB) or drag & drop.'
                   }
+                  batch={formData.batchYear}
+                  group={formData.group}
+                  bloodGroup={formData.bloodGroup}
+                  jobTitle={formData.jobTitle}
+                  company={formData.company}
+                  locale={locale}
                 />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">

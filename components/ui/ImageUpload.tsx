@@ -1,10 +1,11 @@
 'use client';
 
 import * as React from 'react';
-import { UploadCloud, Camera, Trash2, Loader2, Link2, Check, AlertCircle } from 'lucide-react';
+import { UploadCloud, Camera, Trash2, Loader2, Link2, Check, AlertCircle, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Avatar } from '@/components/ui/Avatar';
+import { ProfileImagePreviewModal } from '@/components/shared/ProfileImagePreviewModal';
 import { cn } from '@/lib/utils';
 
 export interface ImageUploadProps {
@@ -16,6 +17,12 @@ export interface ImageUploadProps {
   helperText?: string;
   className?: string;
   disabled?: boolean;
+  batch?: string | number;
+  group?: string;
+  bloodGroup?: string;
+  jobTitle?: string;
+  company?: string;
+  locale?: string;
 }
 
 export function ImageUpload({
@@ -27,10 +34,17 @@ export function ImageUpload({
   helperText,
   className,
   disabled = false,
+  batch,
+  group,
+  bloodGroup,
+  jobTitle,
+  company,
+  locale = 'en',
 }: ImageUploadProps) {
   const [isUploading, setIsUploading] = React.useState(false);
   const [uploadError, setUploadError] = React.useState<string | null>(null);
   const [showUrlInput, setShowUrlInput] = React.useState(false);
+  const [showPreviewModal, setShowPreviewModal] = React.useState(false);
   const [customUrl, setCustomUrl] = React.useState(value || '');
   const [isDragging, setIsDragging] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -199,6 +213,21 @@ export function ImageUpload({
                   type="button"
                   variant="outline"
                   size="sm"
+                  onClick={() => setShowPreviewModal(true)}
+                  disabled={disabled || isUploading}
+                  className="gap-1.5 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl"
+                  title="Preview profile image"
+                >
+                  <Eye className="w-3.5 h-3.5 text-primary" />
+                  <span>Preview</span>
+                </Button>
+              )}
+
+              {value && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={handleRemove}
                   disabled={disabled || isUploading}
                   className="gap-1.5 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-900/50 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl"
@@ -256,6 +285,20 @@ export function ImageUpload({
             )}
           </div>
         </div>
+
+        {/* Profile Image Preview Modal */}
+        <ProfileImagePreviewModal
+          isOpen={showPreviewModal}
+          onClose={() => setShowPreviewModal(false)}
+          imageUrl={value}
+          name={fallbackName}
+          batch={batch}
+          group={group}
+          bloodGroup={bloodGroup}
+          jobTitle={jobTitle}
+          company={company}
+          locale={locale}
+        />
       </div>
     );
   }
@@ -286,6 +329,17 @@ export function ImageUpload({
             className="w-full h-44 object-cover"
           />
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 backdrop-blur-[2px]">
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() => setShowPreviewModal(true)}
+              disabled={isUploading}
+              className="gap-1.5 rounded-xl bg-white/90 text-slate-900 hover:bg-white"
+            >
+              <Eye className="w-4 h-4 text-primary" />
+              <span>Preview</span>
+            </Button>
             <Button
               type="button"
               size="sm"
@@ -384,6 +438,20 @@ export function ImageUpload({
           <span>{uploadError}</span>
         </div>
       )}
+
+      {/* Image Preview Modal */}
+      <ProfileImagePreviewModal
+        isOpen={showPreviewModal}
+        onClose={() => setShowPreviewModal(false)}
+        imageUrl={value}
+        name={fallbackName}
+        batch={batch}
+        group={group}
+        bloodGroup={bloodGroup}
+        jobTitle={jobTitle}
+        company={company}
+        locale={locale}
+      />
     </div>
   );
 }
