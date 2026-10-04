@@ -8,6 +8,7 @@ import { MessageSquare } from 'lucide-react';
 import { SendUserRequestModal } from './SendUserRequestModal';
 import { BlockUserButton } from './BlockUserButton';
 import { useSweetAlert } from '@/components/ui/SweetAlert';
+import { useSiteSettings } from '@/components/providers/SiteSettingsProvider';
 
 interface DirectoryUserActionsProps {
   targetUser: any; // User or AlumniProfile
@@ -23,20 +24,48 @@ export function DirectoryUserActions({
   showBlock = false,
 }: DirectoryUserActionsProps) {
   const { data: session } = useSession();
+  const { settings } = useSiteSettings();
   const locale = useLocale();
   const isBn = locale === 'bn';
-  const { showLoginPrompt } = useSweetAlert();
+  const { showLoginPrompt, showErrorToast } = useSweetAlert();
 
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const currentUserId = (session?.user as any)?.id?.toString();
+  const currentUserChatEnabled = (session?.user as any)?.isChatEnabled !== false;
+  const isGlobalChatEnabled = settings.isChatEnabled !== false;
+
   const resolvedUser = targetUser?.userId || targetUser;
   const targetUserId = (resolvedUser?._id || resolvedUser?.id || targetUser?._id)?.toString();
+  const isTargetChatEnabled = resolvedUser?.isChatEnabled !== false && targetUser?.isChatEnabled !== false;
+  const isChatAllowed = isGlobalChatEnabled && currentUserChatEnabled && isTargetChatEnabled;
+
   const isSelf = Boolean(currentUserId && targetUserId && currentUserId === targetUserId);
 
   if (isSelf) return null;
 
   const handleOpenModal = () => {
+    if (!isGlobalChatEnabled) {
+      showErrorToast(
+        isBn ? 'চ্যাট সুবিধা সাময়িকভাবে বন্ধ আছে' : 'Chat is currently disabled globally',
+        isBn ? 'বিজ্ঞপ্তি' : 'Notice'
+      );
+      return;
+    }
+    if (session && !currentUserChatEnabled) {
+      showErrorToast(
+        isBn ? 'আপনার অ্যাকাউন্টের জন্য চ্যাট সুবিধা বর্তমানে বন্ধ রয়েছে।' : 'Chat is currently unavailable for your account.',
+        isBn ? 'অনুমতি নেই' : 'Restricted'
+      );
+      return;
+    }
+    if (!isTargetChatEnabled) {
+      showErrorToast(
+        isBn ? 'এই সদস্যের চ্যাট সুবিধা বন্ধ রয়েছে।' : 'Chat is currently unavailable for this user.',
+        isBn ? 'বিজ্ঞপ্তি' : 'Notice'
+      );
+      return;
+    }
     if (!session) {
       showLoginPrompt(isBn ? 'বার্তা পাঠাতে অনুগ্রহ করে লগইন করুন' : 'Please sign in to send a message');
       return;
@@ -45,6 +74,23 @@ export function DirectoryUserActions({
   };
 
   if (variant === 'card') {
+    if (!isChatAllowed) {
+      if (showBlock && targetUserId) {
+        return (
+          <div className={`flex items-center gap-1.5 ${className}`}>
+            <BlockUserButton
+              targetUserId={targetUserId}
+              targetUserName={resolvedUser?.name || 'User'}
+              size="sm"
+              variant="badge"
+              showText={false}
+            />
+          </div>
+        );
+      }
+      return null;
+    }
+
     return (
       <div className={`flex items-center gap-1.5 ${className}`}>
         <Button
@@ -75,6 +121,28 @@ export function DirectoryUserActions({
         />
       </div>
     );
+  }
+
+  if (!isChatAllowed) {
+    if (showBlock && targetUserId) {
+      return (
+        <div className={`space-y-2.5 ${className}`}>
+          <div className="pt-1 flex items-center justify-between">
+            <span className="text-[11px] text-slate-400">
+              {isBn ? 'প্রাইভেসি ও নিয়ন্ত্রণ:' : 'Privacy Control:'}
+            </span>
+            <BlockUserButton
+              targetUserId={targetUserId}
+              targetUserName={resolvedUser?.name || 'User'}
+              size="sm"
+              variant="outline"
+              className="h-8"
+            />
+          </div>
+        </div>
+      );
+    }
+    return null;
   }
 
   return (

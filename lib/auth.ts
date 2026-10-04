@@ -51,6 +51,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           role: user.role,
           isVerified: user.isVerified,
+          isChatEnabled: user.isChatEnabled !== false,
           image: user.image || '',
           batchYear: profile?.batchYear,
           group: profile?.group,
@@ -70,6 +71,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.role = (user as any).role;
         token.isVerified = (user as any).isVerified;
+        token.isChatEnabled = (user as any).isChatEnabled !== false;
         token.batchYear = (user as any).batchYear;
         token.group = (user as any).group;
         token.bloodGroup = (user as any).bloodGroup;
@@ -81,6 +83,7 @@ export const authOptions: NextAuthOptions = {
         if (session.name) token.name = session.name;
         if (session.image) token.picture = session.image;
         if (session.isVerified !== undefined) token.isVerified = session.isVerified;
+        if (session.isChatEnabled !== undefined) token.isChatEnabled = session.isChatEnabled !== false;
         if (session.group) token.group = session.group;
         if (session.bloodGroup) token.bloodGroup = session.bloodGroup;
         if (session.isBloodDonor !== undefined) token.isBloodDonor = session.isBloodDonor;
@@ -93,6 +96,7 @@ export const authOptions: NextAuthOptions = {
         (session.user as any).id = token.id;
         (session.user as any).role = token.role;
         (session.user as any).isVerified = token.isVerified;
+        (session.user as any).isChatEnabled = token.isChatEnabled !== false;
         (session.user as any).batchYear = token.batchYear;
         (session.user as any).group = token.group;
         (session.user as any).bloodGroup = token.bloodGroup;

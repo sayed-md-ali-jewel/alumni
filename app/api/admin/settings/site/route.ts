@@ -83,6 +83,7 @@ export async function PUT(req: Request) {
       customFor_bn: body.customFor_bn || DEFAULT_SITE_SETTINGS.customFor_bn,
       showCommunityBadge: body.showCommunityBadge !== undefined ? body.showCommunityBadge : true,
       showSocialBadges: body.showSocialBadges !== undefined ? body.showSocialBadges : true,
+      isChatEnabled: body.isChatEnabled !== undefined ? Boolean(body.isChatEnabled) : true,
 
       // Manual Payment Configuration
       bkashNumber: body.bkashNumber !== undefined ? body.bkashNumber : DEFAULT_SITE_SETTINGS.bkashNumber,

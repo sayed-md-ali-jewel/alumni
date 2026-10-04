@@ -143,14 +143,16 @@ export function Navbar() {
           <span>{t('profile')}</span>
         </Link>
 
-        <Link
-          href="/messages"
-          onClick={closeMenu}
-          className="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
-        >
-          <MessageSquare className="w-4 h-4 text-emerald-500" />
-          <span>{locale === 'bn' ? 'ব্যক্তিগত বার্তা ও চ্যাট' : 'Messages & Chat'}</span>
-        </Link>
+        {settings.isChatEnabled !== false && user?.isChatEnabled !== false && (
+          <Link
+            href="/messages"
+            onClick={closeMenu}
+            className="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <MessageSquare className="w-4 h-4 text-emerald-500" />
+            <span>{locale === 'bn' ? 'ব্যক্তিগত বার্তা ও চ্যাট' : 'Messages & Chat'}</span>
+          </Link>
+        )}
 
 
         {user?.role === 'admin' && (
@@ -443,13 +445,15 @@ export function Navbar() {
                 >
                   {t('profile')}
                 </Link>
-                <Link
-                  href="/messages"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block px-3.5 py-2 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
-                >
-                  {locale === 'bn' ? 'ব্যক্তিগত বার্তা ও চ্যাট' : 'Messages & Chat'}
-                </Link>
+                {settings.isChatEnabled !== false && user?.isChatEnabled !== false && (
+                  <Link
+                    href="/messages"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-3.5 py-2 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  >
+                    {locale === 'bn' ? 'ব্যক্তিগত বার্তা ও চ্যাট' : 'Messages & Chat'}
+                  </Link>
+                )}
                 {user?.role === 'admin' && (
                   <Link
                     href="/dashboard/admin"

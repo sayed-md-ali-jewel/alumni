@@ -3,8 +3,10 @@ import bcrypt from 'bcryptjs';
 import { connectToDatabase } from '@/lib/mongodb';
 import { User } from '@/models/User';
 import { AlumniProfile } from '@/models/AlumniProfile';
+import { Donation } from '@/models/Donation';
 import { RegisterSchema } from '@/lib/validations';
 import { getDefaultCommitteePost } from '@/lib/committee';
+import { generateTxnId, generateReceiptNumber } from '@/lib/utils';
 
 export async function POST(req: Request) {
   try {
@@ -34,6 +36,7 @@ export async function POST(req: Request) {
       isVerified: false,
       phone: validatedData.phone,
       bloodGroup: validatedData.bloodGroup,
+      image: validatedData.image || '',
     });
 
     // Automatically resolve default committee post (সদস্য / Member)
@@ -44,14 +47,44 @@ export async function POST(req: Request) {
       batchYear: validatedData.batchYear,
       group: validatedData.group,
       bloodGroup: validatedData.bloodGroup,
-      isBloodDonor: validatedData.isBloodDonor || false,
+      isBloodDonor: false,
       donationStatus: 'Available',
-      bloodDonationConsent: validatedData.isBloodDonor || false,
-      donorLocation: 'Chattogram, Bangladesh',
-      location: 'Chattogram, Bangladesh',
+      bloodDonationConsent: false,
+      donorLocation: validatedData.presentAddress || 'Chattogram, Bangladesh',
+      location: validatedData.presentAddress || 'Chattogram, Bangladesh',
+      presentAddress: validatedData.presentAddress,
+      permanentAddress: validatedData.permanentAddress,
       phone: validatedData.phone || '',
       visibility: 'public',
       committeePost: defaultPost ? defaultPost._id : undefined,
+    });
+
+    // Record the registration fee payment
+    const payment = validatedData.payment;
+    const isCash = payment.paymentType === 'cash';
+    const txnId = isCash
+      ? payment.receiptNumber || generateTxnId('CSH')
+      : payment.transactionId || generateTxnId(payment.paymentType.toUpperCase());
+    const receiptNo = payment.receiptNumber || generateReceiptNumber();
+
+    await Donation.create({
+      donorName: validatedData.name,
+      donorEmail: validatedData.email.toLowerCase().trim(),
+      donorPhone: validatedData.phone,
+      amount: payment.amount,
+      currency: 'BDT',
+      campaign: 'Alumni Lifetime Membership & Registration Fee',
+      isAnonymous: false,
+      method: payment.paymentType,
+      transactionId: txnId,
+      receiptNumber: receiptNo,
+      status: 'pending',
+      userId: newUser._id,
+      recipientName: payment.givenTo || 'Alumni Association Desk',
+      givenTo: payment.givenTo || 'Alumni Association Desk',
+      donationDate: payment.paymentDateTime ? new Date(payment.paymentDateTime) : new Date(),
+      donationTime: payment.paymentDateTime || undefined,
+      notes: `Registration payment via ${payment.paymentType.toUpperCase()}.${payment.givenTo ? ` Given to: ${payment.givenTo}.` : ''}${payment.receiptNumber ? ` Receipt No: ${payment.receiptNumber}` : ''}`,
     });
 
     return NextResponse.json(

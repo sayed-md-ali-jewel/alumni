@@ -58,6 +58,7 @@ const SiteSettingSchema = new Schema<ISiteSetting>(
     customFor_bn: { type: String, default: DEFAULT_SITE_SETTINGS.customFor_bn, trim: true },
     showCommunityBadge: { type: Boolean, default: true },
     showSocialBadges: { type: Boolean, default: true },
+    isChatEnabled: { type: Boolean, default: true },
 
     // Manual Donation Payment Configuration
     bkashNumber: { type: String, default: DEFAULT_SITE_SETTINGS.bkashNumber, trim: true },

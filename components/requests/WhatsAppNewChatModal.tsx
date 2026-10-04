@@ -128,16 +128,23 @@ export function WhatsAppNewChatModal({
               const subtitle = [batch, group, item.jobTitle || item.company]
                 .filter(Boolean)
                 .join(' • ');
+              const isTargetChatEnabled = u?.isChatEnabled !== false && item?.isChatEnabled !== false;
 
               return (
                 <button
                   key={userId}
                   type="button"
+                  disabled={!isTargetChatEnabled}
                   onClick={() => {
+                    if (!isTargetChatEnabled) return;
                     onSelectUser(u);
                     onClose();
                   }}
-                  className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-emerald-50/70 dark:hover:bg-slate-800/80 transition-colors text-left group"
+                  className={`w-full flex items-center justify-between p-3 rounded-2xl transition-colors text-left group ${
+                    !isTargetChatEnabled
+                      ? 'opacity-60 cursor-not-allowed bg-slate-50/50 dark:bg-slate-800/30'
+                      : 'hover:bg-emerald-50/70 dark:hover:bg-slate-800/80'
+                  }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <Avatar
@@ -153,6 +160,11 @@ export function WhatsAppNewChatModal({
                         </span>
                         {u.isVerified && (
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                        )}
+                        {!isTargetChatEnabled && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 font-medium">
+                            {isBn ? 'চ্যাট নিষ্ক্রিয়' : 'Chat Disabled'}
+                          </span>
                         )}
                       </div>
                       {subtitle && (

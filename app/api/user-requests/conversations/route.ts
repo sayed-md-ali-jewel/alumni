@@ -6,6 +6,7 @@ import { User } from '@/models/User';
 import { UserRequest } from '@/models/UserRequest';
 import { getBlockedUserIds } from '@/lib/block-service';
 import { recordHeartbeat, isUserOnline } from '@/lib/presence-service';
+import { getChatPermission } from '@/lib/chat-permission';
 import mongoose from 'mongoose';
 
 export async function GET(req: Request) {
@@ -22,6 +23,18 @@ export async function GET(req: Request) {
 
     // Refresh current user's active heartbeat
     recordHeartbeat(currentUserId);
+
+    // Check Chat Permission (Global & Individual)
+    const chatPermission = await getChatPermission(currentUserId);
+    if (!chatPermission.isAllowed) {
+      return NextResponse.json({
+        conversations: [],
+        totalUnread: 0,
+        isChatAllowed: false,
+        reason: chatPermission.reason,
+        error: chatPermission.message,
+      });
+    }
 
     const { searchParams } = new URL(req.url);
     const searchQuery = (searchParams.get('search') || '').trim().toLowerCase();

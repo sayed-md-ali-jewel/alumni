@@ -29,9 +29,46 @@ export const RegisterSchema = z
     group: z.enum(ALUMNI_GROUPS, {
       errorMap: () => ({ message: 'Please select a valid group (Science, Commerce, or Humanities)' }),
     }),
-    bloodGroup: z.enum(BLOOD_GROUPS).optional(),
-    isBloodDonor: z.boolean().default(false),
-    phone: z.string().optional(),
+    bloodGroup: z.enum(BLOOD_GROUPS, {
+      errorMap: () => ({ message: 'Please select a valid blood group' }),
+    }),
+    phone: z.string().min(6, 'Contact phone number is required'),
+    image: z.string().min(1, 'Profile photo is required'),
+    presentAddress: z.string().min(2, 'Present address is required'),
+    permanentAddress: z.string().min(2, 'Permanent address is required'),
+    payment: z
+      .object({
+        amount: z.coerce.number().min(1, 'Amount is required and must be greater than 0'),
+        paymentType: z.enum(['bkash', 'nagad', 'cash'], {
+          errorMap: () => ({ message: 'Please select a payment type (bKash, Nagad, or Cash)' }),
+        }),
+        transactionId: z.string().optional(),
+        givenTo: z.string().optional(),
+        paymentDateTime: z.string().optional(),
+        receiptNumber: z.string().optional(),
+      })
+      .refine(
+        (p) => {
+          if (p.paymentType === 'bkash' || p.paymentType === 'nagad') {
+            return Boolean(p.transactionId && p.transactionId.trim().length >= 2);
+          }
+          if (p.paymentType === 'cash') {
+            return Boolean(
+              p.givenTo &&
+                p.givenTo.trim().length >= 2 &&
+                p.paymentDateTime &&
+                p.paymentDateTime.trim().length >= 2 &&
+                p.receiptNumber &&
+                p.receiptNumber.trim().length >= 1
+            );
+          }
+          return false;
+        },
+        {
+          message: 'Please complete all required fields for the selected payment method',
+          path: ['paymentType'],
+        }
+      ),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",

@@ -26,12 +26,12 @@ export async function GET(
     await connectToDatabase();
 
     let profile = await AlumniProfile.findById(id)
-      .populate('userId', 'name email image isVerified role bloodGroup phone')
+      .populate('userId', 'name email image isVerified isChatEnabled role bloodGroup phone')
       .populate('committeePost', 'name_en name_bn sortOrder isActive isDefault');
 
     if (!profile) {
       profile = await AlumniProfile.findOne({ userId: id })
-        .populate('userId', 'name email image isVerified role bloodGroup phone')
+        .populate('userId', 'name email image isVerified isChatEnabled role bloodGroup phone')
         .populate('committeePost', 'name_en name_bn sortOrder isActive isDefault');
     }
 
@@ -141,6 +141,7 @@ async function handleUpdate(req: Request, id: string) {
     if (bloodGroup !== undefined) userUpdates.bloodGroup = bloodGroup;
     if (image !== undefined) userUpdates.image = image;
     if (isVerified !== undefined) userUpdates.isVerified = Boolean(isVerified);
+    if (body.isChatEnabled !== undefined) userUpdates.isChatEnabled = Boolean(body.isChatEnabled);
 
     const updatedUser = await User.findByIdAndUpdate(userId, { $set: userUpdates }, { new: true });
 
@@ -166,6 +167,7 @@ async function handleUpdate(req: Request, id: string) {
     if (whatsapp !== undefined) profileUpdates.whatsapp = whatsapp.trim();
     if (visibility !== undefined) profileUpdates.visibility = visibility;
     if (body.contactPrivacy !== undefined) profileUpdates.contactPrivacy = body.contactPrivacy;
+    if (body.isChatEnabled !== undefined) profileUpdates.isChatEnabled = Boolean(body.isChatEnabled);
     if (isBloodDonor !== undefined) {
       profileUpdates.isBloodDonor = Boolean(isBloodDonor);
       if (isBloodDonor) {
@@ -190,7 +192,7 @@ async function handleUpdate(req: Request, id: string) {
       { $set: profileUpdates },
       { new: true, upsert: true }
     )
-      .populate('userId', 'name email image isVerified role bloodGroup phone')
+      .populate('userId', 'name email image isVerified isChatEnabled role bloodGroup phone')
       .populate('committeePost', 'name_en name_bn sortOrder isActive isDefault');
 
     return NextResponse.json({

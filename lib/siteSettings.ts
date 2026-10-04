@@ -39,6 +39,9 @@ export interface SiteSettings {
   showCommunityBadge: boolean;
   showSocialBadges: boolean;
 
+  // Chat Settings
+  isChatEnabled: boolean;
+
   // Manual Donation Payment Configuration
   bkashNumber: string;
   bkashType: string;
@@ -120,6 +123,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   customFor_bn: 'আমাদের',
   showCommunityBadge: true,
   showSocialBadges: true,
+  isChatEnabled: true,
 
   // Manual Donation Payment Defaults
   bkashNumber: '01712345678',

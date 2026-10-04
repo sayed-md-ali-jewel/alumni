@@ -49,6 +49,7 @@ import {
   Zap,
   X,
   Database,
+  MessageSquare,
 } from 'lucide-react';
 import { useSweetAlert } from '@/components/ui/SweetAlert';
 import { BackupRestorePanel } from '@/components/admin/BackupRestorePanel';
@@ -59,7 +60,7 @@ export default function AdminSettingsPage() {
   const { showAlert, showConfirm, showToast } = useSweetAlert();
   const { updateSettingsLocally } = useSiteSettings();
 
-  const [activeTab, setActiveTab] = useState<'header' | 'hero' | 'footer' | 'contact' | 'social' | 'payment' | 'smtp' | 'backup' | 'preview'>('header');
+  const [activeTab, setActiveTab] = useState<'header' | 'hero' | 'footer' | 'contact' | 'social' | 'payment' | 'chat' | 'smtp' | 'backup' | 'preview'>('header');
   const [formData, setFormData] = useState(DEFAULT_SITE_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -442,6 +443,18 @@ export default function AdminSettingsPage() {
         >
           <CreditCard className="w-4 h-4 text-emerald-500" />
           <span>{isBn ? 'বিকাশ, নগদ ও ক্যাশ পেমেন্ট' : 'bKash/Nagad/Cash Setup'}</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('chat')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
+            activeTab === 'chat'
+              ? 'bg-white dark:bg-slate-800 text-primary shadow-sm'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          <MessageCircle className="w-4 h-4 text-emerald-500" />
+          <span>{isBn ? 'চ্যাট সেটিংস' : 'Chat Settings'}</span>
         </button>
 
         <button
@@ -1481,6 +1494,209 @@ export default function AdminSettingsPage() {
                   placeholder="আপনি সরাসরি বিদ্যালয় অ্যালামনাই সচিবালয় অফিসে নগদ অর্থ জমা দিতে পারেন..."
                   className="rounded-xl text-xs leading-relaxed"
                 />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Tab: Chat Settings (Global Chat Control) */}
+      {activeTab === 'chat' && (
+        <div className="space-y-6 animate-in fade-in-50 duration-200">
+          {/* Main Global Chat Switch Card */}
+          <Card className="rounded-3xl border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden bg-white dark:bg-slate-900">
+            <CardHeader className="pb-4 bg-slate-50/50 dark:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+                    <MessageSquare className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base sm:text-lg font-bold">
+                      {isBn ? 'গ্লোবাল চ্যাট নিয়ন্ত্রণ (Global Chat Control)' : 'Global Chat Settings'}
+                    </CardTitle>
+                    <CardDescription className="text-xs">
+                      {isBn
+                        ? 'ওয়েবসাইটের সকল ব্যবহারকারী ও অ্যালামনাইদের জন্য চ্যাট সুবিধা নিয়ন্ত্রণ করুন।'
+                        : 'Manage system-wide chat availability and instant messaging permissions.'}
+                    </CardDescription>
+                  </div>
+                </div>
+
+                <Badge
+                  variant={formData.isChatEnabled ? 'success' : 'destructive'}
+                  className="px-3 py-1 text-xs font-bold gap-1.5"
+                >
+                  {formData.isChatEnabled ? (
+                    <>
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>{isBn ? 'চ্যাট সক্রিয় (Global ON)' : 'Global Chat: ON'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      <span>{isBn ? 'চ্যাট নিষ্ক্রিয় (Global OFF)' : 'Global Chat: OFF'}</span>
+                    </>
+                  )}
+                </Badge>
+              </div>
+            </CardHeader>
+
+            <CardContent className="p-6 sm:p-8 space-y-6">
+              {/* Global Master Switch */}
+              <div className="p-5 sm:p-6 rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1.5 max-w-xl">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                      {isBn ? 'সিস্টেমব্যাপী চ্যাট চালু রাখুন' : 'Enable Chat Globally'}
+                    </h3>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300/40">
+                      {isBn ? 'ডিফল্ট: চালু' : 'Default: ON'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    {formData.isChatEnabled
+                      ? isBn
+                        ? '✅ চ্যাট চালু রয়েছে। ব্যবহারকারীদের ব্যক্তিগত চ্যাট অনুমতির ভিত্তিতে চ্যাট উপলব্ধ রয়েছে।'
+                        : '✅ Global chat is currently ON. Instant messaging is available according to each individual user\'s chat permission.'
+                      : isBn
+                        ? '⛔ চ্যাট বন্ধ রয়েছে। সিস্টেমের সকল ব্যবহারকারী ও অ্যালামনাইদের জন্য চ্যাট সম্পূর্ণ নিষ্ক্রিয় করা হয়েছে।'
+                        : '⛔ Global chat is currently OFF. Chat and messaging are completely disabled across the entire system for all users.'}
+                  </p>
+                </div>
+
+                {/* Styled Interactive Toggle */}
+                <div className="flex items-center gap-3 shrink-0">
+                  <span className={`text-xs font-extrabold ${!formData.isChatEnabled ? 'text-rose-600 dark:text-rose-400 font-black' : 'text-slate-400'}`}>
+                    OFF
+                  </span>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={formData.isChatEnabled}
+                    onClick={() => setFormData({ ...formData, isChatEnabled: !formData.isChatEnabled })}
+                    className={`relative inline-flex h-8 w-16 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 ${
+                      formData.isChatEnabled ? 'bg-emerald-600' : 'bg-slate-300 dark:bg-slate-700'
+                    }`}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={`pointer-events-none inline-block h-7 w-7 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+                        formData.isChatEnabled ? 'translate-x-8' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
+                  <span className={`text-xs font-extrabold ${formData.isChatEnabled ? 'text-emerald-600 dark:text-emerald-400 font-black' : 'text-slate-400'}`}>
+                    ON
+                  </span>
+                </div>
+              </div>
+
+              {/* Chat Permission Hierarchy & Rules Matrix */}
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  <ShieldCheck className="w-4 h-4 text-primary" />
+                  <span>{isBn ? 'চ্যাট অনুমতি ও প্রায়োরিটি লজিক' : 'Chat Permission Hierarchy & Priority Logic'}</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Case 1 */}
+                  <div className={`p-4 rounded-2xl border transition-all ${
+                    !formData.isChatEnabled
+                      ? 'bg-rose-50/80 dark:bg-rose-950/30 border-rose-300 dark:border-rose-900/60 ring-2 ring-rose-500/20'
+                      : 'bg-white dark:bg-slate-800/60 border-slate-200 dark:border-slate-700/60 opacity-80'
+                  }`}>
+                    <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-200/60 dark:border-slate-700/60">
+                      <span className="text-[11px] font-extrabold uppercase text-rose-600 dark:text-rose-400">
+                        {isBn ? 'প্রায়োরিটি ১' : 'Priority 1'}
+                      </span>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300">
+                        {isBn ? 'সবার জন্য বন্ধ' : 'Disabled for All'}
+                      </span>
+                    </div>
+                    <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                      Global Chat: OFF
+                    </p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                      {isBn
+                        ? 'সিস্টেমের যেকোনো ব্যবহারকারীর ব্যক্তিগত সেটিং যা-ই থাকুক না কেন, চ্যাট সবার জন্য সম্পূর্ণ বন্ধ থাকবে।'
+                        : 'Chat disabled for everyone across the system, regardless of individual settings.'}
+                    </p>
+                  </div>
+
+                  {/* Case 2 */}
+                  <div className={`p-4 rounded-2xl border transition-all ${
+                    formData.isChatEnabled
+                      ? 'bg-amber-50/70 dark:bg-amber-950/30 border-amber-300 dark:border-amber-900/60'
+                      : 'bg-white dark:bg-slate-800/60 border-slate-200 dark:border-slate-700/60 opacity-80'
+                  }`}>
+                    <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-200/60 dark:border-slate-700/60">
+                      <span className="text-[11px] font-extrabold uppercase text-amber-600 dark:text-amber-400">
+                        {isBn ? 'প্রায়োরিটি ২' : 'Priority 2'}
+                      </span>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300">
+                        {isBn ? 'নির্দিষ্ট সদস্যের বন্ধ' : 'Disabled for User'}
+                      </span>
+                    </div>
+                    <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                      Global ON + Individual OFF
+                    </p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                      {isBn
+                        ? 'গ্লোবালি চ্যাট চালু থাকলেও শুধুমাত্র সংশ্লিষ্ট অ্যালামনাইয়ের অ্যাকাউন্টে চ্যাট বন্ধ থাকবে।'
+                        : 'Chat disabled only for that specific alumni without affecting anyone else.'}
+                    </p>
+                  </div>
+
+                  {/* Case 3 */}
+                  <div className={`p-4 rounded-2xl border transition-all ${
+                    formData.isChatEnabled
+                      ? 'bg-emerald-50/80 dark:bg-emerald-950/30 border-emerald-300 dark:border-emerald-800/60'
+                      : 'bg-white dark:bg-slate-800/60 border-slate-200 dark:border-slate-700/60 opacity-80'
+                  }`}>
+                    <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-200/60 dark:border-slate-700/60">
+                      <span className="text-[11px] font-extrabold uppercase text-emerald-600 dark:text-emerald-400">
+                        {isBn ? 'প্রায়োরিটি ৩' : 'Priority 3'}
+                      </span>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300">
+                        {isBn ? 'চ্যাট উপলব্ধ' : 'Chat Available'}
+                      </span>
+                    </div>
+                    <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                      Global ON + Individual ON
+                    </p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                      {isBn
+                        ? 'গ্লোবাল ও ব্যক্তিগত উভয় অনুমতি সক্রিয় থাকায় চ্যাট ও মেসেজিং পুরোপুরি চালু থাকবে।'
+                        : 'Chat fully operational and active with instant messaging, audio, and attachments.'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Individual Management Link Card */}
+              <div className="p-4 rounded-2xl bg-blue-50/60 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-3">
+                  <Users className="w-5 h-5 text-primary shrink-0" />
+                  <div className="space-y-0.5">
+                    <p className="font-bold text-slate-900 dark:text-white">
+                      {isBn ? 'নির্দিষ্ট সদস্যের চ্যাট অনুমতি নিয়ন্ত্রণ করতে চান?' : 'Need to control chat access for a specific alumni?'}
+                    </p>
+                    <p className="text-slate-500 dark:text-slate-400 text-[11px]">
+                      {isBn
+                        ? 'অ্যাডমিন → অ্যালামনাই ম্যানেজমেন্টে গিয়ে যেকোনো সদস্যের প্রোফাইল এডিট করে "Chat Access" নিয়ন্ত্রণ করুন।'
+                        : 'Go to Admin → Alumni Management to configure individual chat toggle for any specific member.'}
+                    </p>
+                  </div>
+                </div>
+
+                <a
+                  href={`/${locale}/dashboard/admin/alumni`}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-white font-bold text-xs shadow-xs hover:bg-primary/90 transition-all shrink-0"
+                >
+                  <Users className="w-3.5 h-3.5" />
+                  <span>{isBn ? 'অ্যালামনাই ম্যানেজমেন্ট' : 'Alumni Management'}</span>
+                </a>
               </div>
             </CardContent>
           </Card>

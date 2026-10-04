@@ -82,7 +82,7 @@ export async function GET(req: Request) {
 
     const total = await AlumniProfile.countDocuments(query);
     const profiles = await AlumniProfile.find(query)
-      .populate('userId', 'name email image isVerified role bloodGroup phone')
+      .populate('userId', 'name email image isVerified isChatEnabled role bloodGroup phone')
       .populate('committeePost', 'name_en name_bn sortOrder isActive isDefault')
       .sort({ batchYear: sortDirection, createdAt: -1 })
       .skip(skip)

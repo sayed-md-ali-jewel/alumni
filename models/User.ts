@@ -10,6 +10,7 @@ export interface IUser extends Document {
   role: UserRole;
   image?: string;
   isVerified: boolean;
+  isChatEnabled?: boolean;
   phone?: string;
   bloodGroup?: BloodGroup;
   createdAt: Date;
@@ -28,6 +29,7 @@ const UserSchema = new Schema<IUser>(
     },
     image: { type: String },
     isVerified: { type: Boolean, default: false },
+    isChatEnabled: { type: Boolean, default: true },
     phone: { type: String },
     bloodGroup: {
       type: String,

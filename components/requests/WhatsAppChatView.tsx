@@ -41,6 +41,7 @@ import { WhatsAppAudioPlayer } from './WhatsAppAudioPlayer';
 import { WhatsAppImageLightbox } from './WhatsAppImageLightbox';
 import { WhatsAppNewChatModal } from './WhatsAppNewChatModal';
 import { BlockUserButton } from './BlockUserButton';
+import { useSiteSettings } from '@/components/providers/SiteSettingsProvider';
 
 function WhatsAppStatusCheck({
   read,
@@ -120,11 +121,15 @@ export function WhatsAppChatView({
   className = '',
 }: WhatsAppChatViewProps) {
   const { data: session } = useSession();
+  const { settings } = useSiteSettings();
   const locale = useLocale();
   const isBn = locale === 'bn';
   const { showErrorToast, showSuccessToast } = useSweetAlert();
 
   const currentUserId = (session?.user as any)?.id?.toString();
+  const isGlobalChatEnabled = settings.isChatEnabled !== false;
+  const isCurrentUserChatEnabled = (session?.user as any)?.isChatEnabled !== false;
+  const isChatDisabled = !isGlobalChatEnabled || !isCurrentUserChatEnabled;
 
   // Conversations List State
   const [conversations, setConversations] = useState<any[]>([]);
@@ -571,6 +576,16 @@ export function WhatsAppChatView({
     if (e) e.preventDefault();
     if (!activeContactId || isSending) return;
 
+    if (isChatDisabled) {
+      showErrorToast(
+        !isGlobalChatEnabled
+          ? (isBn ? 'চ্যাট সুবিধা সাময়িকভাবে বন্ধ আছে' : 'Chat is currently disabled globally')
+          : (isBn ? 'আপনার অ্যাকাউন্টের জন্য চ্যাট সুবিধা বর্তমানে বন্ধ রয়েছে।' : 'Chat is currently unavailable for your account.'),
+        isBn ? 'অনুমতি নেই' : 'Restricted'
+      );
+      return;
+    }
+
     // Auto-stop active recording if user hits send
     if (isRecording) {
       stopRecording();
@@ -798,14 +813,16 @@ export function WhatsAppChatView({
               />
             </button>
 
-            <button
-              type="button"
-              onClick={() => setShowNewChatModal(true)}
-              className="w-8 h-8 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center transition-transform active:scale-95 shadow-sm"
-              title={isBn ? 'নতুন চ্যাট শুরু করুন' : 'New Chat'}
-            >
-              <Plus className="w-4 h-4" />
-            </button>
+            {!isChatDisabled && (
+              <button
+                type="button"
+                onClick={() => setShowNewChatModal(true)}
+                className="w-8 h-8 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center transition-transform active:scale-95 shadow-sm"
+                title={isBn ? 'নতুন চ্যাট শুরু করুন' : 'New Chat'}
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </div>
 
@@ -888,19 +905,25 @@ export function WhatsAppChatView({
                     : 'No conversations yet'}
                 </p>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                  {isBn
+                  {isChatDisabled
+                    ? !isGlobalChatEnabled
+                      ? (isBn ? 'সিস্টেম অ্যাডমিনিস্ট্রেটর কর্তৃক চ্যাট সাময়িকভাবে বন্ধ রয়েছে।' : 'Chat is currently disabled globally.')
+                      : (isBn ? 'আপনার অ্যাকাউন্টের জন্য চ্যাট সুবিধা বর্তমানে বন্ধ রয়েছে।' : 'Chat is currently unavailable for your account.')
+                    : isBn
                     ? 'সহপাঠী ও প্রাক্তন সদস্যদের সাথে চ্যাট শুরু করতে "+" বাটনে চাপুন।'
                     : 'Start a direct chat by clicking the "+" button above.'}
                 </p>
               </div>
-              <Button
-                size="sm"
-                onClick={() => setShowNewChatModal(true)}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs gap-1.5 h-8 font-semibold"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>{isBn ? 'নতুন বার্তা পাঠান' : 'Start New Chat'}</span>
-              </Button>
+              {!isChatDisabled && (
+                <Button
+                  size="sm"
+                  onClick={() => setShowNewChatModal(true)}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs gap-1.5 h-8 font-semibold"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>{isBn ? 'নতুন বার্তা পাঠান' : 'Start New Chat'}</span>
+                </Button>
+              )}
             </div>
           ) : (
             conversations.map((conv) => {
@@ -1026,13 +1049,15 @@ export function WhatsAppChatView({
                 ? 'সহপাঠী ও প্রাক্তন সদস্যদের সাথে তাৎক্ষণিকভাবে ব্যক্তিগত টেক্সট, ছবি ও অডিও ভয়েস বার্তা আদান-প্রদান করুন।'
                 : 'Send and receive secure one-to-one text messages, photos, and voice notes with fellow alumni.'}
             </p>
-            <Button
-              onClick={() => setShowNewChatModal(true)}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl text-xs gap-2 shadow-md shadow-emerald-600/20 px-5 h-10"
-            >
-              <Plus className="w-4 h-4" />
-              <span>{isBn ? 'নতুন বার্তা শুরু করুন' : 'Start New Conversation'}</span>
-            </Button>
+            {!isChatDisabled && (
+              <Button
+                onClick={() => setShowNewChatModal(true)}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl text-xs gap-2 shadow-md shadow-emerald-600/20 px-5 h-10"
+              >
+                <Plus className="w-4 h-4" />
+                <span>{isBn ? 'নতুন বার্তা শুরু করুন' : 'Start New Conversation'}</span>
+              </Button>
+            )}
 
             <div className="mt-8 flex items-center gap-1.5 text-[11px] text-slate-400">
               <Lock className="w-3.5 h-3.5 text-emerald-500" />
@@ -1304,188 +1329,201 @@ export function WhatsAppChatView({
             {/* BOTTOM MESSAGE COMPOSER                             */}
             {/* ==================================================== */}
             <div className="bg-slate-100/95 dark:bg-slate-900/95 border-t border-slate-200/90 dark:border-slate-800 p-2.5 sm:p-3.5 shrink-0 backdrop-blur-md z-10">
-              {/* Image Preview Strip if image is attached */}
-              {imagePreviewUrl && (
-                <div className="mb-2.5 p-2 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3 animate-in fade-in slide-in-from-bottom-2">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <img
-                      src={imagePreviewUrl}
-                      alt="Selected preview"
-                      className="w-12 h-12 object-cover rounded-xl ring-1 ring-slate-200 dark:ring-slate-700 shrink-0 select-none"
-                    />
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
-                        {selectedImageFile?.name || 'Attached Image'}
-                      </p>
-                      <p className="text-[10px] text-slate-400">
-                        {selectedImageFile
-                          ? `${(selectedImageFile.size / 1024).toFixed(0)} KB`
-                          : ''}
-                      </p>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={clearSelectedImage}
-                    className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-rose-500 hover:text-white text-slate-500 flex items-center justify-center transition-colors shrink-0"
-                    title="Remove image"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
-
-              {/* Live Voice Recording Strip */}
-              {isRecording ? (
-                <div className="flex items-center justify-between gap-3 bg-white dark:bg-slate-800 p-2.5 rounded-2xl border border-emerald-500/50 shadow-inner animate-in fade-in">
-                  <div className="flex items-center gap-3">
-                    <span className="w-3 h-3 rounded-full bg-rose-600 animate-ping" />
-                    <span className="text-xs font-bold text-slate-800 dark:text-slate-100 font-mono">
-                      {formatRecordTimer(recordDuration)}
-                    </span>
-                    <span className="text-xs text-slate-500 hidden sm:inline">
-                      {isBn ? 'রেকর্ড হচ্ছে...' : 'Recording voice note...'}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={cancelRecording}
-                      className="w-8 h-8 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 hover:bg-rose-600 hover:text-white flex items-center justify-center transition-colors"
-                      title={isBn ? 'বাতিল করুন' : 'Discard recording'}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={stopRecording}
-                      className="px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5 transition-colors"
-                      title={isBn ? 'রেকর্ডিং থামান ও শুনুন' : 'Stop & Preview'}
-                    >
-                      <Square className="w-3.5 h-3.5 fill-current text-rose-500" />
-                      <span>{isBn ? 'প্রিভিউ' : 'Preview'}</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleSendMessage()}
-                      disabled={isSending || isUploadingVoice}
-                      className="w-9 h-9 rounded-full bg-[#00a884] hover:bg-[#029070] text-white flex items-center justify-center transition-transform active:scale-95 shadow-md"
-                      title={isBn ? 'ভয়েস বার্তা পাঠান' : 'Send voice message'}
-                    >
-                      {isSending || isUploadingVoice ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Send className="w-4 h-4" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-              ) : recordedAudioUrl ? (
-                // Recorded Audio Preview Before Sending
-                <div className="flex items-center justify-between gap-3 bg-white dark:bg-slate-800 p-2.5 rounded-2xl border border-emerald-500/40 shadow-inner animate-in fade-in">
-                  <div className="flex-1 min-w-0">
-                    <WhatsAppAudioPlayer audioUrl={recordedAudioUrl} isSender={false} />
-                  </div>
-
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      type="button"
-                      onClick={cancelRecording}
-                      className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-rose-500 hover:text-white text-slate-500 flex items-center justify-center transition-colors"
-                      title={isBn ? 'মুছে ফেলুন' : 'Delete audio'}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleSendMessage()}
-                      disabled={isSending || isUploadingVoice}
-                      className="w-9 h-9 rounded-full bg-[#00a884] hover:bg-[#029070] text-white flex items-center justify-center transition-transform active:scale-95 shadow-md"
-                      title={isBn ? 'ভয়েস বার্তা পাঠান' : 'Send voice message'}
-                    >
-                      {isSending || isUploadingVoice ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Send className="w-4 h-4" />
-                      )}
-                    </button>
-                  </div>
+              {isChatDisabled ? (
+                <div className="py-3 px-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-2.5 text-xs font-semibold text-slate-500 dark:text-slate-400 shadow-xs">
+                  <Lock className="w-4 h-4 text-slate-400 shrink-0" />
+                  <span>
+                    {!isGlobalChatEnabled
+                      ? (isBn ? 'সিস্টেম অ্যাডমিনিস্ট্রেটর কর্তৃক চ্যাট সাময়িকভাবে বন্ধ রয়েছে।' : 'Chat functionality is currently disabled globally.')
+                      : (isBn ? 'আপনার অ্যাকাউন্টের জন্য চ্যাট সুবিধা বর্তমানে বন্ধ রয়েছে।' : 'Chat is currently unavailable for your account.')}
+                  </span>
                 </div>
               ) : (
-                // Standard Text & Attachments Composer
-                <form onSubmit={handleSendMessage} className="flex items-end gap-1.5 sm:gap-2">
-                  {/* Hidden Image File Input */}
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImagePick}
-                    className="hidden"
-                  />
+                <>
+                  {/* Image Preview Strip if image is attached */}
+                  {imagePreviewUrl && (
+                    <div className="mb-2.5 p-2 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3 animate-in fade-in slide-in-from-bottom-2">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <img
+                          src={imagePreviewUrl}
+                          alt="Selected preview"
+                          className="w-12 h-12 object-cover rounded-xl ring-1 ring-slate-200 dark:ring-slate-700 shrink-0 select-none"
+                        />
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
+                            {selectedImageFile?.name || 'Attached Image'}
+                          </p>
+                          <p className="text-[10px] text-slate-400">
+                            {selectedImageFile
+                              ? `${(selectedImageFile.size / 1024).toFixed(0)} KB`
+                              : ''}
+                          </p>
+                        </div>
+                      </div>
 
-                  {/* Attachment Button */}
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={isContactBlocked || isSending}
-                    className="w-10 h-10 rounded-full hover:bg-slate-200/80 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-colors shrink-0"
-                    title={isBn ? 'ছবি সংযুক্ত করুন' : 'Attach photo'}
-                  >
-                    <Paperclip className="w-5 h-5 -rotate-45" />
-                  </button>
-
-                  {/* Text Input */}
-                  <div className="flex-1 relative">
-                    <textarea
-                      rows={1}
-                      value={inputText}
-                      onChange={(e) => setInputText(e.target.value)}
-                      onKeyDown={handleKeyDown}
-                      disabled={isContactBlocked || isSending}
-                      placeholder={
-                        isContactBlocked
-                          ? isBn
-                            ? 'ব্যবহারকারী ব্লক থাকায় বার্তা পাঠানো যাবে না'
-                            : 'Cannot message a blocked contact'
-                          : isBn
-                          ? 'একটি বার্তা লিখুন...'
-                          : 'Type a message...'
-                      }
-                      className="w-full resize-none py-2.5 px-4 text-xs sm:text-sm rounded-2xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 shadow-inner max-h-32 placeholder:text-slate-400"
-                    />
-                  </div>
-
-                  {/* Voice / Send Action Button */}
-                  {inputText.trim() || selectedImageFile ? (
-                    <button
-                      type="submit"
-                      disabled={isContactBlocked || isSending || isUploadingImage}
-                      className="w-10 h-10 rounded-full bg-[#00a884] hover:bg-[#029070] text-white flex items-center justify-center transition-transform active:scale-95 shadow-md shrink-0"
-                      title={isBn ? 'বার্তা পাঠান' : 'Send message'}
-                    >
-                      {isSending || isUploadingImage ? (
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                      ) : (
-                        <Send className="w-4 h-4 translate-x-0.5" />
-                      )}
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={startRecording}
-                      disabled={isContactBlocked || isSending}
-                      className="w-10 h-10 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center transition-transform active:scale-95 shadow-md shrink-0"
-                      title={isBn ? 'ভয়েস রেকর্ড করতে চাপুন' : 'Record voice note'}
-                    >
-                      <Mic className="w-5 h-5" />
-                    </button>
+                      <button
+                        type="button"
+                        onClick={clearSelectedImage}
+                        className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-rose-500 hover:text-white text-slate-500 flex items-center justify-center transition-colors shrink-0"
+                        title="Remove image"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
                   )}
-                </form>
+
+                  {/* Live Voice Recording Strip */}
+                  {isRecording ? (
+                    <div className="flex items-center justify-between gap-3 bg-white dark:bg-slate-800 p-2.5 rounded-2xl border border-emerald-500/50 shadow-inner animate-in fade-in">
+                      <div className="flex items-center gap-3">
+                        <span className="w-3 h-3 rounded-full bg-rose-600 animate-ping" />
+                        <span className="text-xs font-bold text-slate-800 dark:text-slate-100 font-mono">
+                          {formatRecordTimer(recordDuration)}
+                        </span>
+                        <span className="text-xs text-slate-500 hidden sm:inline">
+                          {isBn ? 'রেকর্ড হচ্ছে...' : 'Recording voice note...'}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={cancelRecording}
+                          className="w-8 h-8 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 hover:bg-rose-600 hover:text-white flex items-center justify-center transition-colors"
+                          title={isBn ? 'বাতিল করুন' : 'Discard recording'}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={stopRecording}
+                          className="px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5 transition-colors"
+                          title={isBn ? 'রেকর্ডিং থামান ও শুনুন' : 'Stop & Preview'}
+                        >
+                          <Square className="w-3.5 h-3.5 fill-current text-rose-500" />
+                          <span>{isBn ? 'প্রিভিউ' : 'Preview'}</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleSendMessage()}
+                          disabled={isSending || isUploadingVoice}
+                          className="w-9 h-9 rounded-full bg-[#00a884] hover:bg-[#029070] text-white flex items-center justify-center transition-transform active:scale-95 shadow-md"
+                          title={isBn ? 'ভয়েস বার্তা পাঠান' : 'Send voice message'}
+                        >
+                          {isSending || isUploadingVoice ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Send className="w-4 h-4" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  ) : recordedAudioUrl ? (
+                    // Recorded Audio Preview Before Sending
+                    <div className="flex items-center justify-between gap-3 bg-white dark:bg-slate-800 p-2.5 rounded-2xl border border-emerald-500/40 shadow-inner animate-in fade-in">
+                      <div className="flex-1 min-w-0">
+                        <WhatsAppAudioPlayer audioUrl={recordedAudioUrl} isSender={false} />
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={cancelRecording}
+                          className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-rose-500 hover:text-white text-slate-500 flex items-center justify-center transition-colors"
+                          title={isBn ? 'মুছে ফেলুন' : 'Delete audio'}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleSendMessage()}
+                          disabled={isSending || isUploadingVoice}
+                          className="w-9 h-9 rounded-full bg-[#00a884] hover:bg-[#029070] text-white flex items-center justify-center transition-transform active:scale-95 shadow-md"
+                          title={isBn ? 'ভয়েস বার্তা পাঠান' : 'Send voice message'}
+                        >
+                          {isSending || isUploadingVoice ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Send className="w-4 h-4" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    // Standard Text & Attachments Composer
+                    <form onSubmit={handleSendMessage} className="flex items-end gap-1.5 sm:gap-2">
+                      {/* Hidden Image File Input */}
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImagePick}
+                        className="hidden"
+                      />
+
+                      {/* Attachment Button */}
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isContactBlocked || isSending}
+                        className="w-10 h-10 rounded-full hover:bg-slate-200/80 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-colors shrink-0"
+                        title={isBn ? 'ছবি সংযুক্ত করুন' : 'Attach photo'}
+                      >
+                        <Paperclip className="w-5 h-5 -rotate-45" />
+                      </button>
+
+                      {/* Text Input */}
+                      <div className="flex-1 relative">
+                        <textarea
+                          rows={1}
+                          value={inputText}
+                          onChange={(e) => setInputText(e.target.value)}
+                          onKeyDown={handleKeyDown}
+                          disabled={isContactBlocked || isSending}
+                          placeholder={
+                            isContactBlocked
+                              ? isBn
+                                ? 'ব্যবহারকারী ব্লক থাকায় বার্তা পাঠানো যাবে না'
+                                : 'Cannot message a blocked contact'
+                              : isBn
+                              ? 'একটি বার্তা লিখুন...'
+                              : 'Type a message...'
+                          }
+                          className="w-full resize-none py-2.5 px-4 text-xs sm:text-sm rounded-2xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 shadow-inner max-h-32 placeholder:text-slate-400"
+                        />
+                      </div>
+
+                      {/* Voice / Send Action Button */}
+                      {inputText.trim() || selectedImageFile ? (
+                        <button
+                          type="submit"
+                          disabled={isContactBlocked || isSending || isUploadingImage}
+                          className="w-10 h-10 rounded-full bg-[#00a884] hover:bg-[#029070] text-white flex items-center justify-center transition-transform active:scale-95 shadow-md shrink-0"
+                          title={isBn ? 'বার্তা পাঠান' : 'Send message'}
+                        >
+                          {isSending || isUploadingImage ? (
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                          ) : (
+                            <Send className="w-4 h-4 translate-x-0.5" />
+                          )}
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={startRecording}
+                          disabled={isContactBlocked || isSending}
+                          className="w-10 h-10 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center transition-transform active:scale-95 shadow-md shrink-0"
+                          title={isBn ? 'ভয়েস রেকর্ড করতে চাপুন' : 'Record voice note'}
+                        >
+                          <Mic className="w-5 h-5" />
+                        </button>
+                      )}
+                    </form>
+                  )}
+                </>
               )}
             </div>
           </div>

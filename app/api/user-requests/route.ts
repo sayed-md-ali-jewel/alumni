@@ -9,6 +9,7 @@ import { Notification } from '@/models/Notification';
 import { UserRequestCreateSchema } from '@/lib/validations';
 import { canUserInteract, getBlockedUserIds } from '@/lib/block-service';
 import { recordHeartbeat, isUserOnline } from '@/lib/presence-service';
+import { getChatPermission } from '@/lib/chat-permission';
 import mongoose from 'mongoose';
 
 export async function GET(req: Request) {
@@ -31,6 +32,31 @@ export async function GET(req: Request) {
 
     await connectToDatabase();
     if (!mongoose.models.User) void User;
+
+    // Check Chat Permission (Global & Individual)
+    const chatPermission = await getChatPermission(currentUserId);
+    if (!chatPermission.isAllowed) {
+      if (conversationWith) {
+        return NextResponse.json({
+          messages: [],
+          contact: null,
+          isOnline: false,
+          isBlocked: false,
+          isChatAllowed: false,
+          reason: chatPermission.reason,
+          error: chatPermission.message,
+          pagination: { total: 0, page: 1, limit: 50, totalPages: 1 },
+        });
+      }
+      return NextResponse.json({
+        requests: [],
+        unreadCount: 0,
+        isChatAllowed: false,
+        reason: chatPermission.reason,
+        error: chatPermission.message,
+        pagination: { total: 0, page: 1, limit: 15, totalPages: 1 },
+      });
+    }
 
     const currentObjId = new mongoose.Types.ObjectId(currentUserId);
     const blockedUserIds = await getBlockedUserIds(currentUserId);
@@ -179,6 +205,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid session user' }, { status: 401 });
     }
 
+    // Check Chat Permission (Global & Individual)
+    const chatPermission = await getChatPermission(senderId);
+    if (!chatPermission.isAllowed) {
+      return NextResponse.json(
+        { error: chatPermission.message, reason: chatPermission.reason },
+        { status: 403 }
+      );
+    }
+
     const body = await req.json();
     const validatedData = UserRequestCreateSchema.parse(body);
 
@@ -210,6 +245,15 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { error: 'You cannot send a message to yourself' },
         { status: 400 }
+      );
+    }
+
+    // Check recipient's individual chat status
+    const recipientPermission = await getChatPermission(recipientUserId);
+    if (!recipientPermission.isAllowed) {
+      return NextResponse.json(
+        { error: 'This alumni currently has chat access disabled.' },
+        { status: 403 }
       );
     }
 

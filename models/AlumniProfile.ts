@@ -18,6 +18,8 @@ export interface IAlumniProfile extends Document {
   company?: string;
   jobTitle?: string;
   location?: string;
+  presentAddress?: string;
+  permanentAddress?: string;
   bio?: string;
   linkedin?: string;
   facebook?: string;
@@ -49,6 +51,7 @@ export interface IAlumniProfile extends Document {
   // Committee Designation System
   committeePost?: mongoose.Types.ObjectId;
   committeeRoleTitle?: string;
+  isChatEnabled?: boolean;
 
   createdAt: Date;
   updatedAt: Date;
@@ -84,6 +87,8 @@ const AlumniProfileSchema = new Schema<IAlumniProfile>(
     company: { type: String, default: '' },
     jobTitle: { type: String, default: '' },
     location: { type: String, default: 'Dhaka, Bangladesh', index: true },
+    presentAddress: { type: String, default: '' },
+    permanentAddress: { type: String, default: '' },
     bio: { type: String, default: '' },
     linkedin: { type: String, default: '' },
     facebook: { type: String, default: '' },
@@ -135,6 +140,7 @@ const AlumniProfileSchema = new Schema<IAlumniProfile>(
       index: true,
     },
     committeeRoleTitle: { type: String, default: '' },
+    isChatEnabled: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

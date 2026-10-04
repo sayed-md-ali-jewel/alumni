@@ -39,6 +39,7 @@ import {
   Award,
   Eye,
   EyeOff,
+  MessageSquare,
 } from 'lucide-react';
 import { useSweetAlert } from '@/components/ui/SweetAlert';
 import { ALUMNI_GROUPS, BLOOD_GROUPS, DONATION_STATUSES } from '@/lib/types';
@@ -64,6 +65,7 @@ interface AlumniFormData {
   instagram: string;
   whatsapp: string;
   visibility: 'public' | 'alumni_only';
+  isChatEnabled: boolean;
   isBloodDonor: boolean;
   donationStatus: string;
   committeePost: string;
@@ -77,6 +79,7 @@ const initialFormData: AlumniFormData = {
   phone: '',
   role: 'alumni',
   isVerified: true,
+  isChatEnabled: true,
   image: '',
   batchYear: new Date().getFullYear(),
   group: 'Science',
@@ -169,6 +172,7 @@ export default function AdminAlumniPage() {
       ...initialFormData,
       batchYear: new Date().getFullYear(),
       committeePost: defaultPost ? defaultPost._id : '',
+      isChatEnabled: true,
     });
     setActiveTab('account');
     setModalOpen(true);
@@ -184,6 +188,7 @@ export default function AdminAlumniPage() {
       phone: u.phone || profile.phone || '',
       role: u.role || 'alumni',
       isVerified: u.isVerified !== false,
+      isChatEnabled: u.isChatEnabled !== false && profile.isChatEnabled !== false,
       image: u.image || '',
       batchYear: profile.batchYear || new Date().getFullYear(),
       group: profile.group || 'Science',
@@ -661,17 +666,25 @@ export default function AdminAlumniPage() {
                       </td>
 
                       <td className="p-4">
-                        {isVerified ? (
-                          <Badge variant="success" className="text-[10px] gap-1 px-2.5 py-0.5 font-semibold">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                            <span>{isBn ? 'যাচাইকৃত' : 'Verified'}</span>
-                          </Badge>
-                        ) : (
-                          <Badge variant="warning" className="text-[10px] gap-1 px-2.5 py-0.5 font-semibold">
-                            <ShieldAlert className="w-3 h-3 text-amber-600 dark:text-amber-400" />
-                            <span>{isBn ? 'অনুমোদন বাকি' : 'Pending'}</span>
-                          </Badge>
-                        )}
+                        <div className="flex flex-col items-start gap-1">
+                          {isVerified ? (
+                            <Badge variant="success" className="text-[10px] gap-1 px-2.5 py-0.5 font-semibold">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                              <span>{isBn ? 'যাচাইকৃত' : 'Verified'}</span>
+                            </Badge>
+                          ) : (
+                            <Badge variant="warning" className="text-[10px] gap-1 px-2.5 py-0.5 font-semibold">
+                              <ShieldAlert className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                              <span>{isBn ? 'অনুমোদন বাকি' : 'Pending'}</span>
+                            </Badge>
+                          )}
+                          {(user?.isChatEnabled === false || profile?.isChatEnabled === false) && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/60">
+                              <Lock className="w-2.5 h-2.5" />
+                              <span>{isBn ? 'চ্যাট বন্ধ' : 'Chat OFF'}</span>
+                            </span>
+                          )}
+                        </div>
                       </td>
 
                       <td className="p-4 text-right">
@@ -968,6 +981,39 @@ export default function AdminAlumniPage() {
                         checked={formData.isVerified}
                         onChange={(e) => setFormData({ ...formData, isVerified: e.target.checked })}
                         className="w-5 h-5 rounded-lg text-primary focus:ring-primary accent-primary cursor-pointer"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Individual Alumni Chat Setting */}
+                  <div className="flex items-center justify-between p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-800/50">
+                    <div className="space-y-0.5 max-w-lg">
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                          <MessageSquare className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                          <span>{isBn ? 'চ্যাট সুবিধা (Chat Access)' : 'Chat Access'}</span>
+                        </p>
+                        <Badge
+                          variant={formData.isChatEnabled ? 'success' : 'destructive'}
+                          className="text-[9px] px-1.5 py-0 font-bold"
+                        >
+                          {formData.isChatEnabled ? 'ON' : 'OFF'}
+                        </Badge>
+                      </div>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                        {isBn
+                          ? 'সিস্টেমব্যাপী চ্যাট চালু থাকা সত্ত্বেও শুধুমাত্র এই নির্দিষ্ট সদস্যের চ্যাট সুবিধা বন্ধ বা চালু রাখুন।'
+                          : 'Admin can disable chat for this specific alumni without disabling chat for everyone.'}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <input
+                        type="checkbox"
+                        id="alumni-chat-toggle"
+                        checked={formData.isChatEnabled}
+                        onChange={(e) => setFormData({ ...formData, isChatEnabled: e.target.checked })}
+                        className="w-5 h-5 rounded-lg text-emerald-600 focus:ring-emerald-500 accent-emerald-600 cursor-pointer"
                       />
                     </div>
                   </div>

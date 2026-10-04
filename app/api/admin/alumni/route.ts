@@ -26,6 +26,7 @@ export async function POST(req: Request) {
       bloodGroup,
       image,
       isVerified = true,
+      isChatEnabled = true,
       batchYear,
       group,
       jobTitle,
@@ -94,6 +95,7 @@ export async function POST(req: Request) {
       bloodGroup: bloodGroup || undefined,
       image: image || '',
       isVerified: Boolean(isVerified),
+      isChatEnabled: Boolean(isChatEnabled),
     });
 
     // Target committee post
@@ -118,6 +120,7 @@ export async function POST(req: Request) {
       instagram: instagram ? instagram.trim() : '',
       whatsapp: whatsapp ? whatsapp.trim() : '',
       visibility: visibility || 'public',
+      isChatEnabled: Boolean(isChatEnabled),
       isBloodDonor: Boolean(isBloodDonor),
       donationStatus: donationStatus || 'Available',
       bloodDonationConsent: Boolean(isBloodDonor || bloodDonationConsent),
@@ -126,7 +129,7 @@ export async function POST(req: Request) {
     });
 
     const populatedProfile = await AlumniProfile.findById(newProfile._id)
-      .populate('userId', 'name email image isVerified role bloodGroup phone')
+      .populate('userId', 'name email image isVerified isChatEnabled role bloodGroup phone')
       .populate('committeePost', 'name_en name_bn sortOrder isActive isDefault');
 
     return NextResponse.json({
